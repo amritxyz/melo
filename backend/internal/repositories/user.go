@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"codeberg.org/amritxyz/melo/internal/models"
+
 	"gorm.io/gorm"
 )
 

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"codeberg.org/amritxyz/melo/internal/services"
+
 	"github.com/gin-gonic/gin"
 )
 

@@ -5,6 +5,7 @@ import (
 	"codeberg.org/amritxyz/melo/internal/handlers"
 	"codeberg.org/amritxyz/melo/internal/repositories"
 	"codeberg.org/amritxyz/melo/internal/services"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
