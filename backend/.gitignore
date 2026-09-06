@@ -1,0 +1,15 @@
+.build/
+build/
+bin/
+
+.env
+
+*.log
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+
+tmp/
