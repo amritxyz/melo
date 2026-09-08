@@ -49,12 +49,20 @@ function Home() {
                 Sell an Item
               </Link>
               {isAuthenticated && (
-                <Link
-                  to="/profile/listings"
-                  className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold"
-                >
-                  My Listings
-                </Link>
+                <>
+                  <Link
+                    to="/profile/listings"
+                    className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold"
+                  >
+                    My Listings
+                  </Link>
+                  <Link
+                    to="/messages"
+                    className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold"
+                  >
+                    Messages
+                  </Link>
+                </>
               )}
             </nav>
           </div>

@@ -64,12 +64,20 @@ function ProductsPage() {
 
           <div className="flex items-center gap-3 shrink-0">
             {isAuthenticated && (
-              <Link
-                to="/profile/listings"
-                className="hidden md:inline-flex text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-              >
-                My Listings
-              </Link>
+              <>
+                <Link
+                  to="/messages"
+                  className="hidden md:inline-flex text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                >
+                  Messages
+                </Link>
+                <Link
+                  to="/profile/listings"
+                  className="hidden md:inline-flex text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                >
+                  My Listings
+                </Link>
+              </>
             )}
 
             <Link to="/sell">

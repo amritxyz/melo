@@ -6,6 +6,7 @@ import (
 	"codeberg.org/amritxyz/melo/internal/middleware"
 	"codeberg.org/amritxyz/melo/internal/repositories"
 	"codeberg.org/amritxyz/melo/internal/services"
+	appws "codeberg.org/amritxyz/melo/internal/websocket"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -19,16 +20,23 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	refreshTokenRepo := repositories.NewRefreshTokenRepository(db)
 	categoryRepo := repositories.NewCategoryRepository(db)
 	listingRepo := repositories.NewListingRepository(db)
+	convRepo := repositories.NewConversationRepository(db)
 
 	// Services
 	authService := services.NewAuthService(userRepo, refreshTokenRepo, cfg)
 	categoryService := services.NewCategoryService(categoryRepo)
 	listingService := services.NewListingService(listingRepo, categoryRepo)
+	convService := services.NewConversationService(convRepo, listingRepo)
+
+	// WebSocket Hub
+	hub := appws.NewHub(convService)
+	go hub.Run()
 
 	// Handlers
 	authHandler := handlers.NewAuthHandler(authService)
 	categoryHandler := handlers.NewCategoryHandler(categoryService)
 	listingHandler := handlers.NewListingHandler(listingService)
+	convHandler := handlers.NewConversationHandler(convService, hub, cfg.JWTSecret)
 
 	// Auth Middleware
 	authMiddleware := middleware.Auth(cfg.JWTSecret)
@@ -66,10 +74,27 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 			listings.DELETE("/:id", authMiddleware, listingHandler.Delete)
 			listings.PATCH("/:id/sold", authMiddleware, listingHandler.MarkAsSold)
 		}
+
+		// Conversation / Chat routes (protected)
+		conversations := rg.Group("/conversations")
+		conversations.Use(authMiddleware)
+		{
+			conversations.POST("", convHandler.Start)
+			conversations.GET("", convHandler.GetAll)
+			conversations.GET("/:id", convHandler.GetByID)
+			conversations.GET("/:id/messages", convHandler.GetMessages)
+			conversations.POST("/:id/messages", convHandler.SendMessage)
+			conversations.PATCH("/:id/read", convHandler.MarkAsRead)
+		}
 	}
 
 	registerRoutes(r.Group("/api"))
 	registerRoutes(r.Group("/api/v1"))
+
+	// WebSocket routes
+	r.GET("/ws/conversations/:id", convHandler.WebSocket)
+	r.GET("/api/ws/conversations/:id", convHandler.WebSocket)
+	r.GET("/api/v1/ws/conversations/:id", convHandler.WebSocket)
 
 	return r
 }

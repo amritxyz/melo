@@ -10,10 +10,12 @@ import {
   AlertTriangle,
   AlertCircle,
   Pencil,
+  MessageSquare,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import { useAuth } from '#/hooks/useAuth'
+import { useStartConversation } from '#/hooks/useChat'
 import {
   useDeleteListing,
   useListing,
@@ -35,6 +37,20 @@ function ProductDetailPage() {
   const { data: listing, isLoading, error } = useListing(listingId)
   const markSoldMutation = useMarkListingSold()
   const deleteMutation = useDeleteListing()
+  const startConvMutation = useStartConversation()
+
+  const handleMessageSeller = async () => {
+    if (!currentUser) {
+      navigate({ to: '/login' })
+      return
+    }
+    if (!listing) return
+    const conv = await startConvMutation.mutateAsync(listing.id)
+    navigate({
+      to: '/messages',
+      search: { conversationId: conv.id },
+    })
+  }
 
   if (isLoading) {
     return (
@@ -222,7 +238,14 @@ function ProductDetailPage() {
 
               {!isOwner && !isSold && (
                 <div className="mt-6">
-                  <Button className="w-full">Message Seller</Button>
+                  <Button
+                    className="w-full gap-2"
+                    isLoading={startConvMutation.isPending}
+                    onClick={handleMessageSeller}
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Message Seller
+                  </Button>
                 </div>
               )}
             </div>

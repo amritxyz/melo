@@ -1,4 +1,5 @@
 import type { ApiResponse, AuthData, TokenPair, User } from '#/types/auth'
+import type { Conversation, Message } from '#/types/chat'
 import type {
   Category,
   CreateListingPayload,
@@ -247,4 +248,67 @@ export async function markListingSoldApi(id: string): Promise<Listing> {
   return apiFetch<Listing>(`/api/listings/${encodeURIComponent(id)}/sold`, {
     method: 'PATCH',
   })
+}
+
+// ----------------- Chat / Messaging API -----------------
+
+export async function startConversationApi(
+  listingId: string,
+): Promise<Conversation> {
+  return apiFetch<Conversation>('/api/conversations', {
+    method: 'POST',
+    body: JSON.stringify({ listing_id: listingId }),
+  })
+}
+
+export async function getConversationsApi(): Promise<Conversation[]> {
+  return apiFetch<Conversation[]>('/api/conversations', {
+    method: 'GET',
+  })
+}
+
+export async function getConversationApi(id: string): Promise<Conversation> {
+  return apiFetch<Conversation>(
+    `/api/conversations/${encodeURIComponent(id)}`,
+    {
+      method: 'GET',
+    },
+  )
+}
+
+export async function getMessagesApi(
+  conversationId: string,
+  limit = 50,
+  offset = 0,
+): Promise<Message[]> {
+  return apiFetch<Message[]>(
+    `/api/conversations/${encodeURIComponent(conversationId)}/messages?limit=${limit}&offset=${offset}`,
+    {
+      method: 'GET',
+    },
+  )
+}
+
+export async function sendMessageApi(
+  conversationId: string,
+  content: string,
+): Promise<Message> {
+  return apiFetch<Message>(
+    `/api/conversations/${encodeURIComponent(conversationId)}/messages`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    },
+  )
+}
+
+export async function markConversationReadApi(
+  conversationId: string,
+): Promise<{ read: boolean }> {
+  return apiFetch<{ read: boolean }>(
+    `/api/conversations/${encodeURIComponent(conversationId)}/read`,
+    {
+      method: 'PATCH',
+    },
+  )
 }
