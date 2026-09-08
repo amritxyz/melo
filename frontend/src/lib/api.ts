@@ -50,10 +50,54 @@ export async function apiFetchFull<T>(
     headers,
   })
 
-  const json: FullApiResponse<T> = await response.json().catch(() => ({
+  let json: FullApiResponse<T> = await response.json().catch(() => ({
     success: false,
     error: { message: 'Failed to parse JSON response' },
   }))
+
+  // Auto-refresh token if access token expired
+  if (
+    response.status === 401 &&
+    !endpoint.includes('/auth/refresh') &&
+    !endpoint.includes('/auth/login')
+  ) {
+    const refreshToken = getRefreshToken()
+    if (refreshToken) {
+      try {
+        const refreshRes = await fetch('/api/auth/refresh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        })
+        const refreshJson = await refreshRes.json()
+        if (refreshRes.ok && refreshJson.success && refreshJson.data?.tokens) {
+          setTokens(refreshJson.data.tokens)
+          headers.set(
+            'Authorization',
+            `Bearer ${refreshJson.data.tokens.access_token}`,
+          )
+          const retryResponse = await fetch(endpoint, {
+            ...options,
+            headers,
+          })
+          json = await retryResponse.json().catch(() => ({
+            success: false,
+            error: { message: 'Failed to parse JSON response' },
+          }))
+          if (retryResponse.ok && json.success) {
+            return {
+              data: json.data as T,
+              pagination: json.pagination,
+            }
+          }
+        } else {
+          clearTokens()
+        }
+      } catch {
+        clearTokens()
+      }
+    }
+  }
 
   if (!response.ok || !json.success) {
     const errorMsg =

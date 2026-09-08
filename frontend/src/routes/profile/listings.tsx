@@ -11,6 +11,7 @@ import {
   ShoppingBag,
   MapPin,
   Calendar,
+  Pencil,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
@@ -335,11 +336,23 @@ function MyListingsPage() {
                         to="/products/$listingId"
                         params={{ listingId: item.id }}
                       >
-                        <Button variant="outline" size="sm" className="gap-1">
+                        <Button variant="ghost" size="sm" className="gap-1">
                           <ExternalLink className="w-3.5 h-3.5" />
                           <span>View</span>
                         </Button>
                       </Link>
+
+                      {!isItemSold && (
+                        <Link
+                          to="/products/$listingId/edit"
+                          params={{ listingId: item.id }}
+                        >
+                          <Button variant="outline" size="sm" className="gap-1">
+                            <Pencil className="w-3.5 h-3.5 text-zinc-500" />
+                            <span>Edit</span>
+                          </Button>
+                        </Link>
+                      )}
 
                       {!isItemSold && !isConfirmingSold && (
                         <Button

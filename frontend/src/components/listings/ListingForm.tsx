@@ -54,6 +54,27 @@ export function ListingForm({
     }
   }, [categories, categoryId])
 
+  // Sync state if initialValues change asynchronously
+  React.useEffect(() => {
+    if (initialValues.title !== undefined) setTitle(initialValues.title)
+    if (initialValues.category_id !== undefined)
+      setCategoryId(initialValues.category_id)
+    if (initialValues.price !== undefined) setPrice(String(initialValues.price))
+    if (initialValues.condition !== undefined)
+      setCondition(initialValues.condition)
+    if (initialValues.location !== undefined)
+      setLocation(initialValues.location)
+    if (initialValues.description !== undefined)
+      setDescription(initialValues.description)
+  }, [
+    initialValues.title,
+    initialValues.category_id,
+    initialValues.price,
+    initialValues.condition,
+    initialValues.location,
+    initialValues.description,
+  ])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError(null)

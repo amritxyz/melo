@@ -9,6 +9,7 @@ import {
   Trash2,
   AlertTriangle,
   AlertCircle,
+  Pencil,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
@@ -19,7 +20,7 @@ import {
   useMarkListingSold,
 } from '#/hooks/useListings'
 
-export const Route = createFileRoute('/products/$listingId')({
+export const Route = createFileRoute('/products/$listingId/')({
   component: ProductDetailPage,
 })
 
@@ -319,6 +320,23 @@ function ProductDetailPage() {
                 {/* Action Buttons */}
                 {!showSoldConfirm && !showDeleteConfirm && (
                   <div className="space-y-2 pt-2">
+                    {!isSold && (
+                      <Link
+                        to="/products/$listingId/edit"
+                        params={{ listingId: listing.id }}
+                        className="block w-full"
+                      >
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full gap-1.5"
+                        >
+                          <Pencil className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
+                          Edit Listing
+                        </Button>
+                      </Link>
+                    )}
+
                     {!isSold && (
                       <Button
                         variant="outline"

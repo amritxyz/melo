@@ -15,6 +15,7 @@ var (
 	ErrInvalidPrice       = errors.New("price must be greater than 0")
 	ErrInvalidCondition   = errors.New("invalid condition: must be new, like_new, good, fair, or poor")
 	ErrInvalidStatus      = errors.New("invalid status: must be active, sold, or hidden")
+	ErrListingAlreadySold = errors.New("sold listings cannot be edited")
 )
 
 type CreateListingRequest struct {
@@ -129,6 +130,10 @@ func (s *ListingService) UpdateListing(userID, listingID string, req UpdateListi
 
 	if listing.SellerID != userID {
 		return nil, ErrUnauthorizedAction
+	}
+
+	if listing.Status == models.StatusSold {
+		return nil, ErrListingAlreadySold
 	}
 
 	if req.Price != nil {

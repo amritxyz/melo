@@ -195,7 +195,7 @@ func (h *ListingHandler) Update(c *gin.Context) {
 			status = http.StatusForbidden
 		} else if errors.Is(err, services.ErrListingNotFound) {
 			status = http.StatusNotFound
-		} else if errors.Is(err, services.ErrInvalidPrice) || errors.Is(err, services.ErrInvalidCondition) || errors.Is(err, services.ErrInvalidStatus) {
+		} else if errors.Is(err, services.ErrInvalidPrice) || errors.Is(err, services.ErrInvalidCondition) || errors.Is(err, services.ErrInvalidStatus) || errors.Is(err, services.ErrListingAlreadySold) || errors.Is(err, services.ErrCategoryNotFound) {
 			status = http.StatusBadRequest
 		}
 		c.JSON(status, gin.H{

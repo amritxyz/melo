@@ -14,8 +14,9 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
-import { Route as ProductsListingIdRouteImport } from './routes/products/$listingId'
 import { Route as ProfileListingsRouteImport } from './routes/profile/listings'
+import { Route as ProductsListingIdIndexRouteImport } from './routes/products/$listingId/index'
+import { Route as ProductsListingIdEditRouteImport } from './routes/products/$listingId/edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -42,14 +43,19 @@ const ProductsIndexRoute = ProductsIndexRouteImport.update({
   path: '/products/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProductsListingIdRoute = ProductsListingIdRouteImport.update({
-  id: '/products/$listingId',
-  path: '/products/$listingId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProfileListingsRoute = ProfileListingsRouteImport.update({
   id: '/profile/listings',
   path: '/profile/listings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsListingIdIndexRoute = ProductsListingIdIndexRouteImport.update({
+  id: '/products/$listingId/',
+  path: '/products/$listingId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsListingIdEditRoute = ProductsListingIdEditRouteImport.update({
+  id: '/products/$listingId/edit',
+  path: '/products/$listingId/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -58,18 +64,20 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/sell': typeof SellRoute
   '/signup': typeof SignupRoute
-  '/products/$listingId': typeof ProductsListingIdRoute
   '/profile/listings': typeof ProfileListingsRoute
   '/products/': typeof ProductsIndexRoute
+  '/products/$listingId/edit': typeof ProductsListingIdEditRoute
+  '/products/$listingId/': typeof ProductsListingIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/sell': typeof SellRoute
   '/signup': typeof SignupRoute
-  '/products/$listingId': typeof ProductsListingIdRoute
   '/profile/listings': typeof ProfileListingsRoute
   '/products': typeof ProductsIndexRoute
+  '/products/$listingId/edit': typeof ProductsListingIdEditRoute
+  '/products/$listingId': typeof ProductsListingIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,9 +85,10 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/sell': typeof SellRoute
   '/signup': typeof SignupRoute
-  '/products/$listingId': typeof ProductsListingIdRoute
   '/profile/listings': typeof ProfileListingsRoute
   '/products/': typeof ProductsIndexRoute
+  '/products/$listingId/edit': typeof ProductsListingIdEditRoute
+  '/products/$listingId/': typeof ProductsListingIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,27 +97,30 @@ export interface FileRouteTypes {
     | '/login'
     | '/sell'
     | '/signup'
-    | '/products/$listingId'
     | '/profile/listings'
     | '/products/'
+    | '/products/$listingId/edit'
+    | '/products/$listingId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/sell'
     | '/signup'
-    | '/products/$listingId'
     | '/profile/listings'
     | '/products'
+    | '/products/$listingId/edit'
+    | '/products/$listingId'
   id:
     | '__root__'
     | '/'
     | '/login'
     | '/sell'
     | '/signup'
-    | '/products/$listingId'
     | '/profile/listings'
     | '/products/'
+    | '/products/$listingId/edit'
+    | '/products/$listingId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,9 +128,10 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SellRoute: typeof SellRoute
   SignupRoute: typeof SignupRoute
-  ProductsListingIdRoute: typeof ProductsListingIdRoute
   ProfileListingsRoute: typeof ProfileListingsRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
+  ProductsListingIdEditRoute: typeof ProductsListingIdEditRoute
+  ProductsListingIdIndexRoute: typeof ProductsListingIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,18 +171,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/products/$listingId': {
-      id: '/products/$listingId'
-      path: '/products/$listingId'
-      fullPath: '/products/$listingId'
-      preLoaderRoute: typeof ProductsListingIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/profile/listings': {
       id: '/profile/listings'
       path: '/profile/listings'
       fullPath: '/profile/listings'
       preLoaderRoute: typeof ProfileListingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/$listingId/': {
+      id: '/products/$listingId/'
+      path: '/products/$listingId'
+      fullPath: '/products/$listingId/'
+      preLoaderRoute: typeof ProductsListingIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/$listingId/edit': {
+      id: '/products/$listingId/edit'
+      path: '/products/$listingId/edit'
+      fullPath: '/products/$listingId/edit'
+      preLoaderRoute: typeof ProductsListingIdEditRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -180,9 +200,10 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SellRoute: SellRoute,
   SignupRoute: SignupRoute,
-  ProductsListingIdRoute: ProductsListingIdRoute,
   ProfileListingsRoute: ProfileListingsRoute,
   ProductsIndexRoute: ProductsIndexRoute,
+  ProductsListingIdEditRoute: ProductsListingIdEditRoute,
+  ProductsListingIdIndexRoute: ProductsListingIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
