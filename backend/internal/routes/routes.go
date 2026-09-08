@@ -32,6 +32,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 
 	// Auth Middleware
 	authMiddleware := middleware.Auth(cfg.JWTSecret)
+	optionalAuthMiddleware := middleware.OptionalAuth(cfg.JWTSecret)
 
 	// Route registrar to support both /api and /api/v1
 	registerRoutes := func(rg *gin.RouterGroup) {
@@ -55,8 +56,8 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 		// Listings routes
 		listings := rg.Group("/listings")
 		{
-			// Public
-			listings.GET("", listingHandler.GetAll)
+			// Public / Explore (optional auth to identify seller for their own inventory)
+			listings.GET("", optionalAuthMiddleware, listingHandler.GetAll)
 			listings.GET("/:id", listingHandler.GetByID)
 
 			// Protected

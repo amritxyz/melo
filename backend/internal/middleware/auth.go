@@ -54,3 +54,23 @@ func Auth(jwtSecret string) gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+// OptionalAuth extracts user identity if valid Authorization header is provided,
+// but does not reject unauthenticated requests.
+func OptionalAuth(jwtSecret string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if authHeader != "" {
+			parts := strings.SplitN(authHeader, " ", 2)
+			if len(parts) == 2 && strings.ToLower(parts[0]) == "bearer" {
+				tokenString := strings.TrimSpace(parts[1])
+				claims, err := utils.ValidateToken(tokenString, jwtSecret)
+				if err == nil && claims.TokenType == utils.TokenTypeAccess {
+					c.Set(ContextUserIDKey, claims.UserID)
+					c.Set(ContextUserEmailKey, claims.Email)
+				}
+			}
+		}
+		c.Next()
+	}
+}

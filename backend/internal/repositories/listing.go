@@ -71,8 +71,11 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 	if params.Status != "" {
 		query = query.Where("status = ?", params.Status)
 	} else if params.SellerID == "" {
-		// Default to active listings for general browsing
+		// By default for general explore queries without status, only show active
 		query = query.Where("status = ?", models.StatusActive)
+	} else {
+		// For seller inventory without status filter, show active and sold (exclude hidden)
+		query = query.Where("status != ?", models.StatusHidden)
 	}
 
 	if params.Search != "" {

@@ -125,6 +125,13 @@ func (h *ListingHandler) GetAll(c *gin.Context) {
 	sellerID := c.Query("seller_id")
 	status := c.Query("status")
 	search := c.Query("search")
+	callerUserID := c.GetString(middleware.ContextUserIDKey)
+
+	// If an authenticated seller is viewing their own inventory, allow viewing sold items or custom status.
+	// For all buyers, explore pages, and other users, strictly restrict to active items only.
+	if sellerID == "" || callerUserID == "" || callerUserID != sellerID {
+		status = string(models.StatusActive)
+	}
 
 	params := repositories.ListingFilterParams{
 		Page:       page,
