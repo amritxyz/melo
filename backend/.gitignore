@@ -13,3 +13,6 @@ Thumbs.db
 .idea/
 
 tmp/
+server
+
+*_test.go

@@ -3,6 +3,7 @@ package routes
 import (
 	"codeberg.org/amritxyz/melo/internal/config"
 	"codeberg.org/amritxyz/melo/internal/handlers"
+	"codeberg.org/amritxyz/melo/internal/middleware"
 	"codeberg.org/amritxyz/melo/internal/repositories"
 	"codeberg.org/amritxyz/melo/internal/services"
 
@@ -13,31 +14,30 @@ import (
 func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	r := gin.Default()
 
-	// deps
-	userRepo := repositories.NewUserRepositroy(db)
+	// Repositories
+	userRepo := repositories.NewUserRepository(db)
+	refreshTokenRepo := repositories.NewRefreshTokenRepository(db)
 
-	authService := services.NewAuthService(userRepo)
+	// Services
+	authService := services.NewAuthService(userRepo, refreshTokenRepo, cfg)
 
+	// Handlers
 	authHandler := handlers.NewAuthHandler(authService)
 
-	// public
-	api := r.Group("/api/v1")
-
-	auth := api.Group("/auth")
-	{
-		auth.POST("/signup", authHandler.Signup)
-		// auth.POST("/login")
+	// Route registrar to support both /api and /api/v1
+	registerAuthRoutes := func(rg *gin.RouterGroup) {
+		auth := rg.Group("/auth")
+		{
+			auth.POST("/signup", authHandler.Signup)
+			auth.POST("/login", authHandler.Login)
+			auth.POST("/refresh", authHandler.Refresh)
+			auth.POST("/logout", authHandler.Logout)
+			auth.GET("/me", middleware.Auth(cfg.JWTSecret), authHandler.Me)
+		}
 	}
 
-	// TODO protected
-	// protected := api.Group("")
-	// protected.Use(middleware.Auth(cfg))
-	// protected.POST("/listings", listingHandler.Create)
-	// protected.PUT("/listings/:id", listingHandler.Update)
-	// protected.DELETE("/listings/:id", listingHandler.Delete)
-	//
-	// protected.POST("/favorites/:listingId", favoriteHandler.Add)
-	// protected.DELETE("/favorites/:listingId", listingHandler.Remove)
+	registerAuthRoutes(r.Group("/api"))
+	registerAuthRoutes(r.Group("/api/v1"))
 
 	return r
 }

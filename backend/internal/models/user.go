@@ -2,18 +2,24 @@ package models
 
 import (
 	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type User struct {
-	ID          string    `json:"id" gorm:"primaryKey"` // TODO google's UUID
-	UserName    string    `json:"username"`
-	Email       string    `json:"email" grom:"uniqueIndex"`
-	PhoneNumber *string   `json:"phone"`
-	Password    string    `json:"password"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID           string    `json:"id" gorm:"primaryKey"`
+	Username     string    `json:"username" gorm:"not null"`
+	Email        string    `json:"email" gorm:"uniqueIndex;not null"`
+	PhoneNumber  *string   `json:"phone,omitempty"`
+	PasswordHash string    `json:"-" gorm:"not null"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+}
 
-	// TODO for future. currently, not that important
-	// AvatarURL   *string
-	// DeletedAt   gorm.DeletedAt `gorm:"index"`
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	if u.ID == "" {
+		u.ID = uuid.New().String()
+	}
+	return nil
 }
