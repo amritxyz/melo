@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { StatusBadge } from '#/components/ui/Badge'
+import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
 import {
   useChatWebSocket,
@@ -133,32 +134,7 @@ function MessagesPage() {
 
   return (
     <div className="h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 overflow-hidden">
-      {/* Top Navbar */}
-      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 h-16 shrink-0 flex items-center justify-between px-4 sm:px-6">
-        <div className="flex items-center gap-4">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-black tracking-tight text-emerald-600">
-              melo.
-            </span>
-          </Link>
-          <span className="text-sm font-semibold border-l border-zinc-200 dark:border-zinc-800 pl-4 text-zinc-600 dark:text-zinc-400">
-            Messages & Chat
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link to="/products">
-            <Button variant="ghost" size="sm">
-              Explore Marketplace
-            </Button>
-          </Link>
-          <Link to="/profile/listings">
-            <Button variant="outline" size="sm">
-              My Listings
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Container: Split View */}
       <div className="flex-1 flex overflow-hidden">

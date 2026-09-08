@@ -10,13 +10,13 @@ import {
   ShoppingBag,
   CheckCircle2,
   Tag,
-  ArrowLeft,
   X,
-  Sparkles,
+  Pencil,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import { RatingStars } from '#/components/ui/RatingStars'
+import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
 import { useUserProfile, useUserReviews, useSubmitReview } from '#/hooks/useUser'
 import { useListings } from '#/hooks/useListings'
@@ -147,45 +147,18 @@ function PublicUserProfilePage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Top Navigation */}
-      <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link to="/products">
-              <Button variant="ghost" size="sm" className="gap-1.5 text-zinc-600 dark:text-zinc-400">
-                <ArrowLeft className="w-4 h-4" />
-                <span>Browse</span>
-              </Button>
-            </Link>
-            <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 border-l border-zinc-200 dark:border-zinc-700 pl-4">
-              Seller Profile
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {isSelf ? (
-              <Link to="/profile">
-                <Button size="sm" variant="outline">
-                  My Profile Dashboard
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                size="sm"
-                onClick={handleMessageSeller}
-                isLoading={startConvMutation.isPending}
-                className="gap-1.5"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>Message Seller</span>
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <div>
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+          >
+            ← Back to marketplace
+          </Link>
+        </div>
         {/* Profile Header Card */}
         <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-xs overflow-hidden">
           {/* Header Banner Gradient */}
@@ -224,9 +197,18 @@ function PublicUserProfilePage() {
                 </div>
               </div>
 
-              {/* Action: Leave Review */}
-              {!isSelf && (
+              {/* Action Buttons */}
+              {!isSelf ? (
                 <div className="flex items-center gap-2 pt-2 sm:pt-0">
+                  <Button
+                    size="sm"
+                    onClick={handleMessageSeller}
+                    isLoading={startConvMutation.isPending}
+                    className="gap-1.5"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>Message Seller</span>
+                  </Button>
                   <Button
                     onClick={() => {
                       if (!isAuthenticated) {
@@ -242,6 +224,15 @@ function PublicUserProfilePage() {
                     <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                     <span>Rate & Review</span>
                   </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 pt-2 sm:pt-0">
+                  <Link to="/profile">
+                    <Button variant="outline" size="sm" className="gap-1.5">
+                      <Pencil className="w-4 h-4" />
+                      <span>Edit Profile</span>
+                    </Button>
+                  </Link>
                 </div>
               )}
             </div>

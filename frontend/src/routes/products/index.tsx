@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { Link, createFileRoute } from '@tanstack/react-router'
-import { Search, Plus, Heart } from 'lucide-react'
+import { createFileRoute } from '@tanstack/react-router'
+import { Search } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ProductGrid } from '#/components/listings/ProductGrid'
-import { useAuth } from '#/hooks/useAuth'
+import { Navbar } from '#/components/layout/Navbar'
 import { useCategories, useListings } from '#/hooks/useListings'
 
 export const Route = createFileRoute('/products/')({
@@ -11,7 +11,6 @@ export const Route = createFileRoute('/products/')({
 })
 
 function ProductsPage() {
-  const { user, isAuthenticated } = useAuth()
   const [selectedCategory, setSelectedCategory] = React.useState<string>('')
   const [searchQuery, setSearchQuery] = React.useState<string>('')
   const [debouncedSearch, setDebouncedSearch] = React.useState<string>('')
@@ -42,78 +41,32 @@ function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-      {/* Header */}
-      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          <Link to="/" className="flex items-center space-x-2 shrink-0">
-            <span className="text-2xl font-black tracking-tight text-emerald-600">
-              melo.
-            </span>
-          </Link>
+      <Navbar />
 
-          <div className="relative flex-1 max-w-md">
+      {/* Main Container */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Search & Header */}
+        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+              Browse Marketplace
+            </h1>
+            <p className="text-xs text-zinc-500 mt-0.5">
+              Find pre-loved items from verified sellers in your community.
+            </p>
+          </div>
+
+          <div className="relative w-full md:w-80">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
             <input
               type="search"
               placeholder="Search phones, bikes, furniture..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-10 pl-9 pr-4 rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full h-10 pl-9 pr-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
             />
           </div>
-
-          <div className="flex items-center gap-3 shrink-0">
-            {isAuthenticated && (
-              <>
-                <Link
-                  to="/favorites"
-                  className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-                >
-                  <Heart className="w-4 h-4 text-red-500" />
-                  <span>Saved</span>
-                </Link>
-                <Link
-                  to="/messages"
-                  className="hidden md:inline-flex text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-                >
-                  Messages
-                </Link>
-                <Link
-                  to="/profile/listings"
-                  className="hidden md:inline-flex text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-                >
-                  My Listings
-                </Link>
-              </>
-            )}
-
-            <Link to="/sell">
-              <Button size="sm" className="gap-1.5">
-                <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline">Post Listing</span>
-              </Button>
-            </Link>
-
-            {isAuthenticated && user ? (
-              <Link
-                to="/profile/listings"
-                className="text-xs font-semibold px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-400 transition-colors"
-              >
-                {user.username}
-              </Link>
-            ) : (
-              <Link to="/login">
-                <Button variant="ghost" size="sm">
-                  Sign In
-                </Button>
-              </Link>
-            )}
-          </div>
         </div>
-      </header>
-
-      {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Categories Bar */}
         <div className="mb-8 overflow-x-auto pb-2 scrollbar-none">
           <div className="flex items-center gap-2">

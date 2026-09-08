@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   Package,
   CheckCircle2,
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
+import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
 import {
   useDeleteListing,
@@ -28,7 +29,6 @@ export const Route = createFileRoute('/profile/listings')({
 })
 
 function MyListingsPage() {
-  const navigate = useNavigate()
   const { user, isAuthenticated, isLoading: authLoading } = useAuth()
   const [activeTab, setActiveTab] = React.useState<'all' | 'active' | 'sold'>(
     'all',
@@ -109,42 +109,7 @@ function MyListingsPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
-      {/* Header */}
-      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center space-x-2">
-              <span className="text-2xl font-black tracking-tight text-emerald-600">
-                melo.
-              </span>
-            </Link>
-
-            <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-400">
-              <Link
-                to="/products"
-                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-              >
-                Browse Marketplace
-              </Link>
-              <Link
-                to="/profile/listings"
-                className="text-emerald-600 dark:text-emerald-400 font-semibold"
-              >
-                My Listings
-              </Link>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link to="/sell">
-              <Button size="sm" className="gap-1.5">
-                <Plus className="w-4 h-4" />
-                <span>Post New Item</span>
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">

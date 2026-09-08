@@ -1,8 +1,9 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Heart, ShoppingBag, ArrowLeft } from 'lucide-react'
+import { Heart, ShoppingBag } from 'lucide-react'
 import * as React from 'react'
 import { ProductGrid } from '#/components/listings/ProductGrid'
 import { Button } from '#/components/ui/Button'
+import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
 import { useFavorites } from '#/hooks/useFavorites'
 import type { Listing } from '#/types/listing'
@@ -39,37 +40,7 @@ function FavoritesPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Top Header */}
-      <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-20 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link
-              to="/products"
-              className="p-2 -ml-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              title="Back to products"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/50 flex items-center justify-center text-red-500">
-                <Heart className="w-4 h-4 fill-red-500" />
-              </div>
-              <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                Saved Items
-              </h1>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link to="/products">
-              <Button variant="outline" size="sm" className="gap-1.5">
-                <ShoppingBag className="w-4 h-4" />
-                Explore Marketplace
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

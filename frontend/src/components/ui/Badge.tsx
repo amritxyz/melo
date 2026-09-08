@@ -48,7 +48,15 @@ export function Badge({
   )
 }
 
-export function ConditionBadge({ condition }: { condition: ListingCondition }) {
+export function ConditionBadge({
+  condition,
+  size,
+  className,
+}: {
+  condition: ListingCondition
+  size?: BadgeProps['size']
+  className?: string
+}) {
   const labels: Record<
     ListingCondition,
     { text: string; variant: BadgeProps['variant'] }
@@ -61,10 +69,22 @@ export function ConditionBadge({ condition }: { condition: ListingCondition }) {
   }
 
   const { text, variant } = labels[condition]
-  return <Badge variant={variant}>{text}</Badge>
+  return (
+    <Badge variant={variant} size={size} className={className}>
+      {text}
+    </Badge>
+  )
 }
 
-export function StatusBadge({ status }: { status: ListingStatus }) {
+export function StatusBadge({
+  status,
+  size,
+  className,
+}: {
+  status: ListingStatus
+  size?: BadgeProps['size']
+  className?: string
+}) {
   const labels: Record<
     ListingStatus,
     { text: string; variant: BadgeProps['variant'] }
@@ -75,5 +95,9 @@ export function StatusBadge({ status }: { status: ListingStatus }) {
   }
 
   const { text, variant } = labels[status]
-  return <Badge variant={variant}>{text}</Badge>
+  return (
+    <Badge variant={variant} size={size} className={className}>
+      {text}
+    </Badge>
+  )
 }

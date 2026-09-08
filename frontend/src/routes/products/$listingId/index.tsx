@@ -16,6 +16,7 @@ import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import { RatingStars } from '#/components/ui/RatingStars'
 import { FavoriteButton } from '#/components/listings/FavoriteButton'
+import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
 import { useStartConversation } from '#/hooks/useChat'
 import { useUserProfile } from '#/hooks/useUser'
@@ -108,34 +109,19 @@ function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-      {/* Header */}
-      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-black tracking-tight text-emerald-600">
-              melo.
-            </span>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <Link to="/products">
-              <Button variant="ghost" size="sm">
-                ← Browse Listings
-              </Button>
-            </Link>
-            {currentUser && (
-              <Link to="/profile/listings">
-                <Button variant="outline" size="sm">
-                  My Listings
-                </Button>
-              </Link>
-            )}
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Container */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6">
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+          >
+            ← Back to marketplace
+          </Link>
+        </div>
+
         {/* Prominent Sold Banner */}
         {isSold && (
           <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 flex items-center gap-3 text-sm text-red-800 dark:text-red-300 font-medium">

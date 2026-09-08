@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   User as UserIcon,
   MapPin,
@@ -10,14 +10,13 @@ import {
   ShoppingBag,
   Star,
   CheckCircle2,
-  Package,
   ExternalLink,
   X,
-  MessageSquare,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { Input } from '#/components/ui/Input'
 import { RatingStars } from '#/components/ui/RatingStars'
+import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
 import { useUserProfile, useUpdateProfile, useUserReviews } from '#/hooks/useUser'
 
@@ -26,7 +25,6 @@ export const Route = createFileRoute('/profile/')({
 })
 
 function ProfilePage() {
-  const navigate = useNavigate()
   const { user, isAuthenticated, isLoading: authLoading } = useAuth()
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
 
@@ -129,31 +127,9 @@ function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Header Bar */}
-      <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link
-            to="/"
-            className="text-xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight"
-          >
-            Melo
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/profile/listings">
-              <Button variant="outline" size="sm" className="gap-1.5">
-                <Package className="w-4 h-4" />
-                <span>My Listings</span>
-              </Button>
-            </Link>
-            <Link to="/sell">
-              <Button size="sm" className="gap-1.5">
-                <ShoppingBag className="w-4 h-4" />
-                <span>Sell Item</span>
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Navbar />
+
+      {/* Main Container */}
 
       {/* Main Container */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -209,7 +185,7 @@ function ProfilePage() {
                   <Pencil className="w-4 h-4" />
                   <span>Edit Profile</span>
                 </Button>
-                <Link to={`/users/${user.id}`}>
+                <Link to="/users/$userId" params={{ userId: user.id }}>
                   <Button variant="ghost" size="sm" className="gap-1.5 text-zinc-600 dark:text-zinc-400">
                     <ExternalLink className="w-4 h-4" />
                     <span>Public View</span>

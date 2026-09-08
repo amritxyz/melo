@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Button } from '#/components/ui/Button'
 import { ListingForm } from '#/components/listings/ListingForm'
+import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
 import { useCreateListing } from '#/hooks/useListings'
 import type { CreateListingPayload } from '#/types/listing'
@@ -67,7 +68,9 @@ function SellPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8 text-zinc-900 dark:text-zinc-100">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
+      <Navbar />
+      <div className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <Link
@@ -94,6 +97,7 @@ function SellPage() {
           />
         </div>
       </div>
+    </div>
     </div>
   )
 }

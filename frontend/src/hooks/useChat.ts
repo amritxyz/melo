@@ -8,7 +8,7 @@ import {
   sendMessageApi,
   startConversationApi,
 } from '#/lib/api'
-import { getAccessToken } from '#/lib/auth'
+import { getAccessToken, hasTokens } from '#/lib/auth'
 import type { Message } from '#/types/chat'
 
 export const CONVERSATIONS_QUERY_KEY = ['conversations']
@@ -19,10 +19,12 @@ export const conversationMessagesQueryKey = (id: string) => [
 ]
 
 export function useConversations() {
+  const isAuth = hasTokens()
   return useQuery({
     queryKey: CONVERSATIONS_QUERY_KEY,
     queryFn: getConversationsApi,
-    refetchInterval: 10000,
+    enabled: isAuth,
+    refetchInterval: isAuth ? 10000 : false,
   })
 }
 

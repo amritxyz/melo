@@ -1,20 +1,13 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { Plus, ShoppingBag, ArrowRight, Heart } from 'lucide-react'
+import { ShoppingBag, ArrowRight } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ProductGrid } from '#/components/listings/ProductGrid'
-import { useAuth } from '#/hooks/useAuth'
+import { Navbar } from '#/components/layout/Navbar'
 import { useCategories, useListings } from '#/hooks/useListings'
 
 export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
-  const {
-    user,
-    isLoading: authLoading,
-    isAuthenticated,
-    logout,
-    isLoggingOut,
-  } = useAuth()
   const { data: categories = [] } = useCategories()
   const { data: listingsData, isLoading: listingsLoading } = useListings({
     page: 1,
@@ -25,103 +18,7 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
-      {/* Navbar */}
-      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center space-x-2">
-              <span className="text-2xl font-black tracking-tight text-emerald-600">
-                melo.
-              </span>
-            </Link>
-
-            <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-400">
-              <Link
-                to="/products"
-                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-              >
-                Browse Marketplace
-              </Link>
-              <Link
-                to="/sell"
-                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-              >
-                Sell an Item
-              </Link>
-              {isAuthenticated && (
-                <>
-                  <Link
-                    to="/profile"
-                    className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold"
-                  >
-                    Profile
-                  </Link>
-                  <Link
-                    to="/profile/listings"
-                    className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold"
-                  >
-                    My Listings
-                  </Link>
-                  <Link
-                    to="/favorites"
-                    className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold flex items-center gap-1"
-                  >
-                    <Heart className="w-3.5 h-3.5" />
-                    Saved
-                  </Link>
-                  <Link
-                    to="/messages"
-                    className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold"
-                  >
-                    Messages
-                  </Link>
-                </>
-              )}
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link to="/sell" className="hidden sm:inline-flex">
-              <Button size="sm" className="gap-1.5">
-                <Plus className="w-4 h-4" />
-                <span>Sell</span>
-              </Button>
-            </Link>
-
-            {authLoading ? (
-              <span className="text-xs text-zinc-400">...</span>
-            ) : isAuthenticated && user ? (
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/profile"
-                  className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-                >
-                  {user.username}
-                </Link>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  isLoading={isLoggingOut}
-                  onClick={() => logout()}
-                >
-                  Log Out
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link to="/login">
-                  <Button variant="ghost" size="sm">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/signup">
-                  <Button size="sm">Get Started</Button>
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 py-16 sm:py-24 px-4 sm:px-6 lg:px-8 text-center">
