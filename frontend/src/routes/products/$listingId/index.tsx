@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
+import { FavoriteButton } from '#/components/listings/FavoriteButton'
 import { useAuth } from '#/hooks/useAuth'
 import { useStartConversation } from '#/hooks/useChat'
 import {
@@ -160,6 +161,12 @@ function ProductDetailPage() {
                 <StatusBadge status={listing.status} />
               </div>
 
+              {!isOwner && (
+                <div className="absolute top-4 right-4 z-10">
+                  <FavoriteButton listingId={listing.id} variant="badge" />
+                </div>
+              )}
+
               {isSold && (
                 <div className="absolute inset-0 bg-zinc-950/40 backdrop-blur-[2px] flex items-center justify-center">
                   <span className="px-5 py-2 rounded-xl bg-red-600 text-white font-black text-lg tracking-widest uppercase shadow-lg border border-red-500">
@@ -236,16 +243,23 @@ function ProductDetailPage() {
                 </div>
               </div>
 
-              {!isOwner && !isSold && (
-                <div className="mt-6">
-                  <Button
-                    className="w-full gap-2"
-                    isLoading={startConvMutation.isPending}
-                    onClick={handleMessageSeller}
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    Message Seller
-                  </Button>
+              {!isOwner && (
+                <div className="mt-6 space-y-3">
+                  {!isSold && (
+                    <Button
+                      className="w-full gap-2"
+                      isLoading={startConvMutation.isPending}
+                      onClick={handleMessageSeller}
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      Message Seller
+                    </Button>
+                  )}
+                  <FavoriteButton
+                    listingId={listing.id}
+                    variant="button"
+                    className="w-full"
+                  />
                 </div>
               )}
             </div>

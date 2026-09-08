@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { Search, Plus } from 'lucide-react'
+import { Search, Plus, Heart } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ProductGrid } from '#/components/listings/ProductGrid'
 import { useAuth } from '#/hooks/useAuth'
@@ -65,6 +65,13 @@ function ProductsPage() {
           <div className="flex items-center gap-3 shrink-0">
             {isAuthenticated && (
               <>
+                <Link
+                  to="/favorites"
+                  className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                >
+                  <Heart className="w-4 h-4 text-red-500" />
+                  <span>Saved</span>
+                </Link>
                 <Link
                   to="/messages"
                   className="hidden md:inline-flex text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"

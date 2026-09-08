@@ -21,12 +21,14 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	categoryRepo := repositories.NewCategoryRepository(db)
 	listingRepo := repositories.NewListingRepository(db)
 	convRepo := repositories.NewConversationRepository(db)
+	favRepo := repositories.NewFavoriteRepository(db)
 
 	// Services
 	authService := services.NewAuthService(userRepo, refreshTokenRepo, cfg)
 	categoryService := services.NewCategoryService(categoryRepo)
 	listingService := services.NewListingService(listingRepo, categoryRepo)
 	convService := services.NewConversationService(convRepo, listingRepo)
+	favService := services.NewFavoriteService(favRepo, listingRepo)
 
 	// WebSocket Hub
 	hub := appws.NewHub(convService)
@@ -37,6 +39,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	categoryHandler := handlers.NewCategoryHandler(categoryService)
 	listingHandler := handlers.NewListingHandler(listingService)
 	convHandler := handlers.NewConversationHandler(convService, hub, cfg.JWTSecret)
+	favHandler := handlers.NewFavoriteHandler(favService)
 
 	// Auth Middleware
 	authMiddleware := middleware.Auth(cfg.JWTSecret)
@@ -85,6 +88,16 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 			conversations.GET("/:id/messages", convHandler.GetMessages)
 			conversations.POST("/:id/messages", convHandler.SendMessage)
 			conversations.PATCH("/:id/read", convHandler.MarkAsRead)
+		}
+
+		// Favorites routes (protected)
+		favorites := rg.Group("/favorites")
+		favorites.Use(authMiddleware)
+		{
+			favorites.GET("", favHandler.GetAll)
+			favorites.GET("/ids", favHandler.GetFavoriteIDs)
+			favorites.POST("/:listingId", favHandler.Add)
+			favorites.DELETE("/:listingId", favHandler.Remove)
 		}
 	}
 

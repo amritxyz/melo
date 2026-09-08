@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SellRouteImport } from './routes/sell'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
 import { Route as MessagesIndexRouteImport } from './routes/messages/index'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProfileListingsRouteImport } from './routes/profile/listings'
@@ -37,6 +38,11 @@ const SellRoute = SellRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritesIndexRoute = FavoritesIndexRouteImport.update({
+  id: '/favorites/',
+  path: '/favorites/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesIndexRoute = MessagesIndexRouteImport.update({
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/sell': typeof SellRoute
   '/signup': typeof SignupRoute
   '/profile/listings': typeof ProfileListingsRoute
+  '/favorites/': typeof FavoritesIndexRoute
   '/messages/': typeof MessagesIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/products/$listingId/edit': typeof ProductsListingIdEditRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/sell': typeof SellRoute
   '/signup': typeof SignupRoute
   '/profile/listings': typeof ProfileListingsRoute
+  '/favorites': typeof FavoritesIndexRoute
   '/messages': typeof MessagesIndexRoute
   '/products': typeof ProductsIndexRoute
   '/products/$listingId/edit': typeof ProductsListingIdEditRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/sell': typeof SellRoute
   '/signup': typeof SignupRoute
   '/profile/listings': typeof ProfileListingsRoute
+  '/favorites/': typeof FavoritesIndexRoute
   '/messages/': typeof MessagesIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/products/$listingId/edit': typeof ProductsListingIdEditRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/sell'
     | '/signup'
     | '/profile/listings'
+    | '/favorites/'
     | '/messages/'
     | '/products/'
     | '/products/$listingId/edit'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/sell'
     | '/signup'
     | '/profile/listings'
+    | '/favorites'
     | '/messages'
     | '/products'
     | '/products/$listingId/edit'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/sell'
     | '/signup'
     | '/profile/listings'
+    | '/favorites/'
     | '/messages/'
     | '/products/'
     | '/products/$listingId/edit'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   SellRoute: typeof SellRoute
   SignupRoute: typeof SignupRoute
   ProfileListingsRoute: typeof ProfileListingsRoute
+  FavoritesIndexRoute: typeof FavoritesIndexRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   ProductsListingIdEditRoute: typeof ProductsListingIdEditRoute
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favorites/': {
+      id: '/favorites/'
+      path: '/favorites'
+      fullPath: '/favorites/'
+      preLoaderRoute: typeof FavoritesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/messages/': {
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   SellRoute: SellRoute,
   SignupRoute: SignupRoute,
   ProfileListingsRoute: ProfileListingsRoute,
+  FavoritesIndexRoute: FavoritesIndexRoute,
   MessagesIndexRoute: MessagesIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   ProductsListingIdEditRoute: ProductsListingIdEditRoute,

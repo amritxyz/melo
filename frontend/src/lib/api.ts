@@ -1,5 +1,6 @@
 import type { ApiResponse, AuthData, TokenPair, User } from '#/types/auth'
 import type { Conversation, Message } from '#/types/chat'
+import type { Favorite } from '#/types/favorite'
 import type {
   Category,
   CreateListingPayload,
@@ -309,6 +310,56 @@ export async function markConversationReadApi(
     `/api/conversations/${encodeURIComponent(conversationId)}/read`,
     {
       method: 'PATCH',
+    },
+  )
+}
+
+// ----------------- Favorites API -----------------
+
+export async function getFavoritesApi(
+  page = 1,
+  limit = 20,
+): Promise<{ favorites: Favorite[]; pagination: Pagination }> {
+  const res = await apiFetchFull<Favorite[]>(
+    `/api/favorites?page=${page}&limit=${limit}`,
+    {
+      method: 'GET',
+    },
+  )
+  return {
+    favorites: res.data,
+    pagination: res.pagination ?? {
+      page,
+      limit,
+      total: res.data.length,
+    },
+  }
+}
+
+export async function getFavoriteIdsApi(): Promise<string[]> {
+  return apiFetch<string[]>('/api/favorites/ids', {
+    method: 'GET',
+  })
+}
+
+export async function addFavoriteApi(
+  listingId: string,
+): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(
+    `/api/favorites/${encodeURIComponent(listingId)}`,
+    {
+      method: 'POST',
+    },
+  )
+}
+
+export async function removeFavoriteApi(
+  listingId: string,
+): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(
+    `/api/favorites/${encodeURIComponent(listingId)}`,
+    {
+      method: 'DELETE',
     },
   )
 }

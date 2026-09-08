@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { MapPin, Calendar, Tag } from 'lucide-react'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import type { Listing } from '#/types/listing'
+import { FavoriteButton } from './FavoriteButton'
 
 interface ProductCardProps {
   listing: Listing
@@ -45,6 +46,11 @@ export function ProductCard({ listing }: ProductCardProps) {
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-10">
           <ConditionBadge condition={listing.condition} />
           {isSold && <StatusBadge status={listing.status} />}
+        </div>
+
+        {/* Favorite Heart Toggle */}
+        <div className="absolute top-2.5 right-2.5 z-10">
+          <FavoriteButton listingId={listing.id} variant="badge" />
         </div>
 
         {/* Sold Overlay Banner */}

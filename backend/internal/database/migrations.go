@@ -22,6 +22,7 @@ func Migrate(db *gorm.DB) error {
 		&models.Listing{},
 		&models.Conversation{},
 		&models.Message{},
+		&models.Favorite{},
 	); err != nil {
 		return err
 	}

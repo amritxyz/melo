@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { Plus, ShoppingBag, ArrowRight } from 'lucide-react'
+import { Plus, ShoppingBag, ArrowRight, Heart } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ProductGrid } from '#/components/listings/ProductGrid'
 import { useAuth } from '#/hooks/useAuth'
@@ -55,6 +55,13 @@ function Home() {
                     className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold"
                   >
                     My Listings
+                  </Link>
+                  <Link
+                    to="/favorites"
+                    className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold flex items-center gap-1"
+                  >
+                    <Heart className="w-3.5 h-3.5" />
+                    Saved
                   </Link>
                   <Link
                     to="/messages"
