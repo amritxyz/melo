@@ -51,6 +51,12 @@ function Home() {
               {isAuthenticated && (
                 <>
                   <Link
+                    to="/profile"
+                    className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold"
+                  >
+                    Profile
+                  </Link>
+                  <Link
                     to="/profile/listings"
                     className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-semibold"
                   >
@@ -87,7 +93,7 @@ function Home() {
             ) : isAuthenticated && user ? (
               <div className="flex items-center gap-3">
                 <Link
-                  to="/profile/listings"
+                  to="/profile"
                   className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                 >
                   {user.username}

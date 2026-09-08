@@ -26,7 +26,7 @@ func (r *ListingRepository) FindByID(id string) (*models.Listing, error) {
 	err := r.db.
 		Preload("Category").
 		Preload("Seller", func(db *gorm.DB) *gorm.DB {
-			return db.Select("id", "username", "email", "phone_number", "created_at")
+			return db.Select("id", "username", "email", "phone_number", "avatar_url", "bio", "location", "created_at")
 		}).
 		Where("id = ?", id).
 		First(&listing).Error
@@ -92,7 +92,7 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 	err := query.
 		Preload("Category").
 		Preload("Seller", func(db *gorm.DB) *gorm.DB {
-			return db.Select("id", "username", "email", "phone_number", "created_at")
+			return db.Select("id", "username", "email", "phone_number", "avatar_url", "bio", "location", "created_at")
 		}).
 		Order("created_at DESC").
 		Limit(limit).
@@ -105,6 +105,17 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 
 	return listings, total, nil
 }
+
+func (r *ListingRepository) CountBySeller(sellerID string, status string) (int64, error) {
+	var count int64
+	query := r.db.Model(&models.Listing{}).Where("seller_id = ?", sellerID)
+	if status != "" {
+		query = query.Where("status = ?", status)
+	}
+	err := query.Count(&count).Error
+	return count, err
+}
+
 
 func (r *ListingRepository) Update(listing *models.Listing) error {
 	return r.db.Save(listing).Error

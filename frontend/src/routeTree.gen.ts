@@ -16,9 +16,11 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
 import { Route as MessagesIndexRouteImport } from './routes/messages/index'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as ProfileListingsRouteImport } from './routes/profile/listings'
 import { Route as ProductsListingIdIndexRouteImport } from './routes/products/$listingId/index'
 import { Route as ProductsListingIdEditRouteImport } from './routes/products/$listingId/edit'
+import { Route as UsersUserIdIndexRouteImport } from './routes/users/$userId/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -55,6 +57,11 @@ const ProductsIndexRoute = ProductsIndexRouteImport.update({
   path: '/products/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileListingsRoute = ProfileListingsRouteImport.update({
   id: '/profile/listings',
   path: '/profile/listings',
@@ -70,6 +77,11 @@ const ProductsListingIdEditRoute = ProductsListingIdEditRouteImport.update({
   path: '/products/$listingId/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UsersUserIdIndexRoute = UsersUserIdIndexRouteImport.update({
+  id: '/users/$userId/',
+  path: '/users/$userId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,8 +92,10 @@ export interface FileRoutesByFullPath {
   '/favorites/': typeof FavoritesIndexRoute
   '/messages/': typeof MessagesIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/profile/': typeof ProfileIndexRoute
   '/products/$listingId/edit': typeof ProductsListingIdEditRoute
   '/products/$listingId/': typeof ProductsListingIdIndexRoute
+  '/users/$userId/': typeof UsersUserIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -92,8 +106,10 @@ export interface FileRoutesByTo {
   '/favorites': typeof FavoritesIndexRoute
   '/messages': typeof MessagesIndexRoute
   '/products': typeof ProductsIndexRoute
+  '/profile': typeof ProfileIndexRoute
   '/products/$listingId/edit': typeof ProductsListingIdEditRoute
   '/products/$listingId': typeof ProductsListingIdIndexRoute
+  '/users/$userId': typeof UsersUserIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -105,8 +121,10 @@ export interface FileRoutesById {
   '/favorites/': typeof FavoritesIndexRoute
   '/messages/': typeof MessagesIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/profile/': typeof ProfileIndexRoute
   '/products/$listingId/edit': typeof ProductsListingIdEditRoute
   '/products/$listingId/': typeof ProductsListingIdIndexRoute
+  '/users/$userId/': typeof UsersUserIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -119,8 +137,10 @@ export interface FileRouteTypes {
     | '/favorites/'
     | '/messages/'
     | '/products/'
+    | '/profile/'
     | '/products/$listingId/edit'
     | '/products/$listingId/'
+    | '/users/$userId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -131,8 +151,10 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/messages'
     | '/products'
+    | '/profile'
     | '/products/$listingId/edit'
     | '/products/$listingId'
+    | '/users/$userId'
   id:
     | '__root__'
     | '/'
@@ -143,8 +165,10 @@ export interface FileRouteTypes {
     | '/favorites/'
     | '/messages/'
     | '/products/'
+    | '/profile/'
     | '/products/$listingId/edit'
     | '/products/$listingId/'
+    | '/users/$userId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -156,8 +180,10 @@ export interface RootRouteChildren {
   FavoritesIndexRoute: typeof FavoritesIndexRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
   ProductsListingIdEditRoute: typeof ProductsListingIdEditRoute
   ProductsListingIdIndexRoute: typeof ProductsListingIdIndexRoute
+  UsersUserIdIndexRoute: typeof UsersUserIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -211,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof ProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile/listings': {
       id: '/profile/listings'
       path: '/profile/listings'
@@ -232,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsListingIdEditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/users/$userId/': {
+      id: '/users/$userId/'
+      path: '/users/$userId'
+      fullPath: '/users/$userId/'
+      preLoaderRoute: typeof UsersUserIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -244,8 +284,10 @@ const rootRouteChildren: RootRouteChildren = {
   FavoritesIndexRoute: FavoritesIndexRoute,
   MessagesIndexRoute: MessagesIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
   ProductsListingIdEditRoute: ProductsListingIdEditRoute,
   ProductsListingIdIndexRoute: ProductsListingIdIndexRoute,
+  UsersUserIdIndexRoute: UsersUserIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

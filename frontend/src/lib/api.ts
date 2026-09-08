@@ -1,4 +1,13 @@
-import type { ApiResponse, AuthData, TokenPair, User } from '#/types/auth'
+import type {
+  ApiResponse,
+  AuthData,
+  Review,
+  SubmitReviewPayload,
+  TokenPair,
+  UpdateProfilePayload,
+  User,
+  UserProfile,
+} from '#/types/auth'
 import type { Conversation, Message } from '#/types/chat'
 import type { Favorite } from '#/types/favorite'
 import type {
@@ -363,3 +372,53 @@ export async function removeFavoriteApi(
     },
   )
 }
+
+export async function getUserProfileApi(userId: string): Promise<UserProfile> {
+  return apiFetch<UserProfile>(`/api/users/${encodeURIComponent(userId)}`, {
+    method: 'GET',
+  })
+}
+
+export async function updateProfileApi(
+  payload: UpdateProfilePayload,
+): Promise<UserProfile> {
+  return apiFetch<UserProfile>('/api/users/me', {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+}
+
+export async function getUserReviewsApi(
+  userId: string,
+  page = 1,
+  limit = 10,
+): Promise<{ reviews: Review[]; pagination: Pagination }> {
+  const res = await apiFetchFull<Review[]>(
+    `/api/users/${encodeURIComponent(userId)}/reviews?page=${page}&limit=${limit}`,
+    {
+      method: 'GET',
+    },
+  )
+  return {
+    reviews: res.data,
+    pagination: res.pagination ?? {
+      page,
+      limit,
+      total: res.data.length,
+    },
+  }
+}
+
+export async function submitReviewApi(
+  userId: string,
+  payload: SubmitReviewPayload,
+): Promise<Review> {
+  return apiFetch<Review>(
+    `/api/users/${encodeURIComponent(userId)}/reviews`,
+    {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    },
+  )
+}
+

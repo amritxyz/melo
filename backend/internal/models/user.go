@@ -12,6 +12,9 @@ type User struct {
 	Username     string    `json:"username" gorm:"not null"`
 	Email        string    `json:"email" gorm:"uniqueIndex;not null"`
 	PhoneNumber  *string   `json:"phone,omitempty"`
+	AvatarURL    *string   `json:"avatar_url,omitempty"`
+	Bio          *string   `json:"bio,omitempty"`
+	Location     *string   `json:"location,omitempty"`
 	PasswordHash string    `json:"-" gorm:"not null"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`

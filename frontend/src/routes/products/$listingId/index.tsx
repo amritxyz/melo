@@ -14,9 +14,11 @@ import {
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
+import { RatingStars } from '#/components/ui/RatingStars'
 import { FavoriteButton } from '#/components/listings/FavoriteButton'
 import { useAuth } from '#/hooks/useAuth'
 import { useStartConversation } from '#/hooks/useChat'
+import { useUserProfile } from '#/hooks/useUser'
 import {
   useDeleteListing,
   useListing,
@@ -36,6 +38,7 @@ function ProductDetailPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false)
 
   const { data: listing, isLoading, error } = useListing(listingId)
+  const { data: sellerProfile } = useUserProfile(listing?.seller_id)
   const markSoldMutation = useMarkListingSold()
   const deleteMutation = useDeleteListing()
   const startConvMutation = useStartConversation()
@@ -229,18 +232,57 @@ function ProductDetailPage() {
                 Seller Information
               </h2>
 
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-emerald-700 dark:text-emerald-300">
-                  <UserIcon className="w-6 h-6" />
+              <Link
+                to="/users/$userId"
+                params={{ userId: listing.seller_id }}
+                className="group block"
+              >
+                <div className="flex items-center gap-3">
+                  {sellerProfile?.avatar_url || listing.seller?.avatar_url ? (
+                    <img
+                      src={sellerProfile?.avatar_url || listing.seller?.avatar_url}
+                      alt={listing.seller?.username || 'Seller'}
+                      className="w-12 h-12 rounded-full object-cover border border-zinc-200 dark:border-zinc-700"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-emerald-700 dark:text-emerald-300 font-bold text-lg">
+                      {listing.seller?.username ? listing.seller.username.charAt(0).toUpperCase() : <UserIcon className="w-6 h-6" />}
+                    </div>
+                  )}
+                  <div>
+                    <span className="font-semibold block text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 transition-colors">
+                      {listing.seller?.username || 'Seller'}
+                    </span>
+                    <RatingStars
+                      rating={sellerProfile?.rating || 0}
+                      totalCount={sellerProfile?.review_count || 0}
+                      size="sm"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <span className="font-semibold block text-zinc-900 dark:text-zinc-100">
-                    {listing.seller?.username || 'Seller'}
+              </Link>
+
+              {(sellerProfile?.bio || listing.seller?.bio) && (
+                <p className="mt-3 text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 italic">
+                  "{sellerProfile?.bio || listing.seller?.bio}"
+                </p>
+              )}
+
+              <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+                <Link
+                  to="/users/$userId"
+                  params={{ userId: listing.seller_id }}
+                  className="text-emerald-600 dark:text-emerald-400 font-medium hover:underline flex items-center gap-1"
+                >
+                  <span>View Seller Profile</span>
+                  <span>→</span>
+                </Link>
+                {listing.seller?.location && (
+                  <span className="text-zinc-400 flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    {listing.seller.location}
                   </span>
-                  <span className="text-xs text-zinc-500">
-                    Verified Marketplace Member
-                  </span>
-                </div>
+                )}
               </div>
 
               {!isOwner && (

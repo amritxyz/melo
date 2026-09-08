@@ -22,6 +22,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	listingRepo := repositories.NewListingRepository(db)
 	convRepo := repositories.NewConversationRepository(db)
 	favRepo := repositories.NewFavoriteRepository(db)
+	reviewRepo := repositories.NewReviewRepository(db)
 
 	// Services
 	authService := services.NewAuthService(userRepo, refreshTokenRepo, cfg)
@@ -29,6 +30,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	listingService := services.NewListingService(listingRepo, categoryRepo)
 	convService := services.NewConversationService(convRepo, listingRepo)
 	favService := services.NewFavoriteService(favRepo, listingRepo)
+	userService := services.NewUserService(userRepo, reviewRepo, listingRepo)
 
 	// WebSocket Hub
 	hub := appws.NewHub(convService)
@@ -40,6 +42,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	listingHandler := handlers.NewListingHandler(listingService)
 	convHandler := handlers.NewConversationHandler(convService, hub, cfg.JWTSecret)
 	favHandler := handlers.NewFavoriteHandler(favService)
+	userHandler := handlers.NewUserHandler(userService)
 
 	// Auth Middleware
 	authMiddleware := middleware.Auth(cfg.JWTSecret)
@@ -98,6 +101,15 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 			favorites.GET("/ids", favHandler.GetFavoriteIDs)
 			favorites.POST("/:listingId", favHandler.Add)
 			favorites.DELETE("/:listingId", favHandler.Remove)
+		}
+
+		// User / Profile routes
+		users := rg.Group("/users")
+		{
+			users.PATCH("/me", authMiddleware, userHandler.UpdateProfile)
+			users.GET("/:id", optionalAuthMiddleware, userHandler.GetProfile)
+			users.GET("/:id/reviews", userHandler.GetReviews)
+			users.POST("/:id/reviews", authMiddleware, userHandler.AddReview)
 		}
 	}
 
