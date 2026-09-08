@@ -17,27 +17,58 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	// Repositories
 	userRepo := repositories.NewUserRepository(db)
 	refreshTokenRepo := repositories.NewRefreshTokenRepository(db)
+	categoryRepo := repositories.NewCategoryRepository(db)
+	listingRepo := repositories.NewListingRepository(db)
 
 	// Services
 	authService := services.NewAuthService(userRepo, refreshTokenRepo, cfg)
+	categoryService := services.NewCategoryService(categoryRepo)
+	listingService := services.NewListingService(listingRepo, categoryRepo)
 
 	// Handlers
 	authHandler := handlers.NewAuthHandler(authService)
+	categoryHandler := handlers.NewCategoryHandler(categoryService)
+	listingHandler := handlers.NewListingHandler(listingService)
+
+	// Auth Middleware
+	authMiddleware := middleware.Auth(cfg.JWTSecret)
 
 	// Route registrar to support both /api and /api/v1
-	registerAuthRoutes := func(rg *gin.RouterGroup) {
+	registerRoutes := func(rg *gin.RouterGroup) {
+		// Auth routes
 		auth := rg.Group("/auth")
 		{
 			auth.POST("/signup", authHandler.Signup)
 			auth.POST("/login", authHandler.Login)
 			auth.POST("/refresh", authHandler.Refresh)
 			auth.POST("/logout", authHandler.Logout)
-			auth.GET("/me", middleware.Auth(cfg.JWTSecret), authHandler.Me)
+			auth.GET("/me", authMiddleware, authHandler.Me)
+		}
+
+		// Categories routes (public)
+		categories := rg.Group("/categories")
+		{
+			categories.GET("", categoryHandler.GetAll)
+			categories.GET("/:id", categoryHandler.GetByID)
+		}
+
+		// Listings routes
+		listings := rg.Group("/listings")
+		{
+			// Public
+			listings.GET("", listingHandler.GetAll)
+			listings.GET("/:id", listingHandler.GetByID)
+
+			// Protected
+			listings.POST("", authMiddleware, listingHandler.Create)
+			listings.PATCH("/:id", authMiddleware, listingHandler.Update)
+			listings.DELETE("/:id", authMiddleware, listingHandler.Delete)
+			listings.PATCH("/:id/sold", authMiddleware, listingHandler.MarkAsSold)
 		}
 	}
 
-	registerAuthRoutes(r.Group("/api"))
-	registerAuthRoutes(r.Group("/api/v1"))
+	registerRoutes(r.Group("/api"))
+	registerRoutes(r.Group("/api/v1"))
 
 	return r
 }
