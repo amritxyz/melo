@@ -223,20 +223,29 @@ function ProductDetailPage() {
                 params={{ userId: listing.seller_id }}
                 className="group block"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   {sellerProfile?.avatar_url || listing.seller?.avatar_url ? (
                     <img
-                      src={sellerProfile?.avatar_url || listing.seller?.avatar_url}
+                      src={
+                        sellerProfile?.avatar_url || listing.seller?.avatar_url
+                      }
                       alt={listing.seller?.username || 'Seller'}
-                      className="w-12 h-12 rounded-full object-cover border border-zinc-200 dark:border-zinc-700"
+                      className="w-12 h-12 rounded-full object-cover border border-zinc-200 dark:border-zinc-700 shrink-0 aspect-square"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-emerald-700 dark:text-emerald-300 font-bold text-lg">
-                      {listing.seller?.username ? listing.seller.username.charAt(0).toUpperCase() : <UserIcon className="w-6 h-6" />}
+                    <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-emerald-700 dark:text-emerald-300 font-bold text-lg shrink-0 aspect-square">
+                      {listing.seller?.username ? (
+                        listing.seller.username.charAt(0).toUpperCase()
+                      ) : (
+                        <UserIcon className="w-6 h-6" />
+                      )}
                     </div>
                   )}
-                  <div>
-                    <span className="font-semibold block text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 transition-colors">
+                  <div className="min-w-0 flex-1">
+                    <span
+                      className="font-semibold block text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 transition-colors truncate"
+                      title={listing.seller?.username || 'Seller'}
+                    >
                       {listing.seller?.username || 'Seller'}
                     </span>
                     <RatingStars

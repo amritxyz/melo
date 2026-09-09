@@ -18,7 +18,11 @@ import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import { RatingStars } from '#/components/ui/RatingStars'
 import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
-import { useUserProfile, useUserReviews, useSubmitReview } from '#/hooks/useUser'
+import {
+  useUserProfile,
+  useUserReviews,
+  useSubmitReview,
+} from '#/hooks/useUser'
 import { useListings } from '#/hooks/useListings'
 import { useStartConversation } from '#/hooks/useChat'
 import { formatCurrency } from '#/lib/utils'
@@ -32,14 +36,21 @@ function PublicUserProfilePage() {
   const navigate = useNavigate()
   const { user: currentUser, isAuthenticated } = useAuth()
 
-  const [activeTab, setActiveTab] = React.useState<'active' | 'sold' | 'reviews'>('active')
+  const [activeTab, setActiveTab] = React.useState<
+    'active' | 'sold' | 'reviews'
+  >('active')
   const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false)
   const [ratingVal, setRatingVal] = React.useState(5)
   const [commentVal, setCommentVal] = React.useState('')
   const [reviewError, setReviewError] = React.useState<string | null>(null)
 
-  const { data: profile, isLoading: profileLoading, error: profileError } = useUserProfile(userId)
-  const { data: reviewsData, isLoading: reviewsLoading } = useUserReviews(userId)
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useUserProfile(userId)
+  const { data: reviewsData, isLoading: reviewsLoading } =
+    useUserReviews(userId)
 
   // Seller's active listings
   const { data: activeListingsData, isLoading: activeLoading } = useListings({
@@ -473,7 +484,10 @@ function PublicUserProfilePage() {
             ) : (
               <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
                 {reviews.map((rev) => (
-                  <div key={rev.id} className="py-4 first:pt-0 last:pb-0 space-y-2">
+                  <div
+                    key={rev.id}
+                    className="py-4 first:pt-0 last:pb-0 space-y-2"
+                  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
                         {rev.reviewer?.avatar_url ? (
@@ -484,7 +498,9 @@ function PublicUserProfilePage() {
                           />
                         ) : (
                           <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 flex items-center justify-center text-xs font-bold">
-                            {rev.reviewer?.username ? rev.reviewer.username.charAt(0).toUpperCase() : 'U'}
+                            {rev.reviewer?.username
+                              ? rev.reviewer.username.charAt(0).toUpperCase()
+                              : 'U'}
                           </div>
                         )}
                         <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
@@ -500,7 +516,11 @@ function PublicUserProfilePage() {
                       </span>
                     </div>
 
-                    <RatingStars rating={rev.rating} showScore={false} size="sm" />
+                    <RatingStars
+                      rating={rev.rating}
+                      showScore={false}
+                      size="sm"
+                    />
                     <p className="text-sm text-zinc-700 dark:text-zinc-300">
                       {rev.comment}
                     </p>

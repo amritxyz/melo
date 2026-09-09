@@ -27,8 +27,19 @@ function SignupPage() {
     e.preventDefault()
     setErrorMessage(null)
 
-    if (!username.trim()) {
+    const trimmedUsername = username.trim()
+    if (!trimmedUsername) {
       setErrorMessage('Please enter a username.')
+      return
+    }
+
+    if (trimmedUsername.length < 2) {
+      setErrorMessage('Username must be at least 2 characters.')
+      return
+    }
+
+    if (trimmedUsername.length > 25) {
+      setErrorMessage('Username must be 25 characters or fewer.')
       return
     }
 
@@ -44,7 +55,7 @@ function SignupPage() {
 
     try {
       await signup({
-        username: username.trim(),
+        username: trimmedUsername,
         email: email.trim(),
         password,
       })
@@ -97,8 +108,10 @@ function SignupPage() {
                 label="Username"
                 type="text"
                 required
+                maxLength={25}
                 autoComplete="username"
                 placeholder="johndoe"
+                helperText="Between 2 and 25 characters."
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />

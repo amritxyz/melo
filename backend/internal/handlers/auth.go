@@ -20,7 +20,7 @@ func NewAuthHandler(authService *services.AuthService) *AuthHandler {
 }
 
 type SignupRequest struct {
-	Username string `json:"username" binding:"required,min=2,max=50"`
+	Username string `json:"username" binding:"required,min=2,max=25"`
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=8"`
 }
@@ -55,6 +55,8 @@ func (h *AuthHandler) Signup(c *gin.Context) {
 		status := http.StatusInternalServerError
 		if errors.Is(err, services.ErrUserAlreadyExists) {
 			status = http.StatusConflict
+		} else if errors.Is(err, services.ErrUsernameInvalid) {
+			status = http.StatusBadRequest
 		}
 		c.JSON(status, gin.H{
 			"success": false,

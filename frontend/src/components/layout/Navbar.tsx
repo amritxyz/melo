@@ -18,14 +18,21 @@ import { useFavoriteIds } from '#/hooks/useFavorites'
 import { useConversations } from '#/hooks/useChat'
 
 export function Navbar() {
-  const { user, isAuthenticated, isLoading: authLoading, logout, isLoggingOut } = useAuth()
+  const {
+    user,
+    isAuthenticated,
+    isLoading: authLoading,
+    logout,
+    isLoggingOut,
+  } = useAuth()
   const { favoriteIds } = useFavoriteIds()
   const { data: conversations } = useConversations()
   const routerState = useRouterState()
   const currentPath = routerState.location.pathname
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = React.useState(false)
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] =
+    React.useState(false)
 
   const dropdownRef = React.useRef<HTMLDivElement>(null)
 
@@ -35,12 +42,15 @@ export function Navbar() {
     return conversations.reduce((sum, c) => sum + (c.unread_count || 0), 0)
   }, [conversations])
 
-  const savedCount = favoriteIds?.length || 0
+  const savedCount = favoriteIds.length
 
   // Close dropdown on outside click
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsProfileDropdownOpen(false)
       }
     }
@@ -161,7 +171,7 @@ export function Navbar() {
                   aria-expanded={isProfileDropdownOpen}
                   aria-label="User menu"
                 >
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300/60 dark:border-emerald-700/60 flex items-center justify-center text-emerald-800 dark:text-emerald-200 font-bold text-xs uppercase shadow-2xs">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300/60 dark:border-emerald-700/60 flex items-center justify-center text-emerald-800 dark:text-emerald-200 font-bold text-xs uppercase shadow-2xs shrink-0 aspect-square">
                     {user.avatar_url ? (
                       <img
                         src={user.avatar_url}
@@ -231,7 +241,9 @@ export function Navbar() {
                         className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors text-left disabled:opacity-50 cursor-pointer"
                       >
                         <LogOut className="w-4 h-4" />
-                        <span>{isLoggingOut ? 'Logging out...' : 'Log Out'}</span>
+                        <span>
+                          {isLoggingOut ? 'Logging out...' : 'Log Out'}
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -278,7 +290,11 @@ export function Navbar() {
             className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none cursor-pointer"
             aria-label="Toggle navigation menu"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
         </div>
       </div>
@@ -360,7 +376,7 @@ export function Navbar() {
             ) : isAuthenticated && user ? (
               <div className="space-y-2">
                 <div className="flex items-center gap-3 px-3 py-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300/60 dark:border-emerald-700/60 flex items-center justify-center text-emerald-800 dark:text-emerald-200 font-bold text-xs uppercase">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300/60 dark:border-emerald-700/60 flex items-center justify-center text-emerald-800 dark:text-emerald-200 font-bold text-xs uppercase shrink-0 aspect-square">
                     {user.avatar_url ? (
                       <img
                         src={user.avatar_url}

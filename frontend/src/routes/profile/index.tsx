@@ -18,7 +18,11 @@ import { Input } from '#/components/ui/Input'
 import { RatingStars } from '#/components/ui/RatingStars'
 import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
-import { useUserProfile, useUpdateProfile, useUserReviews } from '#/hooks/useUser'
+import {
+  useUserProfile,
+  useUpdateProfile,
+  useUserReviews,
+} from '#/hooks/useUser'
 
 export const Route = createFileRoute('/profile/')({
   component: ProfilePage,
@@ -28,8 +32,14 @@ function ProfilePage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth()
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false)
 
-  const { data: profile, isLoading: profileLoading, refetch } = useUserProfile(user?.id)
-  const { data: reviewsData, isLoading: reviewsLoading } = useUserReviews(user?.id)
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    refetch,
+  } = useUserProfile(user?.id)
+  const { data: reviewsData, isLoading: reviewsLoading } = useUserReviews(
+    user?.id,
+  )
 
   const updateProfileMutation = useUpdateProfile()
 
@@ -99,7 +109,8 @@ function ProfilePage() {
             Sign In to View Profile
           </h2>
           <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-            Please log in to manage your public bio, seller details, and view your ratings.
+            Please log in to manage your public bio, seller details, and view
+            your ratings.
           </p>
           <div className="flex flex-col gap-3">
             <Link to="/login">
@@ -151,7 +162,9 @@ function ProfilePage() {
                     />
                   ) : (
                     <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold text-3xl sm:text-4xl ring-4 ring-white dark:ring-zinc-900 shadow-md">
-                      {profile?.username ? profile.username.charAt(0).toUpperCase() : 'U'}
+                      {profile?.username
+                        ? profile.username.charAt(0).toUpperCase()
+                        : 'U'}
                     </div>
                   )}
                 </div>
@@ -186,7 +199,11 @@ function ProfilePage() {
                   <span>Edit Profile</span>
                 </Button>
                 <Link to="/users/$userId" params={{ userId: user.id }}>
-                  <Button variant="ghost" size="sm" className="gap-1.5 text-zinc-600 dark:text-zinc-400">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1.5 text-zinc-600 dark:text-zinc-400"
+                  >
                     <ExternalLink className="w-4 h-4" />
                     <span>Public View</span>
                   </Button>
@@ -200,7 +217,8 @@ function ProfilePage() {
                 <p className="whitespace-pre-line">{profile.bio}</p>
               ) : (
                 <p className="text-zinc-400 dark:text-zinc-500 italic">
-                  No bio added yet. Tell buyers and sellers about what you buy and sell!
+                  No bio added yet. Tell buyers and sellers about what you buy
+                  and sell!
                 </p>
               )}
             </div>
@@ -318,13 +336,17 @@ function ProfilePage() {
                 No reviews yet
               </p>
               <p className="text-xs text-zinc-500 max-w-sm mx-auto mt-1">
-                As buyers purchase items and rate their experience, their feedback will appear here.
+                As buyers purchase items and rate their experience, their
+                feedback will appear here.
               </p>
             </div>
           ) : (
             <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
               {reviews.map((rev) => (
-                <div key={rev.id} className="py-4 first:pt-0 last:pb-0 space-y-2">
+                <div
+                  key={rev.id}
+                  className="py-4 first:pt-0 last:pb-0 space-y-2"
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       {rev.reviewer?.avatar_url ? (
@@ -335,7 +357,9 @@ function ProfilePage() {
                         />
                       ) : (
                         <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 flex items-center justify-center text-xs font-bold">
-                          {rev.reviewer?.username ? rev.reviewer.username.charAt(0).toUpperCase() : 'U'}
+                          {rev.reviewer?.username
+                            ? rev.reviewer.username.charAt(0).toUpperCase()
+                            : 'U'}
                         </div>
                       )}
                       <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
@@ -351,7 +375,11 @@ function ProfilePage() {
                     </span>
                   </div>
 
-                  <RatingStars rating={rev.rating} showScore={false} size="sm" />
+                  <RatingStars
+                    rating={rev.rating}
+                    showScore={false}
+                    size="sm"
+                  />
                   <p className="text-sm text-zinc-700 dark:text-zinc-300">
                     {rev.comment}
                   </p>
@@ -452,10 +480,7 @@ function ProfilePage() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  isLoading={isSaving}
-                >
+                <Button type="submit" isLoading={isSaving}>
                   Save Changes
                 </Button>
               </div>

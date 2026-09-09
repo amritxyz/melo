@@ -413,12 +413,8 @@ export async function submitReviewApi(
   userId: string,
   payload: SubmitReviewPayload,
 ): Promise<Review> {
-  return apiFetch<Review>(
-    `/api/users/${encodeURIComponent(userId)}/reviews`,
-    {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    },
-  )
+  return apiFetch<Review>(`/api/users/${encodeURIComponent(userId)}/reviews`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
 }
-

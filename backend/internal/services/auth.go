@@ -17,6 +17,7 @@ var (
 	ErrInvalidCredentials  = errors.New("invalid email or password")
 	ErrUserNotFound        = errors.New("user not found")
 	ErrInvalidRefreshToken = errors.New("invalid or expired refresh token")
+	ErrUsernameInvalid     = errors.New("username must be between 2 and 25 characters")
 )
 
 type TokenPair struct {
@@ -109,6 +110,11 @@ func (s *AuthService) generateAndRegisterTokens(user *models.User) (*TokenPair, 
 }
 
 func (s *AuthService) Signup(username, email, password string) (*AuthResponse, error) {
+	cleanUsername := strings.TrimSpace(username)
+	if len([]rune(cleanUsername)) < 2 || len([]rune(cleanUsername)) > 25 {
+		return nil, ErrUsernameInvalid
+	}
+
 	cleanEmail := strings.ToLower(strings.TrimSpace(email))
 
 	existingUser, err := s.userRepo.FindByEmail(cleanEmail)

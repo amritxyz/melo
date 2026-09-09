@@ -71,33 +71,33 @@ function SellPage() {
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
       <Navbar />
       <div className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <Link
-            to="/"
-            className="text-xs font-medium text-emerald-600 hover:text-emerald-500 mb-2 inline-block"
-          >
-            ← Back to Home
-          </Link>
-          <h1 className="text-3xl font-extrabold tracking-tight">
-            Create a New Listing
-          </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Fill out the details below to publish your used product on the
-            marketplace.
-          </p>
-        </div>
+        <div className="max-w-2xl mx-auto">
+          <div className="mb-8">
+            <Link
+              to="/"
+              className="text-xs font-medium text-emerald-600 hover:text-emerald-500 mb-2 inline-block"
+            >
+              ← Back to Home
+            </Link>
+            <h1 className="text-3xl font-extrabold tracking-tight">
+              Create a New Listing
+            </h1>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+              Fill out the details below to publish your used product on the
+              marketplace.
+            </p>
+          </div>
 
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 sm:p-8 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <ListingForm
-            onSubmit={handleCreateListing}
-            isLoading={createListingMutation.isPending}
-            errorMessage={submitError}
-            submitLabel="Publish Listing"
-          />
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 sm:p-8 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+            <ListingForm
+              onSubmit={handleCreateListing}
+              isLoading={createListingMutation.isPending}
+              errorMessage={submitError}
+              submitLabel="Publish Listing"
+            />
+          </div>
         </div>
       </div>
-    </div>
     </div>
   )
 }

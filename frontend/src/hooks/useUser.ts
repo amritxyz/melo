@@ -11,7 +11,8 @@ import { useAuth } from './useAuth'
 export function useUserProfile(userId: string | undefined) {
   return useQuery({
     queryKey: ['user-profile', userId],
-    queryFn: () => (userId ? getUserProfileApi(userId) : Promise.reject('No userId provided')),
+    queryFn: () =>
+      userId ? getUserProfileApi(userId) : Promise.reject('No userId provided'),
     enabled: !!userId,
     staleTime: 1000 * 60 * 2, // 2 minutes
   })
@@ -41,7 +42,9 @@ export function useUpdateProfile() {
     mutationFn: (payload: UpdateProfilePayload) => updateProfileApi(payload),
     onSuccess: (updatedProfile) => {
       // Invalidate current user profile cache
-      queryClient.invalidateQueries({ queryKey: ['user-profile', updatedProfile.id] })
+      queryClient.invalidateQueries({
+        queryKey: ['user-profile', updatedProfile.id],
+      })
       if (user?.id) {
         queryClient.invalidateQueries({ queryKey: ['user-profile', user.id] })
       }
