@@ -1,13 +1,18 @@
+import * as React from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { ShoppingBag, ArrowRight } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ProductGrid } from '#/components/listings/ProductGrid'
 import { Navbar } from '#/components/layout/Navbar'
 import { useCategories, useListings } from '#/hooks/useListings'
+import { useAuth } from '#/hooks/useAuth'
+import { hasTokens } from '#/lib/auth'
+import { MarketplaceHome } from '#/components/home/MarketplaceHome'
 
 export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth()
   const { data: categories = [] } = useCategories()
   const { data: listingsData, isLoading: listingsLoading } = useListings({
     page: 1,
@@ -16,6 +21,39 @@ function Home() {
 
   const recentListings = listingsData?.listings || []
 
+  // If user has tokens and auth is loading, show loading skeleton to avoid flashing guest hero
+  if (authLoading && hasTokens()) {
+    return (
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="h-10 bg-zinc-800 animate-pulse w-full" />
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
+          <div className="h-16 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 animate-pulse mb-6" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-44 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 animate-pulse"
+              />
+            ))}
+          </div>
+          <ProductGrid listings={[]} isLoading={true} />
+        </main>
+      </div>
+    )
+  }
+
+  // Authenticated user: show Amazon-style listing view instead of hero screen
+  if (isAuthenticated && user) {
+    return (
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <MarketplaceHome user={user} />
+      </div>
+    )
+  }
+
+  // Guest view: Show marketing hero
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
       <Navbar />
