@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
-import { AlertCircle, ArrowLeft, ShieldAlert } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ListingForm } from '#/components/listings/ListingForm'
+import { Navbar } from '#/components/layout/Navbar'
 import { useAuth } from '#/hooks/useAuth'
 import { useListing, useUpdateListing } from '#/hooks/useListings'
 import type { CreateListingPayload } from '#/types/listing'
@@ -52,26 +52,29 @@ function EditListingPage() {
 
   if (authLoading || listingLoading) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-        <p className="text-zinc-500">Loading listing details...</p>
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="p-8 text-xs font-mono text-zinc-500">
+          Loading listing details...
+        </div>
       </div>
     )
   }
 
   if (!isAuthenticated || !user) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md mx-auto text-center bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <ShieldAlert className="w-12 h-12 text-zinc-400 mx-auto mb-3 stroke-[1.5]" />
-          <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-            Sign In Required
-          </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-            Please sign in to edit your listings.
-          </p>
-          <div className="flex flex-col gap-3">
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="max-w-md mx-auto py-16 px-4 text-center">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
+            <h2 className="text-sm font-bold uppercase">
+              Authentication Required
+            </h2>
+            <p className="text-zinc-600 dark:text-zinc-400">
+              Please sign in to modify your listing.
+            </p>
             <Link to="/login">
-              <Button className="w-full">Sign In</Button>
+              <Button size="sm">Sign In</Button>
             </Link>
           </div>
         </div>
@@ -81,31 +84,43 @@ function EditListingPage() {
 
   if (error || !listing) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-4">
-        <h2 className="text-2xl font-bold mb-2">Listing Not Found</h2>
-        <p className="text-zinc-500 mb-6">
-          The listing you are trying to edit does not exist.
-        </p>
-        <Link to="/profile/listings">
-          <Button variant="outline">Back to My Listings</Button>
-        </Link>
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="max-w-md mx-auto py-16 px-4 text-center">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
+            <h2 className="text-sm font-bold uppercase">Listing Not Found</h2>
+            <p className="text-zinc-500">
+              The requested listing does not exist.
+            </p>
+            <Link to="/profile/listings">
+              <Button variant="outline" size="sm">
+                Back to My Listings
+              </Button>
+            </Link>
+          </div>
+        </div>
       </div>
     )
   }
 
   if (listing.seller_id !== user.id) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-4 text-center">
-        <div className="max-w-md bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-3" />
-          <h2 className="text-2xl font-bold mb-2">Unauthorized</h2>
-          <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-6">
-            You do not have permission to edit this listing because you are not
-            the owner.
-          </p>
-          <Link to="/products/$listingId" params={{ listingId }}>
-            <Button variant="outline">View Listing</Button>
-          </Link>
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="max-w-md mx-auto py-16 px-4 text-center">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
+            <h2 className="text-sm font-bold uppercase text-red-600">
+              Access Denied
+            </h2>
+            <p className="text-zinc-500">
+              You are not the owner of this listing.
+            </p>
+            <Link to="/products/$listingId" params={{ listingId }}>
+              <Button variant="outline" size="sm">
+                View Listing
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -113,42 +128,54 @@ function EditListingPage() {
 
   if (listing.status === 'sold') {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-4 text-center">
-        <div className="max-w-md bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-          <h2 className="text-2xl font-bold mb-2">Item is Marked as Sold</h2>
-          <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-6">
-            Sold listings cannot be edited or modified.
-          </p>
-          <Link to="/profile/listings">
-            <Button variant="outline">Back to My Listings</Button>
-          </Link>
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="max-w-md mx-auto py-16 px-4 text-center">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
+            <h2 className="text-sm font-bold uppercase">Listing is Sold</h2>
+            <p className="text-zinc-500">Sold items cannot be edited.</p>
+            <Link to="/profile/listings">
+              <Button variant="outline" size="sm">
+                Back to My Listings
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8 text-zinc-900 dark:text-zinc-100">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
+    <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
+      <Navbar />
+
+      {/* Breadcrumb Header */}
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 py-2.5 px-4 text-xs font-mono">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
           <Link
             to="/products/$listingId"
             params={{ listingId }}
-            className="text-xs font-medium text-emerald-600 hover:text-emerald-500 mb-3 inline-flex items-center gap-1"
+            className="text-zinc-500 hover:underline"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Back to Listing
+            ← Cancel and return to listing
           </Link>
-          <h1 className="text-3xl font-extrabold tracking-tight">
-            Edit Listing
-          </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Update your item details, price, or location.
-          </p>
+          <span className="font-semibold text-zinc-800 dark:text-zinc-200 uppercase">
+            Edit Item
+          </span>
         </div>
+      </div>
 
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 sm:p-8 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+      <main className="max-w-2xl mx-auto px-4 py-6 w-full flex-1 space-y-4">
+        <div className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 rounded-xs space-y-4">
+          <div>
+            <h1 className="text-sm font-bold font-mono uppercase text-zinc-900 dark:text-zinc-100">
+              Edit Listing Details
+            </h1>
+            <p className="text-xs text-zinc-500 font-mono mt-0.5">
+              Update pricing, condition, description, or location.
+            </p>
+          </div>
+
           <ListingForm
             initialValues={{
               title: listing.title,
@@ -164,7 +191,7 @@ function EditListingPage() {
             submitLabel="Save Changes"
           />
         </div>
-      </div>
+      </main>
     </div>
   )
 }

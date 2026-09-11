@@ -70,84 +70,86 @@ function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="text-center">
-          <Link to="/" className="inline-block">
-            <span className="text-3xl font-black tracking-tight text-emerald-600">
-              melo.
+    <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col justify-center py-12 px-4 sm:px-6">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="text-center mb-6">
+          <Link to="/" className="inline-flex items-center gap-1.5">
+            <span className="font-mono font-bold text-lg">melo</span>
+            <span className="text-[10px] font-mono text-zinc-500 uppercase px-1 border border-zinc-300 dark:border-zinc-700 rounded-xs">
+              register
             </span>
           </Link>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            Create your account
+          <h2 className="mt-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+            Create New Account
           </h2>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            Already have an account?{' '}
-            <Link
-              to="/login"
-              className="font-medium text-emerald-600 hover:text-emerald-500 underline underline-offset-4"
-            >
-              Sign in
-            </Link>
-          </p>
         </div>
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white dark:bg-zinc-900 py-8 px-4 shadow-sm sm:rounded-xl sm:px-10 border border-zinc-200 dark:border-zinc-800">
-            {errorMessage && (
-              <div
-                role="alert"
-                className="mb-6 p-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-sm text-red-600 dark:text-red-400"
-              >
-                {errorMessage}
-              </div>
-            )}
+        <div className="bg-zinc-50/50 dark:bg-zinc-900/30 py-6 px-5 border border-zinc-300 dark:border-zinc-700 rounded-xs">
+          {errorMessage && (
+            <div
+              role="alert"
+              className="mb-4 p-2.5 rounded-xs bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-900 text-xs font-mono text-red-700 dark:text-red-300"
+            >
+              {errorMessage}
+            </div>
+          )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <Input
-                label="Username"
-                type="text"
-                required
-                maxLength={25}
-                autoComplete="username"
-                placeholder="johndoe"
-                helperText="Between 2 and 25 characters."
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Username"
+              type="text"
+              required
+              maxLength={25}
+              autoComplete="username"
+              placeholder="username"
+              helperText="2 to 25 characters alphanumeric."
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
 
-              <Input
-                label="Email address"
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+            <Input
+              label="Email address"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="user@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-              <Input
-                label="Password"
-                type="password"
-                required
-                autoComplete="new-password"
-                placeholder="At least 8 characters"
-                helperText="Must be at least 8 characters long."
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+            <Input
+              label="Password"
+              type="password"
+              required
+              autoComplete="new-password"
+              placeholder="••••••••"
+              helperText="Minimum 8 characters."
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
+            <div className="pt-2">
               <Button
                 type="submit"
                 className="w-full"
-                size="lg"
+                size="md"
                 isLoading={isSigningUp}
               >
-                Create Account
+                Register
               </Button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
+
+        <p className="mt-4 text-center text-xs font-mono text-zinc-500">
+          Already have an account?{' '}
+          <Link
+            to="/login"
+            className="text-zinc-900 dark:text-zinc-100 underline hover:text-emerald-600"
+          >
+            Sign in
+          </Link>
+        </p>
       </div>
     </div>
   )

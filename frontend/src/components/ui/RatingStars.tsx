@@ -45,9 +45,9 @@ export function RatingStars({
               onMouseEnter={() => interactive && setHoverRating(star)}
               onMouseLeave={() => interactive && setHoverRating(null)}
               className={cn(
-                'transition-transform',
+                'transition-opacity',
                 interactive
-                  ? 'cursor-pointer hover:scale-115 focus:outline-hidden'
+                  ? 'cursor-pointer hover:opacity-80 focus:outline-hidden'
                   : 'cursor-default pointer-events-none',
               )}
               aria-label={`${star} star`}
@@ -57,7 +57,7 @@ export function RatingStars({
                   starSizes[size],
                   'transition-colors',
                   isFilled
-                    ? 'fill-amber-400 text-amber-400 dark:fill-amber-400 dark:text-amber-400'
+                    ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400'
                     : 'fill-transparent text-zinc-300 dark:text-zinc-700',
                 )}
               />
@@ -69,14 +69,14 @@ export function RatingStars({
       {showScore && (
         <span
           className={cn(
-            'font-semibold text-zinc-800 dark:text-zinc-200',
-            size === 'sm' ? 'text-xs' : size === 'lg' ? 'text-base' : 'text-sm',
+            'font-mono text-zinc-800 dark:text-zinc-200',
+            size === 'sm' ? 'text-xs' : size === 'lg' ? 'text-sm' : 'text-xs',
           )}
         >
           {rating > 0 ? rating.toFixed(1) : 'New'}
           {totalCount !== undefined && (
-            <span className="font-normal text-zinc-500 dark:text-zinc-400 ml-1 text-xs">
-              ({totalCount} {totalCount === 1 ? 'review' : 'reviews'})
+            <span className="font-normal text-zinc-500 dark:text-zinc-400 ml-1">
+              ({totalCount})
             </span>
           )}
         </span>

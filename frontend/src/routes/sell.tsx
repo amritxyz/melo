@@ -36,31 +36,39 @@ function SellPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-        <p className="text-zinc-500">Checking authentication...</p>
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="p-8 text-xs font-mono text-zinc-500">
+          Checking authorization...
+        </div>
       </div>
     )
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md mx-auto text-center bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-            Sign In to Sell
-          </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-            You must have an account to post a product listing on Melo.
-          </p>
-          <div className="flex flex-col gap-3">
-            <Link to="/login">
-              <Button className="w-full">Sign In</Button>
-            </Link>
-            <Link to="/signup">
-              <Button variant="outline" className="w-full">
-                Create Account
-              </Button>
-            </Link>
+      <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
+        <Navbar />
+        <div className="max-w-md mx-auto py-16 px-4 text-center space-y-3">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3">
+            <h2 className="text-sm font-bold font-mono uppercase tracking-wider">
+              Authentication Required
+            </h2>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+              You must sign in to an account to post listings on Melo.
+            </p>
+            <div className="flex gap-2 justify-center pt-2">
+              <Link to="/login">
+                <Button size="sm" variant="primary">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button size="sm" variant="outline">
+                  Register
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -68,36 +76,40 @@ function SellPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
       <Navbar />
-      <div className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="mb-8">
-            <Link
-              to="/"
-              className="text-xs font-medium text-emerald-600 hover:text-emerald-500 mb-2 inline-block"
-            >
-              ← Back to Home
-            </Link>
-            <h1 className="text-3xl font-extrabold tracking-tight">
-              Create a New Listing
+
+      {/* Header */}
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 py-2.5 px-4 text-xs font-mono">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <Link to="/" className="text-zinc-500 hover:underline">
+            ← Marketplace
+          </Link>
+          <span className="font-semibold text-zinc-800 dark:text-zinc-200 uppercase">
+            New Listing
+          </span>
+        </div>
+      </div>
+
+      <main className="max-w-2xl mx-auto px-4 py-6 w-full flex-1 space-y-4">
+        <div className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 rounded-xs space-y-4">
+          <div>
+            <h1 className="text-sm font-bold font-mono uppercase text-zinc-900 dark:text-zinc-100">
+              Create Listing
             </h1>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-              Fill out the details below to publish your used product on the
-              marketplace.
+            <p className="text-xs text-zinc-500 font-mono mt-0.5">
+              Enter product specifications to publish to the local directory.
             </p>
           </div>
 
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 sm:p-8 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-            <ListingForm
-              onSubmit={handleCreateListing}
-              isLoading={createListingMutation.isPending}
-              errorMessage={submitError}
-              submitLabel="Publish Listing"
-            />
-          </div>
+          <ListingForm
+            onSubmit={handleCreateListing}
+            isLoading={createListingMutation.isPending}
+            errorMessage={submitError}
+            submitLabel="Publish Listing"
+          />
         </div>
-      </div>
+      </main>
     </div>
   )
 }

@@ -14,11 +14,11 @@ interface ListingFormProps {
 }
 
 const conditionOptions: { value: ListingCondition; label: string }[] = [
-  { value: 'new', label: 'New (Never opened or used)' },
-  { value: 'like_new', label: 'Like New (Minimal use, no flaws)' },
-  { value: 'good', label: 'Good (Minor cosmetic wear, fully functional)' },
-  { value: 'fair', label: 'Fair (Visible signs of use, works fine)' },
-  { value: 'poor', label: 'Poor (Heavily worn or needs minor repair)' },
+  { value: 'new', label: 'New (never opened or used)' },
+  { value: 'like_new', label: 'Like New (minimal use, perfect condition)' },
+  { value: 'good', label: 'Good (minor cosmetic wear, fully functional)' },
+  { value: 'fair', label: 'Fair (visible wear, works properly)' },
+  { value: 'poor', label: 'Poor (heavy wear or needs attention)' },
 ]
 
 export function ListingForm({
@@ -123,11 +123,11 @@ export function ListingForm({
   const activeError = formError || errorMessage
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4 text-xs font-mono">
       {activeError && (
         <div
           role="alert"
-          className="p-3.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-sm text-red-600 dark:text-red-400"
+          className="p-2.5 rounded-xs bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-900 text-red-700 dark:text-red-300"
         >
           {activeError}
         </div>
@@ -137,14 +137,14 @@ export function ListingForm({
       <Input
         label="Listing Title"
         required
-        placeholder="e.g. Sony WH-1000XM4 Wireless Headphones"
+        placeholder="e.g. ThinkPad T480 (i5, 16GB RAM, 256GB SSD)"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        helperText="Mention key features like brand, model, or color."
+        helperText="Specific title with brand and model."
       />
 
       {/* Category and Condition */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Select
           label="Category"
           required
@@ -152,9 +152,7 @@ export function ListingForm({
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
           options={categoryOptions}
-          placeholder={
-            loadingCategories ? 'Loading categories...' : 'Select Category'
-          }
+          placeholder={loadingCategories ? 'Loading...' : 'Select Category'}
         />
 
         <Select
@@ -167,14 +165,14 @@ export function ListingForm({
       </div>
 
       {/* Price and Location */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input
           label="Price (NPR)"
           type="number"
           min="1"
           step="any"
           required
-          placeholder="e.g. 15000"
+          placeholder="e.g. 24000"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
@@ -182,17 +180,17 @@ export function ListingForm({
         <Input
           label="Location"
           required
-          placeholder="e.g. Kathmandu, Pokhara, Butwal"
+          placeholder="e.g. Lalitpur, Kathmandu, Pokhara"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
       </div>
 
       {/* Description */}
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1">
         <label
           htmlFor="listing-description"
-          className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          className="text-xs font-mono text-zinc-700 dark:text-zinc-300"
         >
           Description
         </label>
@@ -200,23 +198,16 @@ export function ListingForm({
           id="listing-description"
           required
           rows={5}
-          className="flex w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-3 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
-          placeholder="Describe the condition, usage history, included accessories, or reasons for selling..."
+          className="flex w-full rounded-xs border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-2.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 font-sans"
+          placeholder="Provide accurate details regarding wear, battery health, included accessories..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <p className="text-xs text-zinc-500">
-          Be honest about wear and any defects.
-        </p>
+        <p className="text-[11px] text-zinc-500">Minimum 10 characters.</p>
       </div>
 
-      <div className="pt-4 flex justify-end gap-3">
-        <Button
-          type="submit"
-          size="lg"
-          isLoading={isLoading}
-          className="w-full sm:w-auto px-8"
-        >
+      <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800 flex justify-end">
+        <Button type="submit" size="md" variant="primary" isLoading={isLoading}>
           {submitLabel}
         </Button>
       </div>

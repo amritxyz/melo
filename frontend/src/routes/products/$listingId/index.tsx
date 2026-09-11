@@ -2,13 +2,10 @@ import * as React from 'react'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import {
   MapPin,
-  Calendar,
   Tag,
-  User as UserIcon,
   CheckCircle2,
   Trash2,
   AlertTriangle,
-  AlertCircle,
   Pencil,
   MessageSquare,
 } from 'lucide-react'
@@ -60,22 +57,30 @@ function ProductDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-        <p className="text-zinc-500">Loading product details...</p>
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="p-8 text-xs font-mono text-zinc-500">
+          Loading listing details...
+        </div>
       </div>
     )
   }
 
   if (error || !listing) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center p-4">
-        <h2 className="text-2xl font-bold mb-2">Listing Not Found</h2>
-        <p className="text-zinc-500 mb-6">
-          This item may have been removed or does not exist.
-        </p>
-        <Link to="/products">
-          <Button variant="outline">Browse All Listings</Button>
-        </Link>
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="max-w-xl mx-auto py-16 px-4 text-center space-y-4">
+          <h2 className="text-base font-bold font-mono">Listing Not Found</h2>
+          <p className="text-xs text-zinc-500">
+            This item does not exist or has been removed.
+          </p>
+          <Link to="/products">
+            <Button variant="outline" size="sm">
+              ← Return to marketplace
+            </Button>
+          </Link>
+        </div>
       </div>
     )
   }
@@ -93,7 +98,7 @@ function ProductDetailPage() {
     'en-US',
     {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
     },
   )
@@ -109,113 +114,126 @@ function ProductDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
       <Navbar />
 
-      {/* Main Container */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <Link
-            to="/products"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-          >
-            ← Back to marketplace
+      {/* Breadcrumbs */}
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 py-2 text-xs font-mono">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1.5 text-zinc-500">
+          <Link to="/products" className="hover:underline">
+            marketplace
           </Link>
+          <span>/</span>
+          {listing.category && (
+            <>
+              <span className="text-zinc-700 dark:text-zinc-300">
+                {listing.category.name.toLowerCase()}
+              </span>
+              <span>/</span>
+            </>
+          )}
+          <span className="text-zinc-900 dark:text-zinc-100 truncate max-w-[200px] sm:max-w-none">
+            {listing.title}
+          </span>
         </div>
+      </div>
 
-        {/* Prominent Sold Banner */}
+      {/* Main Container */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1 space-y-6">
+        {/* Sold Notice */}
         {isSold && (
-          <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 flex items-center gap-3 text-sm text-red-800 dark:text-red-300 font-medium">
-            <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
-            <span>
-              This item has been marked as <strong>SOLD</strong> and is no
-              longer available for purchase.
-            </span>
+          <div className="border border-red-300 dark:border-red-900 bg-red-50/50 dark:bg-red-950/30 p-2.5 rounded-xs text-xs font-mono text-red-800 dark:text-red-300 flex items-center justify-between">
+            <span>[SOLD] This item has been marked as sold.</span>
+            <StatusBadge status="sold" size="sm" />
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
           {/* Main Info Column */}
-          <div className="md:col-span-2 space-y-6">
-            {/* Visual Container */}
-            <div className="h-72 sm:h-96 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center relative overflow-hidden">
+          <div className="md:col-span-2 space-y-4">
+            {/* Image / Tag Placeholder Box */}
+            <div className="h-56 sm:h-64 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs flex items-center justify-center relative">
               <div className="flex flex-col items-center text-zinc-400">
-                <Tag className="w-16 h-16 stroke-[1.5] mb-2 text-zinc-300 dark:text-zinc-700" />
-                <span className="text-sm font-medium">
+                <Tag className="w-10 h-10 stroke-[1.5] mb-1 text-zinc-300 dark:text-zinc-700" />
+                <span className="text-xs font-mono uppercase text-zinc-400">
                   {listing.category?.name || 'Item'}
                 </span>
               </div>
 
-              <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
-                <ConditionBadge condition={listing.condition} />
-                <StatusBadge status={listing.status} />
+              <div className="absolute top-2 left-2 flex items-center gap-1.5 z-10">
+                <ConditionBadge condition={listing.condition} size="sm" />
+                {isSold && <StatusBadge status={listing.status} size="sm" />}
               </div>
 
               {!isOwner && (
-                <div className="absolute top-4 right-4 z-10">
+                <div className="absolute top-2 right-2 z-10">
                   <FavoriteButton listingId={listing.id} variant="badge" />
-                </div>
-              )}
-
-              {isSold && (
-                <div className="absolute inset-0 bg-zinc-950/40 backdrop-blur-[2px] flex items-center justify-center">
-                  <span className="px-5 py-2 rounded-xl bg-red-600 text-white font-black text-lg tracking-widest uppercase shadow-lg border border-red-500">
-                    SOLD OUT
-                  </span>
                 </div>
               )}
             </div>
 
-            {/* Title & Description */}
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 sm:p-8 border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-6">
+            {/* Title, Price & Details */}
+            <div className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-xs p-4 space-y-4">
               <div>
                 <span
-                  className={`text-3xl font-black block ${
+                  className={`font-mono font-bold text-xl sm:text-2xl block ${
                     isSold
                       ? 'text-zinc-400 line-through'
-                      : 'text-emerald-600 dark:text-emerald-400'
+                      : 'text-zinc-900 dark:text-zinc-100'
                   }`}
                 >
                   {formattedPrice}
                 </span>
-                <h1 className="text-2xl font-bold mt-2 text-zinc-900 dark:text-zinc-50">
+                <h1 className="text-base sm:text-lg font-bold mt-1 text-zinc-900 dark:text-zinc-50">
                   {listing.title}
                 </h1>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400 pt-2 border-t border-zinc-100 dark:border-zinc-800">
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4 text-zinc-400" />
-                  <span>{listing.location}</span>
+              {/* Metadata Table */}
+              <div className="border border-zinc-200 dark:border-zinc-800 rounded-xs text-xs font-mono divide-y divide-zinc-200 dark:divide-zinc-800">
+                <div className="flex px-3 py-1.5 justify-between">
+                  <span className="text-zinc-500">Location:</span>
+                  <span className="text-zinc-900 dark:text-zinc-100">
+                    {listing.location}
+                  </span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4 text-zinc-400" />
-                  <span>Posted on {formattedDate}</span>
+                <div className="flex px-3 py-1.5 justify-between">
+                  <span className="text-zinc-500">Category:</span>
+                  <span className="text-zinc-900 dark:text-zinc-100">
+                    {listing.category?.name || 'General'}
+                  </span>
                 </div>
-                {listing.category && (
-                  <div className="flex items-center gap-1">
-                    <Tag className="w-4 h-4 text-zinc-400" />
-                    <span>{listing.category.name}</span>
-                  </div>
-                )}
+                <div className="flex px-3 py-1.5 justify-between">
+                  <span className="text-zinc-500">Condition:</span>
+                  <span className="capitalize text-zinc-900 dark:text-zinc-100">
+                    {listing.condition.replace('_', ' ')}
+                  </span>
+                </div>
+                <div className="flex px-3 py-1.5 justify-between">
+                  <span className="text-zinc-500">Listed:</span>
+                  <span className="text-zinc-900 dark:text-zinc-100">
+                    {formattedDate}
+                  </span>
+                </div>
               </div>
 
-              <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 mb-3">
-                  Description
+              {/* Description */}
+              <div className="pt-2">
+                <h2 className="text-xs font-mono font-semibold uppercase text-zinc-500 mb-2">
+                  Item Description
                 </h2>
-                <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
+                <p className="text-xs sm:text-sm text-zinc-800 dark:text-zinc-200 leading-relaxed whitespace-pre-line font-sans">
                   {listing.description}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Sidebar / Actions Column */}
-          <div className="space-y-6">
-            {/* Seller Info Card */}
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 shadow-xs">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-4">
+          {/* Sidebar Column */}
+          <div className="space-y-4">
+            {/* Seller Box */}
+            <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-xs p-4 space-y-3">
+              <h2 className="text-[11px] font-mono font-semibold uppercase tracking-wider text-zinc-500">
                 Seller Information
               </h2>
 
@@ -224,21 +242,18 @@ function ProductDetailPage() {
                 params={{ userId: listing.seller_id }}
                 className="group block"
               >
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-2.5 min-w-0">
                   <UserAvatar
                     avatarUrl={
                       sellerProfile?.avatar_url || listing.seller?.avatar_url
                     }
                     username={listing.seller?.username}
-                    size="lg"
-                    shape="circle"
-                    className="border border-zinc-200 dark:border-zinc-700 shrink-0 shadow-2xs"
+                    size="sm"
+                    shape="square"
+                    className="w-7 h-7 rounded-xs border border-zinc-300 dark:border-zinc-700 shrink-0"
                   />
                   <div className="min-w-0 flex-1">
-                    <span
-                      className="font-semibold block text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 transition-colors truncate"
-                      title={listing.seller?.username || 'Seller'}
-                    >
+                    <span className="font-mono font-semibold text-xs block text-zinc-900 dark:text-zinc-100 group-hover:underline truncate">
                       {listing.seller?.username || 'Seller'}
                     </span>
                     <RatingStars
@@ -251,22 +266,21 @@ function ProductDetailPage() {
               </Link>
 
               {(sellerProfile?.bio || listing.seller?.bio) && (
-                <p className="mt-3 text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 italic">
-                  "{sellerProfile?.bio || listing.seller?.bio}"
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 italic line-clamp-2">
+                  &quot;{sellerProfile?.bio || listing.seller?.bio}&quot;
                 </p>
               )}
 
-              <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+              <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800 text-[11px] font-mono flex items-center justify-between text-zinc-500">
                 <Link
                   to="/users/$userId"
                   params={{ userId: listing.seller_id }}
-                  className="text-emerald-600 dark:text-emerald-400 font-medium hover:underline flex items-center gap-1"
+                  className="hover:underline text-zinc-700 dark:text-zinc-300"
                 >
-                  <span>View Seller Profile</span>
-                  <span>→</span>
+                  View profile →
                 </Link>
                 {listing.seller?.location && (
-                  <span className="text-zinc-400 flex items-center gap-1">
+                  <span className="flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
                     {listing.seller.location}
                   </span>
@@ -274,15 +288,16 @@ function ProductDetailPage() {
               </div>
 
               {!isOwner && (
-                <div className="mt-6 space-y-3">
+                <div className="pt-2 space-y-2">
                   {!isSold && (
                     <Button
-                      className="w-full gap-2"
+                      className="w-full gap-1.5"
+                      size="sm"
                       isLoading={startConvMutation.isPending}
                       onClick={handleMessageSeller}
                     >
-                      <MessageSquare className="w-4 h-4" />
-                      Message Seller
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      <span>Contact Seller</span>
                     </Button>
                   )}
                   <FavoriteButton
@@ -294,34 +309,33 @@ function ProductDetailPage() {
               )}
             </div>
 
-            {/* Owner Controls */}
+            {/* Owner Management Box */}
             {isOwner && (
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-emerald-500/30 dark:border-emerald-500/30 shadow-xs space-y-4">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                  Seller Controls
+              <div className="border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 rounded-xs p-4 space-y-3">
+                <h2 className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                  Listing Management
                 </h2>
-                <p className="text-xs text-zinc-500">
-                  You are the owner of this listing.
+                <p className="text-xs text-zinc-500 font-mono">
+                  You are the owner of this post.
                 </p>
 
-                {/* Sold State Notice */}
+                {/* Sold State */}
                 {isSold && (
-                  <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 flex items-center gap-2 text-xs text-emerald-800 dark:text-emerald-300">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>This item is marked as sold.</span>
+                  <div className="p-2 rounded-xs border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 text-xs font-mono text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                    <span>Listing marked as sold.</span>
                   </div>
                 )}
 
-                {/* Mark as Sold Confirmation Warning */}
+                {/* Mark as Sold Confirmation */}
                 {!isSold && showSoldConfirm && (
-                  <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/80 text-amber-900 dark:text-amber-200 space-y-3">
-                    <div className="flex items-start gap-2.5">
-                      <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="p-3 rounded-xs border border-amber-300 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30 text-xs font-mono space-y-2">
+                    <div className="flex items-start gap-1.5">
+                      <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-bold text-xs">Mark item as sold?</p>
-                        <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
-                          Warning: Once marked as sold, buyers will see it as
-                          unavailable. You cannot change this back.
+                        <p className="font-bold">Mark item as sold?</p>
+                        <p className="text-zinc-600 dark:text-zinc-400 text-[11px] mt-0.5">
+                          Item will be marked unavailable. Cannot be undone.
                         </p>
                       </div>
                     </div>
@@ -341,24 +355,21 @@ function ProductDetailPage() {
                         isLoading={markSoldMutation.isPending}
                         onClick={handleConfirmSold}
                       >
-                        Yes, Mark as Sold
+                        Confirm Sold
                       </Button>
                     </div>
                   </div>
                 )}
 
-                {/* Delete Confirmation Warning */}
+                {/* Delete Confirmation */}
                 {showDeleteConfirm && (
-                  <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800/80 text-red-900 dark:text-red-200 space-y-3">
-                    <div className="flex items-start gap-2.5">
-                      <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                  <div className="p-3 rounded-xs border border-red-300 dark:border-red-800 bg-red-50/50 dark:bg-red-950/30 text-xs font-mono space-y-2">
+                    <div className="flex items-start gap-1.5">
+                      <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
                       <div>
-                        <p className="font-bold text-xs">
-                          Delete this listing?
-                        </p>
-                        <p className="text-xs text-red-700 dark:text-red-300 mt-1">
-                          This will permanently delete this listing from the
-                          marketplace.
+                        <p className="font-bold">Permanently delete?</p>
+                        <p className="text-zinc-600 dark:text-zinc-400 text-[11px] mt-0.5">
+                          This action will remove the listing entirely.
                         </p>
                       </div>
                     </div>
@@ -378,15 +389,15 @@ function ProductDetailPage() {
                         isLoading={deleteMutation.isPending}
                         onClick={handleConfirmDelete}
                       >
-                        Yes, Delete
+                        Delete
                       </Button>
                     </div>
                   </div>
                 )}
 
-                {/* Action Buttons */}
+                {/* Actions */}
                 {!showSoldConfirm && !showDeleteConfirm && (
-                  <div className="space-y-2 pt-2">
+                  <div className="space-y-1.5 pt-1">
                     {!isSold && (
                       <Link
                         to="/products/$listingId/edit"
@@ -396,10 +407,10 @@ function ProductDetailPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full gap-1.5"
+                          className="w-full gap-1"
                         >
-                          <Pencil className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
-                          Edit Listing
+                          <Pencil className="w-3 h-3" />
+                          <span>Edit Details</span>
                         </Button>
                       </Link>
                     )}
@@ -408,22 +419,22 @@ function ProductDetailPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full gap-1.5"
+                        className="w-full gap-1"
                         onClick={() => setShowSoldConfirm(true)}
                       >
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                        Mark as Sold
+                        <CheckCircle2 className="w-3 h-3" />
+                        <span>Mark as Sold</span>
                       </Button>
                     )}
 
                     <Button
                       variant="danger"
                       size="sm"
-                      className="w-full gap-1.5"
+                      className="w-full gap-1"
                       onClick={() => setShowDeleteConfirm(true)}
                     >
-                      <Trash2 className="w-4 h-4" />
-                      Delete Listing
+                      <Trash2 className="w-3 h-3" />
+                      <span>Delete Listing</span>
                     </Button>
                   </div>
                 )}

@@ -1,5 +1,4 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Heart, ShoppingBag } from 'lucide-react'
 import * as React from 'react'
 import { ProductGrid } from '#/components/listings/ProductGrid'
 import { Button } from '#/components/ui/Button'
@@ -27,8 +26,11 @@ function FavoritesPage() {
 
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <Navbar />
+        <div className="p-8 text-xs font-mono text-zinc-500">
+          Loading wishlist...
+        </div>
       </div>
     )
   }
@@ -39,49 +41,40 @@ function FavoritesPage() {
     .filter((l): l is Listing => !!l)
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
       <Navbar />
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6 flex items-center justify-between">
+      {/* Header Bar */}
+      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 py-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              Your Wishlist
-            </h2>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-              Keep track of items you are considering buying
+            <h1 className="text-sm font-bold font-mono uppercase tracking-wider text-zinc-800 dark:text-zinc-200">
+              Saved Items (Wishlist)
+            </h1>
+            <p className="text-[11px] font-mono text-zinc-500">
+              List of tracked listings saved to your account.
             </p>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
-            {listings.length} {listings.length === 1 ? 'item' : 'items'}
+          <span className="text-xs font-mono text-zinc-500">
+            [{listings.length} {listings.length === 1 ? 'item' : 'items'}]
           </span>
         </div>
+      </div>
 
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1 space-y-4">
         {isFavoritesLoading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
-          </div>
+          <ProductGrid listings={[]} isLoading={true} />
         ) : listings.length === 0 ? (
-          <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-8 shadow-xs">
-            <div className="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-950/40 text-red-500 flex items-center justify-center mx-auto mb-4">
-              <Heart className="w-8 h-8 stroke-[1.5]" />
-            </div>
-            <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-              Your wishlist is empty
-            </h3>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
-              Explore used electronics, vehicles, fashion, and more. Tap the
-              heart on any product to save it here for later.
+          <div className="text-center py-12 border border-zinc-200 dark:border-zinc-800 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/30 p-6 space-y-3">
+            <p className="text-xs font-mono text-zinc-500 dark:text-zinc-400">
+              Your wishlist is currently empty.
             </p>
-            <div className="mt-6">
-              <Link to="/products">
-                <Button className="gap-2">
-                  <ShoppingBag className="w-4 h-4" />
-                  Browse Listings
-                </Button>
-              </Link>
-            </div>
+            <Link to="/products">
+              <Button variant="outline" size="sm">
+                ← Browse Marketplace
+              </Button>
+            </Link>
           </div>
         ) : (
           <ProductGrid listings={listings} />

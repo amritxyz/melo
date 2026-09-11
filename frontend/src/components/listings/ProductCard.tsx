@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { MapPin, Calendar, Tag } from 'lucide-react'
+import { MapPin, Tag } from 'lucide-react'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import type { Listing } from '#/types/listing'
 import { FavoriteButton } from './FavoriteButton'
@@ -26,80 +26,72 @@ export function ProductCard({ listing }: ProductCardProps) {
   const isSold = listing.status === 'sold'
 
   return (
-    <Link
-      to="/products/$listingId"
-      params={{ listingId: listing.id }}
-      className={`group flex flex-col bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-xs hover:shadow-md hover:border-emerald-500/50 dark:hover:border-emerald-500/50 transition-all duration-200 ${
-        isSold ? 'opacity-90' : ''
+    <div
+      className={`group flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs transition-colors hover:border-zinc-400 dark:hover:border-zinc-600 relative ${
+        isSold ? 'opacity-80' : ''
       }`}
     >
-      {/* Visual Placeholder / Future Image Container */}
-      <div className="relative h-44 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center border-b border-zinc-100 dark:border-zinc-800">
+      {/* Visual / Tag Container */}
+      <div className="relative h-28 bg-zinc-50 dark:bg-zinc-800/40 flex items-center justify-center border-b border-zinc-200 dark:border-zinc-800">
         <div className="flex flex-col items-center text-zinc-400 dark:text-zinc-500">
-          <Tag className="w-8 h-8 stroke-[1.5] mb-1" />
-          <span className="text-xs font-medium">
+          <Tag className="w-6 h-6 stroke-[1.5] mb-1 text-zinc-300 dark:text-zinc-600" />
+          <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">
             {listing.category?.name || 'Item'}
           </span>
         </div>
 
         {/* Condition / Status Badge */}
-        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-10">
-          <ConditionBadge condition={listing.condition} />
-          {isSold && <StatusBadge status={listing.status} />}
+        <div className="absolute top-1.5 left-1.5 flex items-center gap-1 z-10">
+          <ConditionBadge condition={listing.condition} size="sm" />
+          {isSold && <StatusBadge status={listing.status} size="sm" />}
         </div>
 
-        {/* Favorite Heart Toggle */}
-        <div className="absolute top-2.5 right-2.5 z-10">
+        {/* Favorite Action */}
+        <div className="absolute top-1.5 right-1.5 z-10">
           <FavoriteButton listingId={listing.id} variant="badge" />
         </div>
-
-        {/* Sold Overlay Banner */}
-        {isSold && (
-          <div className="absolute inset-0 bg-zinc-950/30 backdrop-blur-[1px] flex items-center justify-center">
-            <span className="px-3 py-1 rounded-md bg-red-600/90 text-white font-black text-xs tracking-widest uppercase shadow-md border border-red-500">
-              SOLD
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col flex-1 justify-between">
+      <div className="p-3 flex flex-col flex-1 justify-between gap-2">
         <div>
-          <div className="flex items-baseline justify-between gap-2 mb-1.5">
+          <div className="flex items-baseline justify-between gap-2 mb-1">
             <span
-              className={`text-lg font-bold ${
+              className={`font-mono font-bold text-xs sm:text-sm ${
                 isSold
-                  ? 'text-zinc-400 dark:text-zinc-500 line-through'
-                  : 'text-emerald-600 dark:text-emerald-400'
+                  ? 'text-zinc-400 line-through'
+                  : 'text-zinc-900 dark:text-zinc-100'
               }`}
             >
               {formattedPrice}
             </span>
           </div>
 
-          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
-            {listing.title}
-          </h3>
+          <Link
+            to="/products/$listingId"
+            params={{ listingId: listing.id }}
+            className="block"
+          >
+            <h3 className="font-medium text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors line-clamp-1 hover:underline">
+              {listing.title}
+            </h3>
+          </Link>
 
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2">
+          <p className="mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-1">
             {listing.description}
           </p>
         </div>
 
-        {/* Footer meta */}
-        <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-          <div className="flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-zinc-400" />
-            <span className="line-clamp-1">{listing.location}</span>
+        {/* Footer Meta */}
+        <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
+          <div className="flex items-center gap-1 min-w-0">
+            <MapPin className="w-3 h-3 text-zinc-400 shrink-0" />
+            <span className="truncate max-w-[110px]">{listing.location}</span>
           </div>
 
-          <div className="flex items-center gap-1">
-            <Calendar className="w-3.5 h-3.5 text-zinc-400" />
-            <span>{formattedDate}</span>
-          </div>
+          <span>{formattedDate}</span>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }

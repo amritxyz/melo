@@ -6,7 +6,7 @@ import {
 } from './registry'
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
-export type AvatarShape = 'circle' | 'rounded'
+export type AvatarShape = 'circle' | 'rounded' | 'square'
 
 export interface UserAvatarProps {
   avatarUrl?: string | null
@@ -29,7 +29,8 @@ const sizeClasses: Record<AvatarSize, string> = {
 
 const shapeClasses: Record<AvatarShape, string> = {
   circle: 'rounded-full',
-  rounded: 'rounded-2xl',
+  rounded: 'rounded-xs',
+  square: 'rounded-xs',
 }
 
 export const UserAvatar: React.FC<UserAvatarProps> = ({
@@ -93,7 +94,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   const initial = username ? username.trim().charAt(0).toUpperCase() : 'U'
   return (
     <div
-      className={`${containerClass} bg-linear-to-br from-emerald-500 to-teal-700 text-white font-bold shadow-2xs`}
+      className={`${containerClass} bg-zinc-800 text-zinc-100 dark:bg-zinc-200 dark:text-zinc-900 font-mono font-bold border border-zinc-300 dark:border-zinc-700`}
       title={username || 'User'}
     >
       {initial}

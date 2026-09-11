@@ -40,21 +40,19 @@ export function FavoriteButton({
         type="button"
         onClick={handleClick}
         disabled={toggleMutation.isPending}
-        className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border font-medium text-sm transition-all duration-150 active:scale-98 ${
+        className={`flex items-center justify-center gap-1.5 h-8 px-3 rounded-sm border font-medium text-xs transition-colors cursor-pointer ${
           favorited
-            ? 'border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40'
-            : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700/60 hover:text-zinc-900 dark:hover:text-zinc-100'
+            ? 'border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 hover:bg-red-100'
+            : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100'
         } ${className}`}
-        aria-label={favorited ? 'Remove from favorites' : 'Save to favorites'}
+        aria-label={favorited ? 'Remove from wishlist' : 'Save to wishlist'}
       >
         <Heart
-          className={`w-4 h-4 transition-transform duration-200 ${
-            favorited
-              ? 'fill-red-500 text-red-500 scale-110'
-              : 'text-current stroke-[2]'
+          className={`w-3.5 h-3.5 ${
+            favorited ? 'fill-red-500 text-red-500' : 'text-zinc-400 stroke-[2]'
           }`}
         />
-        <span>{favorited ? 'Saved to Favorites' : 'Save to Favorites'}</span>
+        <span>{favorited ? 'Wishlisted' : 'Save to Wishlist'}</span>
       </button>
     )
   }
@@ -64,15 +62,17 @@ export function FavoriteButton({
       type="button"
       onClick={handleClick}
       disabled={toggleMutation.isPending}
-      className={`p-2 rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xs border border-zinc-200/80 dark:border-zinc-700/80 shadow-xs hover:shadow-md hover:scale-110 active:scale-95 transition-all duration-200 z-20 ${className}`}
-      aria-label={favorited ? 'Remove from favorites' : 'Save to favorites'}
-      title={favorited ? 'Remove from favorites' : 'Save to favorites'}
+      className={`p-1 rounded-xs border transition-colors z-10 cursor-pointer ${
+        favorited
+          ? 'bg-red-50 dark:bg-red-950/50 border-red-300 dark:border-red-800 text-red-600'
+          : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:border-zinc-400'
+      } ${className}`}
+      aria-label={favorited ? 'Remove from wishlist' : 'Save to wishlist'}
+      title={favorited ? 'Remove from wishlist' : 'Save to wishlist'}
     >
       <Heart
-        className={`w-4 h-4 transition-all duration-200 ${
-          favorited
-            ? 'fill-red-500 text-red-500 scale-110 animate-in zoom-in-75'
-            : 'text-zinc-400 hover:text-red-500 stroke-[2]'
+        className={`w-3.5 h-3.5 ${
+          favorited ? 'fill-red-500 text-red-500' : 'stroke-[2]'
         }`}
       />
     </button>
