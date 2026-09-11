@@ -149,7 +149,7 @@ function PublicUserProfilePage() {
           <p className="text-xs text-zinc-600 dark:text-zinc-400 mb-4">
             The profile you are looking for does not exist or has been removed.
           </p>
-          <Link to="/products">
+          <Link to="/">
             <Button className="w-full font-mono text-xs">
               Explore Marketplace
             </Button>
@@ -174,7 +174,7 @@ function PublicUserProfilePage() {
         <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
           <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
             <Link
-              to="/products"
+              to="/"
               className="hover:text-zinc-900 dark:hover:text-zinc-100"
             >
               marketplace

@@ -119,7 +119,7 @@ function MyListingsPage() {
           <div>
             <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 mb-1">
               <Link
-                to="/products"
+                to="/"
                 className="hover:text-zinc-900 dark:hover:text-zinc-100"
               >
                 marketplace

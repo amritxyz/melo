@@ -53,6 +53,8 @@ export interface ListingFilterParams {
   status?: string
   search?: string
   location?: string
+  condition?: string
+  sort_by?: string
 }
 
 export interface Pagination {

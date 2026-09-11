@@ -44,6 +44,8 @@ type ListingFilterParams struct {
 	Status     string
 	Search     string
 	Location   string
+	Condition  string
+	SortBy     string
 }
 
 func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listing, int64, error) {
@@ -79,6 +81,10 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 		query = query.Where("status != ?", models.StatusHidden)
 	}
 
+	if params.Condition != "" && params.Condition != "all" {
+		query = query.Where("condition = ?", params.Condition)
+	}
+
 	if params.Search != "" {
 		pattern := "%" + strings.ToLower(params.Search) + "%"
 		query = query.Where("LOWER(title) LIKE ? OR LOWER(description) LIKE ?", pattern, pattern)
@@ -94,13 +100,21 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 		return nil, 0, err
 	}
 
+	orderClause := "created_at DESC"
+	switch params.SortBy {
+	case "price_asc":
+		orderClause = "price ASC, created_at DESC"
+	case "price_desc":
+		orderClause = "price DESC, created_at DESC"
+	}
+
 	var listings []models.Listing
 	err := query.
 		Preload("Category").
 		Preload("Seller", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "username", "email", "phone_number", "avatar_url", "bio", "location", "created_at")
 		}).
-		Order("created_at DESC").
+		Order(orderClause).
 		Limit(limit).
 		Offset(offset).
 		Find(&listings).Error

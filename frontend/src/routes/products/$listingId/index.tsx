@@ -76,7 +76,7 @@ function ProductDetailPage() {
           <p className="text-xs text-zinc-500">
             This item does not exist or has been removed.
           </p>
-          <Link to="/products">
+          <Link to="/">
             <Button variant="outline" size="sm">
               ← Return to marketplace
             </Button>
@@ -111,7 +111,7 @@ function ProductDetailPage() {
 
   const handleConfirmDelete = async () => {
     await deleteMutation.mutateAsync(listing.id)
-    navigate({ to: '/products' })
+    navigate({ to: '/' })
   }
 
   return (
@@ -121,7 +121,7 @@ function ProductDetailPage() {
       {/* Breadcrumbs */}
       <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 py-2 text-xs font-mono">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1.5 text-zinc-500">
-          <Link to="/products" className="hover:underline">
+          <Link to="/" className="hover:underline">
             marketplace
           </Link>
           <span>/</span>

@@ -126,6 +126,8 @@ func (h *ListingHandler) GetAll(c *gin.Context) {
 	status := c.Query("status")
 	search := c.Query("search")
 	location := c.Query("location")
+	condition := c.Query("condition")
+	sortBy := c.Query("sort_by")
 	callerUserID := c.GetString(middleware.ContextUserIDKey)
 
 	// If an authenticated seller is viewing their own inventory, allow viewing sold items or custom status.
@@ -142,6 +144,8 @@ func (h *ListingHandler) GetAll(c *gin.Context) {
 		Status:     status,
 		Search:     search,
 		Location:   location,
+		Condition:  condition,
+		SortBy:     sortBy,
 	}
 
 	listings, total, err := h.listingService.GetListings(params)

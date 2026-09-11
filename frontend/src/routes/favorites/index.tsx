@@ -70,7 +70,7 @@ function FavoritesPage() {
             <p className="text-xs font-mono text-zinc-500 dark:text-zinc-400">
               Your wishlist is currently empty.
             </p>
-            <Link to="/products">
+            <Link to="/">
               <Button variant="outline" size="sm">
                 ← Browse Marketplace
               </Button>

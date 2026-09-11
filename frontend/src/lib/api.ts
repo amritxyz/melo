@@ -213,6 +213,10 @@ export async function getListingsApi(
   if (params.status) searchParams.set('status', params.status)
   if (params.search) searchParams.set('search', params.search)
   if (params.location) searchParams.set('location', params.location)
+  if (params.condition && params.condition !== 'all') {
+    searchParams.set('condition', params.condition)
+  }
+  if (params.sort_by) searchParams.set('sort_by', params.sort_by)
 
   const query = searchParams.toString()
   const endpoint = `/api/listings${query ? `?${query}` : ''}`

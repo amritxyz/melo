@@ -129,7 +129,7 @@ function MessagesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-2 font-mono">
             <Link
-              to="/products"
+              to="/"
               className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
             >
               marketplace
@@ -172,7 +172,7 @@ function MessagesPage() {
                   <p className="font-mono text-xs text-zinc-500">
                     No conversations started yet.
                   </p>
-                  <Link to="/products">
+                  <Link to="/">
                     <Button size="sm" variant="outline">
                       Browse Marketplace
                     </Button>

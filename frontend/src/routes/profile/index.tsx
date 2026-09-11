@@ -154,7 +154,7 @@ function ProfilePage() {
         <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
           <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
             <Link
-              to="/products"
+              to="/"
               className="hover:text-zinc-900 dark:hover:text-zinc-100"
             >
               marketplace

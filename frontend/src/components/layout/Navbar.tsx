@@ -93,9 +93,9 @@ export function Navbar() {
 
           <nav className="hidden md:flex items-center gap-4 text-xs">
             <Link
-              to="/products"
+              to="/"
               className={`py-1 transition-colors ${
-                isActive('/products')
+                isActive('/')
                   ? 'text-emerald-700 dark:text-emerald-400 font-semibold underline underline-offset-4'
                   : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
               }`}
@@ -294,9 +294,9 @@ export function Navbar() {
         <div className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 py-3 space-y-2 text-xs">
           <nav className="flex flex-col space-y-1">
             <Link
-              to="/products"
+              to="/"
               className={`px-2 py-1.5 rounded-xs ${
-                isActive('/products')
+                isActive('/')
                   ? 'bg-zinc-100 dark:bg-zinc-800 font-semibold'
                   : 'text-zinc-700 dark:text-zinc-300'
               }`}

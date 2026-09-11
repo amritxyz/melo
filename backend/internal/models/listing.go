@@ -33,11 +33,11 @@ type Listing struct {
 	Category    *Category        `json:"category,omitempty" gorm:"foreignKey:CategoryID"`
 	Title       string           `json:"title" gorm:"not null"`
 	Description string           `json:"description" gorm:"type:text;not null"`
-	Price       float64          `json:"price" gorm:"not null"`
-	Condition   ListingCondition `json:"condition" gorm:"not null"`
-	Location    string           `json:"location" gorm:"not null"`
-	Status      ListingStatus    `json:"status" gorm:"not null;default:'active'"`
-	CreatedAt   time.Time        `json:"created_at"`
+	Price       float64          `json:"price" gorm:"index;not null"`
+	Condition   ListingCondition `json:"condition" gorm:"index;not null"`
+	Location    string           `json:"location" gorm:"index;not null"`
+	Status      ListingStatus    `json:"status" gorm:"index;not null;default:'active'"`
+	CreatedAt   time.Time        `json:"created_at" gorm:"index"`
 	UpdatedAt   time.Time        `json:"updated_at"`
 }
 
