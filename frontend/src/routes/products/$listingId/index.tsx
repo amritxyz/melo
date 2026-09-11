@@ -88,6 +88,8 @@ function ProductDetailPage() {
 
   const isOwner = currentUser?.id === listing.seller_id
   const isSold = listing.status === 'sold'
+  const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
+  const images = listing.images || []
 
   const formattedPrice = new Intl.NumberFormat('en-NP', {
     style: 'currency',
@@ -152,23 +154,57 @@ function ProductDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
           {/* Main Info Column */}
           <div className="md:col-span-2 space-y-4">
-            {/* Image / Tag Placeholder Box */}
-            <div className="h-56 sm:h-64 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs flex items-center justify-center relative">
-              <div className="flex flex-col items-center text-zinc-400">
-                <Tag className="w-10 h-10 stroke-[1.5] mb-1 text-zinc-300 dark:text-zinc-700" />
-                <span className="text-xs font-mono uppercase text-zinc-400">
-                  {listing.category?.name || 'Item'}
-                </span>
+            {/* Image / Gallery Box */}
+            <div className="space-y-2">
+              <div className="h-64 sm:h-80 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs flex items-center justify-center relative overflow-hidden">
+                {images.length > 0 ? (
+                  <img
+                    src={images[selectedImageIndex]?.url || images[0].url}
+                    alt={listing.title}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center text-zinc-400">
+                    <Tag className="w-10 h-10 stroke-[1.5] mb-1 text-zinc-300 dark:text-zinc-700" />
+                    <span className="text-xs font-mono uppercase text-zinc-400">
+                      {listing.category?.name || 'Item'}
+                    </span>
+                  </div>
+                )}
+
+                <div className="absolute top-2 left-2 flex items-center gap-1.5 z-10">
+                  <ConditionBadge condition={listing.condition} size="sm" />
+                  {isSold && <StatusBadge status={listing.status} size="sm" />}
+                </div>
+
+                {!isOwner && (
+                  <div className="absolute top-2 right-2 z-10">
+                    <FavoriteButton listingId={listing.id} variant="badge" />
+                  </div>
+                )}
               </div>
 
-              <div className="absolute top-2 left-2 flex items-center gap-1.5 z-10">
-                <ConditionBadge condition={listing.condition} size="sm" />
-                {isSold && <StatusBadge status={listing.status} size="sm" />}
-              </div>
-
-              {!isOwner && (
-                <div className="absolute top-2 right-2 z-10">
-                  <FavoriteButton listingId={listing.id} variant="badge" />
+              {/* Thumbnails if multiple images */}
+              {images.length > 1 && (
+                <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                  {images.map((img, idx) => (
+                    <button
+                      key={img.id || idx}
+                      type="button"
+                      onClick={() => setSelectedImageIndex(idx)}
+                      className={`h-14 w-14 rounded-xs border overflow-hidden shrink-0 cursor-pointer transition-colors ${
+                        selectedImageIndex === idx
+                          ? 'border-zinc-900 dark:border-zinc-100 ring-1 ring-zinc-900 dark:ring-zinc-100'
+                          : 'border-zinc-200 dark:border-zinc-800 opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img
+                        src={img.url}
+                        alt={`Thumbnail ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
                 </div>
               )}
             </div>

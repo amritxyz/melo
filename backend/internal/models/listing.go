@@ -37,6 +37,7 @@ type Listing struct {
 	Condition   ListingCondition `json:"condition" gorm:"index;not null"`
 	Location    string           `json:"location" gorm:"index;not null"`
 	Status      ListingStatus    `json:"status" gorm:"index;not null;default:'active'"`
+	Images      []ListingImage   `json:"images,omitempty" gorm:"foreignKey:ListingID;constraint:OnDelete:CASCADE"`
 	CreatedAt   time.Time        `json:"created_at" gorm:"index"`
 	UpdatedAt   time.Time        `json:"updated_at"`
 }

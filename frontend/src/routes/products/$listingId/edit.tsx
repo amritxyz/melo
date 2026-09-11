@@ -35,6 +35,7 @@ function EditListingPage() {
           condition: values.condition,
           location: values.location,
           category_id: values.category_id,
+          image_urls: values.image_urls,
         },
       })
       navigate({
@@ -184,6 +185,7 @@ function EditListingPage() {
               condition: listing.condition,
               location: listing.location,
               description: listing.description,
+              image_urls: listing.images?.map((img) => img.url) || [],
             }}
             onSubmit={handleUpdate}
             isLoading={updateMutation.isPending}

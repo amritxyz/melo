@@ -1,10 +1,12 @@
 import * as React from 'react'
+import { Plus, X } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { Input } from '#/components/ui/Input'
 import { Select } from '#/components/ui/Select'
 import { LocationSelect } from '#/components/ui/LocationSelect'
 import { formatTitleCase, formatLocation } from '#/lib/utils'
 import { useCategories } from '#/hooks/useListings'
+import { uploadImageApi } from '#/lib/api'
 import type { CreateListingPayload, ListingCondition } from '#/types/listing'
 
 interface ListingFormProps {
@@ -47,7 +49,13 @@ export function ListingForm({
   const [description, setDescription] = React.useState(
     initialValues.description || '',
   )
+  const [images, setImages] = React.useState<string[]>(
+    initialValues.image_urls || [],
+  )
+  const [isUploading, setIsUploading] = React.useState(false)
   const [formError, setFormError] = React.useState<string | null>(null)
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   // Default to first category if none selected
   React.useEffect(() => {
@@ -68,6 +76,8 @@ export function ListingForm({
       setLocation(initialValues.location)
     if (initialValues.description !== undefined)
       setDescription(initialValues.description)
+    if (initialValues.image_urls !== undefined)
+      setImages(initialValues.image_urls)
   }, [
     initialValues.title,
     initialValues.category_id,
@@ -75,7 +85,50 @@ export function ListingForm({
     initialValues.condition,
     initialValues.location,
     initialValues.description,
+    initialValues.image_urls,
   ])
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    if (images.length + files.length > 5) {
+      setFormError('You can upload a maximum of 5 images per listing.')
+      return
+    }
+
+    setIsUploading(true)
+    setFormError(null)
+
+    try {
+      const newUrls: string[] = []
+      for (const file of Array.from(files)) {
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error(
+            `File "${file.name}" exceeds maximum allowed size of 5MB.`,
+          )
+        }
+        const res = await uploadImageApi(file)
+        newUrls.push(res.url)
+      }
+      setImages((prev) => [...prev, ...newUrls])
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setFormError(err.message)
+      } else {
+        setFormError('Failed to upload image. Please try again.')
+      }
+    } finally {
+      setIsUploading(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setImages((prev) => prev.filter((_, idx) => idx !== indexToRemove))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -114,6 +167,7 @@ export function ListingForm({
       condition,
       location: formatLocation(location),
       description: description.trim(),
+      image_urls: images,
     })
   }
 
@@ -188,6 +242,77 @@ export function ListingForm({
         />
       </div>
 
+      {/* Image Upload Section */}
+      <div className="space-y-2">
+        <label className="text-xs font-mono text-zinc-700 dark:text-zinc-300 block">
+          Product Images (Optional, max 5)
+        </label>
+
+        <div className="flex flex-wrap gap-2 items-center">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            multiple
+            className="hidden"
+          />
+
+          {images.length < 5 && (
+            <button
+              type="button"
+              disabled={isUploading}
+              onClick={() => fileInputRef.current?.click()}
+              className="h-20 w-20 flex flex-col items-center justify-center border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xs bg-zinc-50 dark:bg-zinc-900/50 hover:border-zinc-500 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors cursor-pointer text-center p-2"
+            >
+              {isUploading ? (
+                <span className="text-[10px] font-mono animate-pulse">
+                  Uploading...
+                </span>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mb-1" />
+                  <span className="text-[10px] font-mono leading-tight">
+                    Add Photo
+                  </span>
+                </>
+              )}
+            </button>
+          )}
+
+          {/* Previews */}
+          {images.map((url, idx) => (
+            <div
+              key={url + idx}
+              className="relative h-20 w-20 border border-zinc-200 dark:border-zinc-800 rounded-xs overflow-hidden bg-zinc-100 dark:bg-zinc-800 group"
+            >
+              <img
+                src={url}
+                alt={`Product upload ${idx + 1}`}
+                className="w-full h-full object-cover"
+              />
+              {idx === 0 && (
+                <span className="absolute bottom-0 inset-x-0 bg-zinc-900/80 text-white text-[9px] font-mono text-center py-0.5">
+                  Cover
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => handleRemoveImage(idx)}
+                className="absolute top-1 right-1 p-0.5 bg-black/70 text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-red-600"
+                title="Remove image"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          ))}
+        </div>
+        <p className="text-[11px] text-zinc-500">
+          Supported: JPEG, PNG, WebP (max 5MB each). First image is the cover
+          photo.
+        </p>
+      </div>
+
       {/* Description */}
       <div className="flex flex-col gap-1">
         <label
@@ -209,7 +334,12 @@ export function ListingForm({
       </div>
 
       <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800 flex justify-end">
-        <Button type="submit" size="md" variant="primary" isLoading={isLoading}>
+        <Button
+          type="submit"
+          size="md"
+          variant="primary"
+          isLoading={isLoading || isUploading}
+        >
           {submitLabel}
         </Button>
       </div>

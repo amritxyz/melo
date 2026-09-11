@@ -29,6 +29,7 @@ type CreateListingInput struct {
 	Price       float64                 `json:"price" binding:"required,gt=0"`
 	Condition   models.ListingCondition `json:"condition" binding:"required"`
 	Location    string                  `json:"location" binding:"required"`
+	ImageURLs   []string                `json:"image_urls"`
 }
 
 type UpdateListingInput struct {
@@ -39,6 +40,7 @@ type UpdateListingInput struct {
 	Condition   *models.ListingCondition `json:"condition"`
 	Location    *string                  `json:"location"`
 	Status      *models.ListingStatus    `json:"status"`
+	ImageURLs   *[]string                `json:"image_urls"`
 }
 
 func (h *ListingHandler) Create(c *gin.Context) {
@@ -71,6 +73,7 @@ func (h *ListingHandler) Create(c *gin.Context) {
 		Price:       input.Price,
 		Condition:   input.Condition,
 		Location:    input.Location,
+		ImageURLs:   input.ImageURLs,
 	})
 
 	if err != nil {
@@ -193,6 +196,7 @@ func (h *ListingHandler) Update(c *gin.Context) {
 		Condition:   input.Condition,
 		Location:    input.Location,
 		Status:      input.Status,
+		ImageURLs:   input.ImageURLs,
 	})
 
 	if err != nil {

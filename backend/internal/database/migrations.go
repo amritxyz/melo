@@ -20,6 +20,7 @@ func Migrate(db *gorm.DB) error {
 		&models.RefreshToken{},
 		&models.Category{},
 		&models.Listing{},
+		&models.ListingImage{},
 		&models.Conversation{},
 		&models.Message{},
 		&models.Favorite{},

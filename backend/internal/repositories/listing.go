@@ -25,6 +25,7 @@ func (r *ListingRepository) FindByID(id string) (*models.Listing, error) {
 	var listing models.Listing
 	err := r.db.
 		Preload("Category").
+		Preload("Images").
 		Preload("Seller", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "username", "email", "phone_number", "avatar_url", "bio", "location", "created_at")
 		}).
@@ -111,6 +112,7 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 	var listings []models.Listing
 	err := query.
 		Preload("Category").
+		Preload("Images").
 		Preload("Seller", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "username", "email", "phone_number", "avatar_url", "bio", "location", "created_at")
 		}).
@@ -124,6 +126,29 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 	}
 
 	return listings, total, nil
+}
+
+func (r *ListingRepository) ReplaceImages(listingID string, urls []string) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("listing_id = ?", listingID).Delete(&models.ListingImage{}).Error; err != nil {
+			return err
+		}
+		for idx, u := range urls {
+			trimmed := strings.TrimSpace(u)
+			if trimmed == "" {
+				continue
+			}
+			img := models.ListingImage{
+				ListingID: listingID,
+				URL:       trimmed,
+				IsPrimary: idx == 0,
+			}
+			if err := tx.Create(&img).Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 }
 
 func (r *ListingRepository) CountBySeller(sellerID string, status string) (int64, error) {

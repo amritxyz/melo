@@ -14,5 +14,6 @@ Thumbs.db
 
 tmp/
 server
+uploads/
 
 *_test.go

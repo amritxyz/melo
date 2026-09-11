@@ -26,6 +26,7 @@ type CreateListingRequest struct {
 	Price       float64                 `json:"price"`
 	Condition   models.ListingCondition `json:"condition"`
 	Location    string                  `json:"location"`
+	ImageURLs   []string                `json:"image_urls"`
 }
 
 type UpdateListingRequest struct {
@@ -36,6 +37,7 @@ type UpdateListingRequest struct {
 	Condition   *models.ListingCondition `json:"condition"`
 	Location    *string                  `json:"location"`
 	Status      *models.ListingStatus    `json:"status"`
+	ImageURLs   *[]string                `json:"image_urls"`
 }
 
 type ListingService struct {
@@ -87,6 +89,17 @@ func (s *ListingService) CreateListing(sellerID string, req CreateListingRequest
 		return nil, err
 	}
 
+	var images []models.ListingImage
+	for idx, u := range req.ImageURLs {
+		trimmed := strings.TrimSpace(u)
+		if trimmed != "" {
+			images = append(images, models.ListingImage{
+				URL:       trimmed,
+				IsPrimary: idx == 0,
+			})
+		}
+	}
+
 	listing := &models.Listing{
 		SellerID:    sellerID,
 		CategoryID:  req.CategoryID,
@@ -96,6 +109,7 @@ func (s *ListingService) CreateListing(sellerID string, req CreateListingRequest
 		Condition:   req.Condition,
 		Location:    models.NormalizeLocation(req.Location),
 		Status:      models.StatusActive,
+		Images:      images,
 	}
 
 	if err := s.listingRepo.Create(listing); err != nil {
@@ -178,6 +192,12 @@ func (s *ListingService) UpdateListing(userID, listingID string, req UpdateListi
 
 	if req.Location != nil && strings.TrimSpace(*req.Location) != "" {
 		listing.Location = models.NormalizeLocation(*req.Location)
+	}
+
+	if req.ImageURLs != nil {
+		if err := s.listingRepo.ReplaceImages(listingID, *req.ImageURLs); err != nil {
+			return nil, err
+		}
 	}
 
 	if err := s.listingRepo.Update(listing); err != nil {

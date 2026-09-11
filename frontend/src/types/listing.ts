@@ -10,6 +10,14 @@ export interface Category {
   created_at: string
 }
 
+export interface ListingImage {
+  id: string
+  listing_id: string
+  url: string
+  is_primary: boolean
+  created_at: string
+}
+
 export interface Listing {
   id: string
   seller_id: string
@@ -22,6 +30,7 @@ export interface Listing {
   condition: ListingCondition
   location: string
   status: ListingStatus
+  images?: ListingImage[]
   created_at: string
   updated_at: string
 }
@@ -33,6 +42,7 @@ export interface CreateListingPayload {
   price: number
   condition: ListingCondition
   location: string
+  image_urls?: string[]
 }
 
 export interface UpdateListingPayload {
@@ -43,6 +53,7 @@ export interface UpdateListingPayload {
   condition?: ListingCondition
   location?: string
   status?: ListingStatus
+  image_urls?: string[]
 }
 
 export interface ListingFilterParams {

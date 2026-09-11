@@ -430,3 +430,16 @@ export async function submitReviewApi(
     body: JSON.stringify(payload),
   })
 }
+
+// ----------------- Upload API -----------------
+
+export async function uploadImageApi(
+  file: File,
+): Promise<{ url: string; filename: string }> {
+  const formData = new FormData()
+  formData.append('file', file)
+  return apiFetch<{ url: string; filename: string }>('/api/upload', {
+    method: 'POST',
+    body: formData,
+  })
+}

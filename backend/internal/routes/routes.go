@@ -44,6 +44,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	favHandler := handlers.NewFavoriteHandler(favService)
 	userHandler := handlers.NewUserHandler(userService)
 	locationHandler := handlers.NewLocationHandler()
+	uploadHandler := handlers.NewUploadHandler("./uploads")
 
 	// Auth Middleware
 	authMiddleware := middleware.Auth(cfg.JWTSecret)
@@ -118,10 +119,16 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 			users.GET("/:id/reviews", userHandler.GetReviews)
 			users.POST("/:id/reviews", authMiddleware, userHandler.AddReview)
 		}
+		// Upload route (protected)
+		rg.POST("/upload", authMiddleware, uploadHandler.Upload)
 	}
 
 	registerRoutes(r.Group("/api"))
 	registerRoutes(r.Group("/api/v1"))
+
+	// Static uploads directory
+	r.Static("/uploads", "./uploads")
+	r.Static("/api/uploads", "./uploads")
 
 	// WebSocket routes
 	r.GET("/ws/conversations/:id", convHandler.WebSocket)
