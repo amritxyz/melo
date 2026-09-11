@@ -36,6 +36,10 @@ function ProductDetailPage() {
 
   const [showSoldConfirm, setShowSoldConfirm] = React.useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false)
+  const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
+  const [failedImages, setFailedImages] = React.useState<
+    Record<string, boolean>
+  >({})
 
   const { data: listing, isLoading, error } = useListing(listingId)
   const { data: sellerProfile } = useUserProfile(listing?.seller_id)
@@ -88,8 +92,13 @@ function ProductDetailPage() {
 
   const isOwner = currentUser?.id === listing.seller_id
   const isSold = listing.status === 'sold'
-  const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
-  const images = listing.images || []
+  const validImages = (listing.images || []).filter(
+    (img) => !failedImages[img.url],
+  )
+  const safeImageIndex =
+    selectedImageIndex < validImages.length ? selectedImageIndex : 0
+  const activeImage =
+    validImages.length > 0 ? validImages[safeImageIndex] : null
 
   const formattedPrice = new Intl.NumberFormat('en-NP', {
     style: 'currency',
@@ -157,10 +166,16 @@ function ProductDetailPage() {
             {/* Image / Gallery Box */}
             <div className="space-y-2">
               <div className="h-64 sm:h-80 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs flex items-center justify-center relative overflow-hidden">
-                {images.length > 0 ? (
+                {activeImage ? (
                   <img
-                    src={images[selectedImageIndex]?.url || images[0].url}
+                    src={activeImage.url}
                     alt={listing.title}
+                    onError={() => {
+                      setFailedImages((prev) => ({
+                        ...prev,
+                        [activeImage.url]: true,
+                      }))
+                    }}
                     className="w-full h-full object-contain"
                   />
                 ) : (
@@ -185,15 +200,15 @@ function ProductDetailPage() {
               </div>
 
               {/* Thumbnails if multiple images */}
-              {images.length > 1 && (
+              {validImages.length > 1 && (
                 <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                  {images.map((img, idx) => (
+                  {validImages.map((img, idx) => (
                     <button
-                      key={img.id || idx}
+                      key={img.id || img.url || idx}
                       type="button"
                       onClick={() => setSelectedImageIndex(idx)}
                       className={`h-14 w-14 rounded-xs border overflow-hidden shrink-0 cursor-pointer transition-colors ${
-                        selectedImageIndex === idx
+                        safeImageIndex === idx
                           ? 'border-zinc-900 dark:border-zinc-100 ring-1 ring-zinc-900 dark:ring-zinc-100'
                           : 'border-zinc-200 dark:border-zinc-800 opacity-60 hover:opacity-100'
                       }`}
@@ -201,6 +216,12 @@ function ProductDetailPage() {
                       <img
                         src={img.url}
                         alt={`Thumbnail ${idx + 1}`}
+                        onError={() => {
+                          setFailedImages((prev) => ({
+                            ...prev,
+                            [img.url]: true,
+                          }))
+                        }}
                         className="w-full h-full object-cover"
                       />
                     </button>

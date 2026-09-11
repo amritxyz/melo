@@ -6,7 +6,7 @@ import { Select } from '#/components/ui/Select'
 import { LocationSelect } from '#/components/ui/LocationSelect'
 import { formatTitleCase, formatLocation } from '#/lib/utils'
 import { useCategories } from '#/hooks/useListings'
-import { uploadImageApi } from '#/lib/api'
+import { uploadImageApi, deleteImageApi } from '#/lib/api'
 import type { CreateListingPayload, ListingCondition } from '#/types/listing'
 
 interface ListingFormProps {
@@ -126,8 +126,16 @@ export function ListingForm({
     }
   }
 
-  const handleRemoveImage = (indexToRemove: number) => {
+  const handleRemoveImage = async (indexToRemove: number) => {
+    const urlToRemove = images[indexToRemove]
     setImages((prev) => prev.filter((_, idx) => idx !== indexToRemove))
+    if (urlToRemove) {
+      try {
+        await deleteImageApi(urlToRemove)
+      } catch (err) {
+        console.error('Failed to delete image from backend', err)
+      }
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { Link } from '@tanstack/react-router'
 import { MapPin, Tag } from 'lucide-react'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
@@ -10,6 +11,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ listing }: ProductCardProps) {
+  const [imgFailed, setImgFailed] = React.useState(false)
   const formattedPrice = new Intl.NumberFormat('en-NP', {
     style: 'currency',
     currency: 'NPR',
@@ -26,7 +28,7 @@ export function ProductCard({ listing }: ProductCardProps) {
 
   const isSold = listing.status === 'sold'
   const primaryImage =
-    listing.images && listing.images.length > 0
+    !imgFailed && listing.images && listing.images.length > 0
       ? listing.images.find((img) => img.is_primary)?.url ||
         listing.images[0].url
       : null
@@ -47,6 +49,7 @@ export function ProductCard({ listing }: ProductCardProps) {
           <img
             src={primaryImage}
             alt={listing.title}
+            onError={() => setImgFailed(true)}
             className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-150"
             loading="lazy"
           />

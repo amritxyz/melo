@@ -443,3 +443,14 @@ export async function uploadImageApi(
     body: formData,
   })
 }
+
+export async function deleteImageApi(
+  url: string,
+): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(
+    `/api/upload?url=${encodeURIComponent(url)}`,
+    {
+      method: 'DELETE',
+    },
+  )
+}

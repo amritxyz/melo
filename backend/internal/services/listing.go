@@ -2,6 +2,8 @@ package services
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"codeberg.org/amritxyz/melo/internal/models"
@@ -195,6 +197,19 @@ func (s *ListingService) UpdateListing(userID, listingID string, req UpdateListi
 	}
 
 	if req.ImageURLs != nil {
+		newMap := make(map[string]bool)
+		for _, u := range *req.ImageURLs {
+			newMap[strings.TrimSpace(u)] = true
+		}
+		for _, oldImg := range listing.Images {
+			if !newMap[oldImg.URL] {
+				base := filepath.Base(oldImg.URL)
+				if base != "" && base != "." && base != "/" {
+					_ = os.Remove(filepath.Join("./uploads", base))
+				}
+			}
+		}
+
 		if err := s.listingRepo.ReplaceImages(listingID, *req.ImageURLs); err != nil {
 			return nil, err
 		}
@@ -218,6 +233,13 @@ func (s *ListingService) DeleteListing(userID, listingID string) error {
 
 	if listing.SellerID != userID {
 		return ErrUnauthorizedAction
+	}
+
+	for _, img := range listing.Images {
+		base := filepath.Base(img.URL)
+		if base != "" && base != "." && base != "/" {
+			_ = os.Remove(filepath.Join("./uploads", base))
+		}
 	}
 
 	return s.listingRepo.Delete(listingID)
