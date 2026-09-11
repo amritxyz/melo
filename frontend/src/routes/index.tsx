@@ -7,6 +7,7 @@ import { Navbar } from '#/components/layout/Navbar'
 import { useCategories, useListings } from '#/hooks/useListings'
 import { useAuth } from '#/hooks/useAuth'
 import { useUserProfile } from '#/hooks/useUser'
+import { formatName, formatLocation } from '#/lib/utils'
 
 export const Route = createFileRoute('/')({ component: Home })
 
@@ -83,7 +84,9 @@ function Home() {
     selectedCondition !== 'all' ||
     sortBy !== 'newest'
 
-  const userLocation = profile?.location || user?.location || 'Nepal'
+  const userLocation = formatLocation(
+    profile?.location || user?.location || 'Butwal, Nepal',
+  )
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
@@ -96,13 +99,14 @@ function Home() {
             {isAuthenticated && user ? (
               <>
                 <p className="flex items-center gap-2">
-                  <span className="text-zinc-400 font-mono">user:</span>
-                  <span className="font-mono font-semibold text-zinc-900 dark:text-zinc-100">
-                    {user.username}
+                  <span className="text-zinc-400">user:</span>
+                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    {formatName(user.username)}
                   </span>
                   <span className="text-zinc-400">·</span>
-                  <span className="text-zinc-500">
-                    location: {userLocation}
+                  <span className="text-zinc-500">location:</span>
+                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    {userLocation}
                   </span>
                 </p>
                 <div className="flex items-center gap-3">

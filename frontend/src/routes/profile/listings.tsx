@@ -23,6 +23,7 @@ import {
   useMarkListingSold,
 } from '#/hooks/useListings'
 import type { Listing } from '#/types/listing'
+import { formatTitleCase, formatLocation } from '#/lib/utils'
 
 export const Route = createFileRoute('/profile/listings')({
   component: MyListingsPage,
@@ -288,7 +289,7 @@ function MyListingsPage() {
                           params={{ listingId: item.id }}
                           className="font-mono font-semibold text-xs text-zinc-900 dark:text-zinc-100 hover:underline line-clamp-1"
                         >
-                          {item.title}
+                          {formatTitleCase(item.title)}
                         </Link>
 
                         <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-500 mt-1">
@@ -298,7 +299,7 @@ function MyListingsPage() {
                           {item.location && (
                             <span className="flex items-center gap-1">
                               <MapPin className="w-3 h-3 text-zinc-400" />
-                              {item.location}
+                              {formatLocation(item.location)}
                             </span>
                           )}
                           <span className="hidden sm:inline-flex items-center gap-1 text-zinc-400">

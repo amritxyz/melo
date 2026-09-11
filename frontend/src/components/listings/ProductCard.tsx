@@ -3,6 +3,7 @@ import { MapPin, Tag } from 'lucide-react'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import type { Listing } from '#/types/listing'
 import { FavoriteButton } from './FavoriteButton'
+import { formatTitleCase, formatLocation } from '#/lib/utils'
 
 interface ProductCardProps {
   listing: Listing
@@ -73,7 +74,7 @@ export function ProductCard({ listing }: ProductCardProps) {
             className="block"
           >
             <h3 className="font-medium text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors line-clamp-1 hover:underline">
-              {listing.title}
+              {formatTitleCase(listing.title)}
             </h3>
           </Link>
 
@@ -86,7 +87,9 @@ export function ProductCard({ listing }: ProductCardProps) {
         <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-[10px] font-mono text-zinc-500 dark:text-zinc-400">
           <div className="flex items-center gap-1 min-w-0">
             <MapPin className="w-3 h-3 text-zinc-400 shrink-0" />
-            <span className="truncate max-w-[110px]">{listing.location}</span>
+            <span className="truncate max-w-[110px]">
+              {formatLocation(listing.location)}
+            </span>
           </div>
 
           <span>{formattedDate}</span>

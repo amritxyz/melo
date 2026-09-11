@@ -6,6 +6,7 @@ import (
 
 	"codeberg.org/amritxyz/melo/internal/models"
 	"codeberg.org/amritxyz/melo/internal/repositories"
+	"codeberg.org/amritxyz/melo/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -89,11 +90,11 @@ func (s *ListingService) CreateListing(sellerID string, req CreateListingRequest
 	listing := &models.Listing{
 		SellerID:    sellerID,
 		CategoryID:  req.CategoryID,
-		Title:       strings.TrimSpace(req.Title),
+		Title:       utils.FormatTitle(req.Title),
 		Description: strings.TrimSpace(req.Description),
 		Price:       req.Price,
 		Condition:   req.Condition,
-		Location:    strings.TrimSpace(req.Location),
+		Location:    models.NormalizeLocation(req.Location),
 		Status:      models.StatusActive,
 	}
 
@@ -168,7 +169,7 @@ func (s *ListingService) UpdateListing(userID, listingID string, req UpdateListi
 	}
 
 	if req.Title != nil && strings.TrimSpace(*req.Title) != "" {
-		listing.Title = strings.TrimSpace(*req.Title)
+		listing.Title = utils.FormatTitle(*req.Title)
 	}
 
 	if req.Description != nil && strings.TrimSpace(*req.Description) != "" {
@@ -176,7 +177,7 @@ func (s *ListingService) UpdateListing(userID, listingID string, req UpdateListi
 	}
 
 	if req.Location != nil && strings.TrimSpace(*req.Location) != "" {
-		listing.Location = strings.TrimSpace(*req.Location)
+		listing.Location = models.NormalizeLocation(*req.Location)
 	}
 
 	if err := s.listingRepo.Update(listing); err != nil {

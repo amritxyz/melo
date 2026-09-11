@@ -43,6 +43,7 @@ type ListingFilterParams struct {
 	SellerID   string
 	Status     string
 	Search     string
+	Location   string
 }
 
 func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listing, int64, error) {
@@ -81,6 +82,11 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 	if params.Search != "" {
 		pattern := "%" + strings.ToLower(params.Search) + "%"
 		query = query.Where("LOWER(title) LIKE ? OR LOWER(description) LIKE ?", pattern, pattern)
+	}
+
+	if params.Location != "" {
+		locPattern := "%" + strings.ToLower(strings.TrimSpace(params.Location)) + "%"
+		query = query.Where("LOWER(location) LIKE ?", locPattern)
 	}
 
 	var total int64

@@ -112,7 +112,13 @@ func (s *userService) UpdateProfile(userID string, req UpdateProfileRequest) (*U
 		user.AvatarURL = req.AvatarURL
 	}
 	if req.Location != nil {
-		user.Location = req.Location
+		cleanLoc := strings.TrimSpace(*req.Location)
+		if cleanLoc == "" {
+			user.Location = nil
+		} else {
+			normLoc := models.NormalizeLocation(cleanLoc)
+			user.Location = &normLoc
+		}
 	}
 	if req.PhoneNumber != nil {
 		user.PhoneNumber = req.PhoneNumber

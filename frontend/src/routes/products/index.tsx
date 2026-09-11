@@ -6,6 +6,7 @@ import { ProductGrid } from '#/components/listings/ProductGrid'
 import { Navbar } from '#/components/layout/Navbar'
 import { useCategories, useListings } from '#/hooks/useListings'
 import type { ListingCondition } from '#/types/listing'
+import { BUTWAL_LOCATIONS } from '#/types/location'
 
 export const Route = createFileRoute('/products/')({
   component: ProductsPage,
@@ -17,6 +18,7 @@ function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = React.useState<string>('')
   const [selectedCondition, setSelectedCondition] =
     React.useState<string>('all')
+  const [selectedLocation, setSelectedLocation] = React.useState<string>('')
   const [sortBy, setSortBy] = React.useState<SortOption>('newest')
   const [searchQuery, setSearchQuery] = React.useState<string>('')
   const [debouncedSearch, setDebouncedSearch] = React.useState<string>('')
@@ -40,6 +42,7 @@ function ProductsPage() {
     limit: 16,
     category_id: selectedCategory || undefined,
     search: debouncedSearch || undefined,
+    location: selectedLocation || undefined,
   })
 
   const rawListings = data?.listings || []
@@ -73,6 +76,7 @@ function ProductsPage() {
   const handleReset = () => {
     setSelectedCategory('')
     setSelectedCondition('all')
+    setSelectedLocation('')
     setSortBy('newest')
     setSearchQuery('')
     setDebouncedSearch('')
@@ -82,6 +86,7 @@ function ProductsPage() {
   const hasFilters =
     selectedCategory !== '' ||
     selectedCondition !== 'all' ||
+    selectedLocation !== '' ||
     sortBy !== 'newest' ||
     debouncedSearch !== ''
 
@@ -202,6 +207,28 @@ function ProductsPage() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Location Filter */}
+            <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800">
+              <span className="font-mono text-[11px] font-semibold text-zinc-500 uppercase block mb-1.5">
+                Location (Butwal)
+              </span>
+              <select
+                value={selectedLocation}
+                onChange={(e) => {
+                  setSelectedLocation(e.target.value)
+                  setPage(1)
+                }}
+                className="w-full h-8 px-2 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xs text-zinc-900 dark:text-zinc-100 cursor-pointer"
+              >
+                <option value="">All Locations</option>
+                {BUTWAL_LOCATIONS.map((loc) => (
+                  <option key={loc} value={loc}>
+                    {loc}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Sorting */}

@@ -14,6 +14,7 @@ import {
   useSendMessage,
 } from '#/hooks/useChat'
 import type { Conversation, Message } from '#/types/chat'
+import { formatName, formatTitleCase } from '#/lib/utils'
 
 interface MessagesSearch {
   conversationId?: string
@@ -196,7 +197,7 @@ function MessagesPage() {
                       }`}
                     >
                       <UserAvatar
-                        avatarUrl={(partner as any)?.avatar_url}
+                        avatarUrl={partner?.avatar_url}
                         username={partner?.username}
                         size="sm"
                         shape="square"
@@ -206,7 +207,7 @@ function MessagesPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
                           <span className="font-mono font-semibold text-xs text-zinc-900 dark:text-zinc-100 truncate">
-                            {partner?.username || 'User'}
+                            {formatName(partner?.username || 'User')}
                           </span>
                           <span className="font-mono text-[10px] text-zinc-400 shrink-0">
                             {conv.updated_at
@@ -220,7 +221,7 @@ function MessagesPage() {
 
                         <p className="text-[11px] font-mono text-zinc-600 dark:text-zinc-400 truncate">
                           {isSellerOfItem ? '[selling] ' : '[buying] '}
-                          {conv.listing?.title || 'item'}
+                          {formatTitleCase(conv.listing?.title || 'item')}
                         </p>
 
                         <p className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
@@ -259,7 +260,7 @@ function MessagesPage() {
                     </button>
 
                     <UserAvatar
-                      avatarUrl={(otherParticipant as any)?.avatar_url}
+                      avatarUrl={otherParticipant?.avatar_url}
                       username={otherParticipant?.username}
                       size="sm"
                       shape="square"
@@ -268,7 +269,7 @@ function MessagesPage() {
 
                     <div className="min-w-0 flex items-center gap-2">
                       <span className="font-semibold text-zinc-900 dark:text-zinc-100 truncate">
-                        {otherParticipant?.username || 'User'}
+                        {formatName(otherParticipant?.username || 'User')}
                       </span>
                       <span className="text-[10px] text-zinc-400">
                         {isConnected ? '[online]' : '[sync]'}
@@ -284,7 +285,7 @@ function MessagesPage() {
                       className="text-right hover:underline shrink-0 max-w-[200px]"
                     >
                       <span className="block text-[11px] truncate text-zinc-700 dark:text-zinc-300">
-                        {currentConv.listing.title}
+                        {formatTitleCase(currentConv.listing.title)}
                       </span>
                       <span className="block text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
                         NPR {currentConv.listing.price.toLocaleString()}
@@ -327,7 +328,9 @@ function MessagesPage() {
                             <span className="font-semibold text-zinc-700 dark:text-zinc-300">
                               {isMine
                                 ? 'You'
-                                : otherParticipant?.username || 'Seller'}
+                                : formatName(
+                                    otherParticipant?.username || 'Seller',
+                                  )}
                             </span>
                             <span className="flex items-center gap-1">
                               {formattedTime}

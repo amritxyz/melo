@@ -18,6 +18,7 @@ import { useAuth } from '#/hooks/useAuth'
 import { useUserProfile } from '#/hooks/useUser'
 import { useFavoriteIds } from '#/hooks/useFavorites'
 import { useConversations } from '#/hooks/useChat'
+import { formatName } from '#/lib/utils'
 
 export function Navbar() {
   const {
@@ -181,7 +182,7 @@ export function Navbar() {
                     className="w-5 h-5 rounded-xs"
                   />
                   <span className="font-mono text-xs text-zinc-800 dark:text-zinc-200 max-w-[100px] truncate">
-                    {user.username}
+                    {formatName(user.username)}
                   </span>
                   <ChevronDown
                     className={`w-3 h-3 text-zinc-400 transition-transform ${
@@ -195,7 +196,7 @@ export function Navbar() {
                     <div className="px-3 py-1.5 border-b border-zinc-200 dark:border-zinc-800 text-[11px]">
                       <p className="text-zinc-500">Signed in as</p>
                       <p className="font-mono font-semibold text-zinc-900 dark:text-zinc-100 truncate">
-                        {user.username}
+                        {formatName(user.username)}
                       </p>
                     </div>
 

@@ -18,6 +18,7 @@ import type {
   Pagination,
   UpdateListingPayload,
 } from '#/types/listing'
+import type { LocationItem } from '#/types/location'
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from './auth'
 
 export class ApiError extends Error {
@@ -193,6 +194,12 @@ export async function getCategoryByIDApi(id: string): Promise<Category> {
   return apiFetch<Category>(`/api/categories/${encodeURIComponent(id)}`)
 }
 
+// ----------------- Locations API -----------------
+
+export async function getLocationsApi(): Promise<LocationItem[]> {
+  return apiFetch<LocationItem[]>('/api/locations')
+}
+
 // ----------------- Listings API -----------------
 
 export async function getListingsApi(
@@ -205,6 +212,7 @@ export async function getListingsApi(
   if (params.seller_id) searchParams.set('seller_id', params.seller_id)
   if (params.status) searchParams.set('status', params.status)
   if (params.search) searchParams.set('search', params.search)
+  if (params.location) searchParams.set('location', params.location)
 
   const query = searchParams.toString()
   const endpoint = `/api/listings${query ? `?${query}` : ''}`

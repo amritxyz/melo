@@ -112,7 +112,7 @@ func (s *AuthService) generateAndRegisterTokens(user *models.User) (*TokenPair, 
 }
 
 func (s *AuthService) Signup(username, email, password string) (*AuthResponse, error) {
-	cleanUsername := strings.TrimSpace(username)
+	cleanUsername := utils.FormatName(username)
 	if len([]rune(cleanUsername)) < 2 || len([]rune(cleanUsername)) > 25 {
 		return nil, ErrUsernameInvalid
 	}
@@ -132,7 +132,7 @@ func (s *AuthService) Signup(username, email, password string) (*AuthResponse, e
 	}
 
 	user := &models.User{
-		Username:     strings.TrimSpace(username),
+		Username:     cleanUsername,
 		Email:        cleanEmail,
 		PasswordHash: hashedPassword,
 	}

@@ -26,7 +26,12 @@ import {
 } from '#/hooks/useUser'
 import { useListings } from '#/hooks/useListings'
 import { useStartConversation } from '#/hooks/useChat'
-import { formatCurrency } from '#/lib/utils'
+import {
+  formatCurrency,
+  formatName,
+  formatLocation,
+  formatTitleCase,
+} from '#/lib/utils'
 
 export const Route = createFileRoute('/users/$userId/')({
   component: PublicUserProfilePage,
@@ -237,7 +242,7 @@ function PublicUserProfilePage() {
             <div className="space-y-1.5 flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-lg font-bold font-mono text-zinc-900 dark:text-zinc-50">
-                  {profile.username}
+                  {formatName(profile.username)}
                 </h1>
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-xs text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">
                   <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
@@ -271,7 +276,7 @@ function PublicUserProfilePage() {
             {profile.location && (
               <div className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-zinc-400" />
-                <span>{profile.location}</span>
+                <span>{formatLocation(profile.location)}</span>
               </div>
             )}
             {profile.phone && (
@@ -361,7 +366,7 @@ function PublicUserProfilePage() {
                     <div className="p-3 flex flex-col flex-1 justify-between gap-2">
                       <div>
                         <h3 className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100 group-hover:underline line-clamp-1">
-                          {item.title}
+                          {formatTitleCase(item.title)}
                         </h3>
                         <p className="text-[11px] text-zinc-500 line-clamp-2 mt-1">
                           {item.description}
@@ -374,7 +379,7 @@ function PublicUserProfilePage() {
                         {item.location && (
                           <span className="text-zinc-500 flex items-center gap-1">
                             <MapPin className="w-3 h-3 text-zinc-400" />
-                            {item.location}
+                            {formatLocation(item.location)}
                           </span>
                         )}
                       </div>
@@ -420,7 +425,7 @@ function PublicUserProfilePage() {
                     </div>
                     <div className="p-3 flex flex-col flex-1 justify-between gap-2">
                       <h3 className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
-                        {item.title}
+                        {formatTitleCase(item.title)}
                       </h3>
                       <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800 text-[11px] font-mono">
                         <span className="text-zinc-500 line-through">
@@ -507,7 +512,9 @@ function PublicUserProfilePage() {
                           shape="square"
                         />
                         <span className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100">
-                          {rev.reviewer?.username || 'Verified Buyer'}
+                          {formatName(
+                            rev.reviewer?.username || 'Verified Buyer',
+                          )}
                         </span>
                       </div>
                       <span className="text-xs font-mono text-zinc-400">

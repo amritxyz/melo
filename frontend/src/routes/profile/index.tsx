@@ -15,9 +15,11 @@ import {
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { Input } from '#/components/ui/Input'
+import { LocationSelect } from '#/components/ui/LocationSelect'
 import { RatingStars } from '#/components/ui/RatingStars'
 import { Navbar } from '#/components/layout/Navbar'
 import { UserAvatar, AvatarPicker } from '#/components/avatars'
+import { formatLocation, formatName } from '#/lib/utils'
 import { useAuth } from '#/hooks/useAuth'
 import {
   useUserProfile,
@@ -80,14 +82,20 @@ function ProfilePage() {
     try {
       await updateProfileMutation.mutateAsync({
         bio: bioInput.trim() || undefined,
-        location: locationInput.trim() || undefined,
+        location: locationInput.trim()
+          ? formatLocation(locationInput)
+          : undefined,
         phone: phoneInput.trim() || undefined,
         avatar_url: avatarInput.trim() || undefined,
       })
       await refetch()
       setIsEditModalOpen(false)
-    } catch (err: any) {
-      setFormError(err.message || 'Failed to update profile. Please try again.')
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Failed to update profile. Please try again.'
+      setFormError(message)
     } finally {
       setIsSaving(false)
     }
@@ -203,7 +211,7 @@ function ProfilePage() {
             <div className="space-y-1.5 flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-lg font-bold font-mono text-zinc-900 dark:text-zinc-50">
-                  {profile?.username}
+                  {formatName(profile?.username)}
                 </h1>
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-xs text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">
                   <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
@@ -238,7 +246,7 @@ function ProfilePage() {
             {profile?.location && (
               <div className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-zinc-400" />
-                <span>{profile.location}</span>
+                <span>{formatLocation(profile.location)}</span>
               </div>
             )}
             <div className="flex items-center gap-1.5">
@@ -430,14 +438,11 @@ function ProfilePage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-mono text-zinc-700 dark:text-zinc-300 mb-1">
-                    Location
-                  </label>
-                  <Input
-                    type="text"
+                  <LocationSelect
+                    label="Location"
                     value={locationInput}
-                    onChange={(e) => setLocationInput(e.target.value)}
-                    placeholder="e.g. Kathmandu"
+                    onChange={setLocationInput}
+                    placeholder="Select Butwal location or custom..."
                   />
                 </div>
 

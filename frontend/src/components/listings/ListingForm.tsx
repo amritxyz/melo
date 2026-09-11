@@ -2,6 +2,8 @@ import * as React from 'react'
 import { Button } from '#/components/ui/Button'
 import { Input } from '#/components/ui/Input'
 import { Select } from '#/components/ui/Select'
+import { LocationSelect } from '#/components/ui/LocationSelect'
+import { formatTitleCase, formatLocation } from '#/lib/utils'
 import { useCategories } from '#/hooks/useListings'
 import type { CreateListingPayload, ListingCondition } from '#/types/listing'
 
@@ -106,11 +108,11 @@ export function ListingForm({
     }
 
     await onSubmit({
-      title: title.trim(),
+      title: formatTitleCase(title),
       category_id: categoryId,
       price: numPrice,
       condition,
-      location: location.trim(),
+      location: formatLocation(location),
       description: description.trim(),
     })
   }
@@ -177,12 +179,12 @@ export function ListingForm({
           onChange={(e) => setPrice(e.target.value)}
         />
 
-        <Input
+        <LocationSelect
           label="Location"
           required
-          placeholder="e.g. Lalitpur, Kathmandu, Pokhara"
+          placeholder="Select Butwal location or custom..."
           value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          onChange={setLocation}
         />
       </div>
 

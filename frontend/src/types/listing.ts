@@ -52,6 +52,7 @@ export interface ListingFilterParams {
   seller_id?: string
   status?: string
   search?: string
+  location?: string
 }
 
 export interface Pagination {

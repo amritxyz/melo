@@ -43,6 +43,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	convHandler := handlers.NewConversationHandler(convService, hub, cfg.JWTSecret)
 	favHandler := handlers.NewFavoriteHandler(favService)
 	userHandler := handlers.NewUserHandler(userService)
+	locationHandler := handlers.NewLocationHandler()
 
 	// Auth Middleware
 	authMiddleware := middleware.Auth(cfg.JWTSecret)
@@ -65,6 +66,12 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 		{
 			categories.GET("", categoryHandler.GetAll)
 			categories.GET("/:id", categoryHandler.GetByID)
+		}
+
+		// Locations routes (public)
+		locations := rg.Group("/locations")
+		{
+			locations.GET("", locationHandler.GetAll)
 		}
 
 		// Listings routes

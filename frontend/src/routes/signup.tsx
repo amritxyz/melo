@@ -4,6 +4,8 @@ import { Button } from '#/components/ui/Button'
 import { Input } from '#/components/ui/Input'
 import { useAuth } from '#/hooks/useAuth'
 
+import { formatName } from '#/lib/utils'
+
 export const Route = createFileRoute('/signup')({
   component: SignupPage,
 })
@@ -27,18 +29,18 @@ function SignupPage() {
     e.preventDefault()
     setErrorMessage(null)
 
-    const trimmedUsername = username.trim()
-    if (!trimmedUsername) {
+    const formattedUsername = formatName(username)
+    if (!formattedUsername) {
       setErrorMessage('Please enter a username.')
       return
     }
 
-    if (trimmedUsername.length < 2) {
+    if (formattedUsername.length < 2) {
       setErrorMessage('Username must be at least 2 characters.')
       return
     }
 
-    if (trimmedUsername.length > 25) {
+    if (formattedUsername.length > 25) {
       setErrorMessage('Username must be 25 characters or fewer.')
       return
     }
@@ -55,7 +57,7 @@ function SignupPage() {
 
     try {
       await signup({
-        username: trimmedUsername,
+        username: formattedUsername,
         email: email.trim(),
         password,
       })
@@ -101,10 +103,15 @@ function SignupPage() {
               required
               maxLength={25}
               autoComplete="username"
-              placeholder="username"
-              helperText="2 to 25 characters alphanumeric."
+              placeholder="e.g. Ram Prasad Bhattarai"
+              helperText="2 to 25 characters (e.g. Ram Prasad Bhattarai)."
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              onBlur={() => {
+                if (username.trim()) {
+                  setUsername(formatName(username))
+                }
+              }}
             />
 
             <Input

@@ -23,6 +23,7 @@ import {
   useListing,
   useMarkListingSold,
 } from '#/hooks/useListings'
+import { formatTitleCase, formatLocation, formatName } from '#/lib/utils'
 
 export const Route = createFileRoute('/products/$listingId/')({
   component: ProductDetailPage,
@@ -133,7 +134,7 @@ function ProductDetailPage() {
             </>
           )}
           <span className="text-zinc-900 dark:text-zinc-100 truncate max-w-[200px] sm:max-w-none">
-            {listing.title}
+            {formatTitleCase(listing.title)}
           </span>
         </div>
       </div>
@@ -185,7 +186,7 @@ function ProductDetailPage() {
                   {formattedPrice}
                 </span>
                 <h1 className="text-base sm:text-lg font-bold mt-1 text-zinc-900 dark:text-zinc-50">
-                  {listing.title}
+                  {formatTitleCase(listing.title)}
                 </h1>
               </div>
 
@@ -194,7 +195,7 @@ function ProductDetailPage() {
                 <div className="flex px-3 py-1.5 justify-between">
                   <span className="text-zinc-500">Location:</span>
                   <span className="text-zinc-900 dark:text-zinc-100">
-                    {listing.location}
+                    {formatLocation(listing.location)}
                   </span>
                 </div>
                 <div className="flex px-3 py-1.5 justify-between">
@@ -254,7 +255,7 @@ function ProductDetailPage() {
                   />
                   <div className="min-w-0 flex-1">
                     <span className="font-mono font-semibold text-xs block text-zinc-900 dark:text-zinc-100 group-hover:underline truncate">
-                      {listing.seller?.username || 'Seller'}
+                      {formatName(listing.seller?.username || 'Seller')}
                     </span>
                     <RatingStars
                       rating={sellerProfile?.rating || 0}
@@ -282,7 +283,7 @@ function ProductDetailPage() {
                 {listing.seller?.location && (
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
-                    {listing.seller.location}
+                    {formatLocation(listing.seller.location)}
                   </span>
                 )}
               </div>

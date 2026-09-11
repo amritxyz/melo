@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Check, Sparkles, Image as ImageIcon, Shuffle } from 'lucide-react'
+import { Check, Image as ImageIcon, Shuffle } from 'lucide-react'
 import {
   MELO_AVATARS,
   getAvatarDefinition,
