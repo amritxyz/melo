@@ -13,7 +13,9 @@ import {
   ChevronDown,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
+import { UserAvatar } from '#/components/avatars'
 import { useAuth } from '#/hooks/useAuth'
+import { useUserProfile } from '#/hooks/useUser'
 import { useFavoriteIds } from '#/hooks/useFavorites'
 import { useConversations } from '#/hooks/useChat'
 
@@ -27,6 +29,8 @@ export function Navbar() {
   } = useAuth()
   const { favoriteIds } = useFavoriteIds()
   const { data: conversations } = useConversations()
+  const { data: profile } = useUserProfile(user?.id)
+  const avatarUrl = profile?.avatar_url ?? user?.avatar_url
   const routerState = useRouterState()
   const currentPath = routerState.location.pathname
 
@@ -171,17 +175,13 @@ export function Navbar() {
                   aria-expanded={isProfileDropdownOpen}
                   aria-label="User menu"
                 >
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300/60 dark:border-emerald-700/60 flex items-center justify-center text-emerald-800 dark:text-emerald-200 font-bold text-xs uppercase shadow-2xs shrink-0 aspect-square">
-                    {user.avatar_url ? (
-                      <img
-                        src={user.avatar_url}
-                        alt={user.username}
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    ) : (
-                      user.username.charAt(0)
-                    )}
-                  </div>
+                  <UserAvatar
+                    avatarUrl={avatarUrl}
+                    username={user.username}
+                    size="sm"
+                    shape="circle"
+                    className="border border-emerald-300/60 dark:border-emerald-700/60 shadow-2xs"
+                  />
                   <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200 max-w-[100px] truncate">
                     {user.username}
                   </span>
@@ -376,17 +376,13 @@ export function Navbar() {
             ) : isAuthenticated && user ? (
               <div className="space-y-2">
                 <div className="flex items-center gap-3 px-3 py-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300/60 dark:border-emerald-700/60 flex items-center justify-center text-emerald-800 dark:text-emerald-200 font-bold text-xs uppercase shrink-0 aspect-square">
-                    {user.avatar_url ? (
-                      <img
-                        src={user.avatar_url}
-                        alt={user.username}
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    ) : (
-                      user.username.charAt(0)
-                    )}
-                  </div>
+                  <UserAvatar
+                    avatarUrl={avatarUrl}
+                    username={user.username}
+                    size="sm"
+                    shape="circle"
+                    className="border border-emerald-300/60 dark:border-emerald-700/60 shadow-2xs"
+                  />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
                       {user.username}

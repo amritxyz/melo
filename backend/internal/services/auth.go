@@ -30,6 +30,7 @@ type UserResponse struct {
 	Username    string    `json:"username"`
 	Email       string    `json:"email"`
 	PhoneNumber *string   `json:"phone,omitempty"`
+	AvatarURL   *string   `json:"avatar_url,omitempty"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
@@ -63,6 +64,7 @@ func toUserResponse(user *models.User) UserResponse {
 		Username:    user.Username,
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
+		AvatarURL:   user.AvatarURL,
 		CreatedAt:   user.CreatedAt,
 		UpdatedAt:   user.UpdatedAt,
 	}

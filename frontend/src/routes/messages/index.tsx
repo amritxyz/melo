@@ -14,6 +14,7 @@ import {
 import { Button } from '#/components/ui/Button'
 import { StatusBadge } from '#/components/ui/Badge'
 import { Navbar } from '#/components/layout/Navbar'
+import { UserAvatar } from '#/components/avatars'
 import { useAuth } from '#/hooks/useAuth'
 import {
   useChatWebSocket,
@@ -188,13 +189,12 @@ function MessagesPage() {
                         : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/40'
                     }`}
                   >
-                    <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300 shrink-0 aspect-square font-bold text-sm">
-                      {partner ? (
-                        partner.username[0].toUpperCase()
-                      ) : (
-                        <UserIcon className="w-4 h-4" />
-                      )}
-                    </div>
+                    <UserAvatar
+                      avatarUrl={(partner as any)?.avatar_url}
+                      username={partner?.username}
+                      size="md"
+                      shape="circle"
+                    />
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1 mb-0.5">
@@ -249,13 +249,12 @@ function MessagesPage() {
                     <ArrowLeft className="w-5 h-5" />
                   </button>
 
-                  <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-sm shrink-0 aspect-square">
-                    {otherParticipant ? (
-                      otherParticipant.username[0].toUpperCase()
-                    ) : (
-                      <UserIcon className="w-4 h-4" />
-                    )}
-                  </div>
+                  <UserAvatar
+                    avatarUrl={(otherParticipant as any)?.avatar_url}
+                    username={otherParticipant?.username}
+                    size="sm"
+                    shape="circle"
+                  />
 
                   <div className="min-w-0 flex-1">
                     <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">

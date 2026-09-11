@@ -17,6 +17,7 @@ import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import { RatingStars } from '#/components/ui/RatingStars'
 import { Navbar } from '#/components/layout/Navbar'
+import { UserAvatar } from '#/components/avatars'
 import { useAuth } from '#/hooks/useAuth'
 import {
   useUserProfile,
@@ -178,17 +179,13 @@ function PublicUserProfilePage() {
           <div className="px-6 sm:px-8 pb-8 -mt-12 sm:-mt-14">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div className="flex items-end gap-5">
-                {profile.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt={profile.username}
-                    className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover ring-4 ring-white dark:ring-zinc-900 shadow-md bg-zinc-100 dark:bg-zinc-800"
-                  />
-                ) : (
-                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold text-3xl sm:text-4xl ring-4 ring-white dark:ring-zinc-900 shadow-md">
-                    {profile.username.charAt(0).toUpperCase()}
-                  </div>
-                )}
+                <UserAvatar
+                  avatarUrl={profile.avatar_url}
+                  username={profile.username}
+                  size="2xl"
+                  shape="rounded"
+                  className="ring-4 ring-white dark:ring-zinc-900 shadow-md bg-zinc-100 dark:bg-zinc-800"
+                />
 
                 <div className="space-y-1 mb-1">
                   <div className="flex items-center gap-2">
@@ -490,19 +487,12 @@ function PublicUserProfilePage() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        {rev.reviewer?.avatar_url ? (
-                          <img
-                            src={rev.reviewer.avatar_url}
-                            alt={rev.reviewer.username}
-                            className="w-7 h-7 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 flex items-center justify-center text-xs font-bold">
-                            {rev.reviewer?.username
-                              ? rev.reviewer.username.charAt(0).toUpperCase()
-                              : 'U'}
-                          </div>
-                        )}
+                        <UserAvatar
+                          avatarUrl={rev.reviewer?.avatar_url}
+                          username={rev.reviewer?.username}
+                          size="sm"
+                          shape="circle"
+                        />
                         <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                           {rev.reviewer?.username || 'Verified Buyer'}
                         </span>

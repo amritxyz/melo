@@ -6,7 +6,7 @@ import {
   updateProfileApi,
 } from '#/lib/api'
 import type { SubmitReviewPayload, UpdateProfilePayload } from '#/types/auth'
-import { useAuth } from './useAuth'
+import { AUTH_QUERY_KEY, useAuth } from './useAuth'
 
 export function useUserProfile(userId: string | undefined) {
   return useQuery({
@@ -41,7 +41,23 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: (payload: UpdateProfilePayload) => updateProfileApi(payload),
     onSuccess: (updatedProfile) => {
-      // Invalidate current user profile cache
+      // 1. Immediately update auth user cache so Navbar and other auth consumers update in real-time
+      queryClient.setQueryData(AUTH_QUERY_KEY, (old: any) => {
+        if (!old?.user) return old
+        return {
+          ...old,
+          user: {
+            ...old.user,
+            avatar_url: updatedProfile.avatar_url,
+            bio: updatedProfile.bio,
+            location: updatedProfile.location,
+            phone: updatedProfile.phone,
+          },
+        }
+      })
+      queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY })
+
+      // 2. Invalidate user profile caches
       queryClient.invalidateQueries({
         queryKey: ['user-profile', updatedProfile.id],
       })

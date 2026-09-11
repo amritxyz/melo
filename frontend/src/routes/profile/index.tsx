@@ -12,11 +12,13 @@ import {
   CheckCircle2,
   ExternalLink,
   X,
+  Sparkles,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { Input } from '#/components/ui/Input'
 import { RatingStars } from '#/components/ui/RatingStars'
 import { Navbar } from '#/components/layout/Navbar'
+import { UserAvatar, AvatarPicker } from '#/components/avatars'
 import { useAuth } from '#/hooks/useAuth'
 import {
   useUserProfile,
@@ -153,20 +155,22 @@ function ProfilePage() {
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               {/* Avatar & Basic Info */}
               <div className="flex items-end gap-5">
-                <div className="relative">
-                  {profile?.avatar_url ? (
-                    <img
-                      src={profile.avatar_url}
-                      alt={profile.username}
-                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover ring-4 ring-white dark:ring-zinc-900 shadow-md bg-zinc-100 dark:bg-zinc-800"
-                    />
-                  ) : (
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold text-3xl sm:text-4xl ring-4 ring-white dark:ring-zinc-900 shadow-md">
-                      {profile?.username
-                        ? profile.username.charAt(0).toUpperCase()
-                        : 'U'}
-                    </div>
-                  )}
+                <div
+                  className="relative group cursor-pointer"
+                  onClick={handleOpenEdit}
+                  title="Click to customize avatar"
+                >
+                  <UserAvatar
+                    avatarUrl={profile?.avatar_url}
+                    username={profile?.username}
+                    size="2xl"
+                    shape="rounded"
+                    className="ring-4 ring-white dark:ring-zinc-900 shadow-md bg-zinc-100 dark:bg-zinc-800"
+                  />
+                  <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-xs font-semibold gap-1 backdrop-blur-xs">
+                    <Sparkles className="w-5 h-5 text-emerald-300" />
+                    <span>Change Avatar</span>
+                  </div>
                 </div>
 
                 <div className="space-y-1 mb-1">
@@ -349,19 +353,12 @@ function ProfilePage() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      {rev.reviewer?.avatar_url ? (
-                        <img
-                          src={rev.reviewer.avatar_url}
-                          alt={rev.reviewer.username}
-                          className="w-7 h-7 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 flex items-center justify-center text-xs font-bold">
-                          {rev.reviewer?.username
-                            ? rev.reviewer.username.charAt(0).toUpperCase()
-                            : 'U'}
-                        </div>
-                      )}
+                      <UserAvatar
+                        avatarUrl={rev.reviewer?.avatar_url}
+                        username={rev.reviewer?.username}
+                        size="sm"
+                        shape="circle"
+                      />
                       <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                         {rev.reviewer?.username || 'Buyer'}
                       </span>
@@ -458,18 +455,14 @@ function ProfilePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                  Avatar Image URL
+                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+                  Choose Avatar Persona
                 </label>
-                <Input
-                  type="url"
+                <AvatarPicker
                   value={avatarInput}
-                  onChange={(e) => setAvatarInput(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
+                  onChange={(val) => setAvatarInput(val)}
+                  disabled={isSaving}
                 />
-                <span className="text-[11px] text-zinc-500 mt-1 block">
-                  Provide an image URL for your profile picture.
-                </span>
               </div>
 
               <div className="flex justify-end gap-3 pt-3 border-t border-zinc-100 dark:border-zinc-800">
