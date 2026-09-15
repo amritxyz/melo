@@ -87,9 +87,9 @@ func (r *ConversationRepository) FindByUser(userID string) ([]models.Conversatio
 	}
 
 	for i := range convs {
-		var lastMsg models.Message
-		if err := r.db.Where("conversation_id = ?", convs[i].ID).Order("created_at DESC").First(&lastMsg).Error; err == nil {
-			convs[i].LastMessage = &lastMsg
+		var lastMsgs []models.Message
+		if err := r.db.Where("conversation_id = ?", convs[i].ID).Order("created_at DESC").Limit(1).Find(&lastMsgs).Error; err == nil && len(lastMsgs) > 0 {
+			convs[i].LastMessage = &lastMsgs[0]
 		}
 
 		var unreadCount int64
