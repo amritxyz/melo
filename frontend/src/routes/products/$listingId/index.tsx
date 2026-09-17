@@ -9,8 +9,8 @@ import {
   Pencil,
   MessageSquare,
   Navigation,
-  Sparkles,
 } from 'lucide-react'
+
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import { RatingStars } from '#/components/ui/RatingStars'
@@ -360,13 +360,14 @@ function ProductDetailPage() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="w-full gap-1.5 text-xs border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 bg-amber-50/40 dark:bg-amber-950/20 hover:bg-amber-100/50"
+                  className="w-full gap-1.5 font-mono text-xs text-zinc-700 dark:text-zinc-300"
                   onClick={() => setShowMeetupModal(true)}
                 >
-                  <Navigation className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                  <span>Safe Meetup Hub (Dijkstra)</span>
+                  <Navigation className="w-3.5 h-3.5 text-zinc-500" />
+                  <span>Meetup Calculator</span>
                 </Button>
               </div>
+
 
 
               {!isOwner && (
@@ -525,25 +526,19 @@ function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Similar Products: Algorithm 1 (Vector Space Cosine Similarity) */}
+        {/* Similar Products */}
         {similarListings && similarListings.length > 0 && (
-          <section className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
-              <div>
-                <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-indigo-500" />
-                  Similar Products You May Like
-                </h2>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                  Recommended using Vector Space Cosine Similarity on title, description, category, and price.
-                </p>
-              </div>
-              <span className="inline-flex items-center gap-1 self-start sm:self-auto px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-                Algorithm: Cosine Similarity
+          <section className="mt-10 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-zinc-100 dark:border-zinc-800/80">
+              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
+                Similar Products
+              </h2>
+              <span className="text-[10px] font-mono text-zinc-500">
+                {similarListings.length} {similarListings.length === 1 ? 'item' : 'items'}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {similarListings.map((simItem) => (
                 <ProductCard key={simItem.id} listing={simItem} />
               ))}
@@ -551,8 +546,9 @@ function ProductDetailPage() {
           </section>
         )}
 
-        {/* Algorithm 2: Safe Meetup Hub Modal (Dijkstra) */}
+        {/* Meetup Modal */}
         <MeetupModal
+
           isOpen={showMeetupModal}
           onClose={() => setShowMeetupModal(false)}
           sellerLocation={listing.location || listing.seller?.location || 'Traffic Chowk, Butwal'}

@@ -285,12 +285,13 @@ function MessagesPage() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="h-7 text-[11px] gap-1 px-2 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 bg-amber-50/40 dark:bg-amber-950/20"
+                      className="h-7 text-[11px] font-mono gap-1 px-2 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                       onClick={() => setShowMeetupModal(true)}
                     >
-                      <Navigation className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-                      <span className="hidden sm:inline">Safe Meetup</span>
+                      <Navigation className="w-3 h-3 text-zinc-500" />
+                      <span className="hidden sm:inline">Meetup Point</span>
                     </Button>
+
 
                     {/* Item Reference */}
                     {currentConv.listing && (
