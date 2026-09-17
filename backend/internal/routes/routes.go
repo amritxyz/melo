@@ -31,6 +31,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	convService := services.NewConversationService(convRepo, listingRepo)
 	favService := services.NewFavoriteService(favRepo, listingRepo)
 	userService := services.NewUserService(userRepo, reviewRepo, listingRepo)
+	meetupService := services.NewMeetupService()
 
 	// WebSocket Hub
 	hub := appws.NewHub(convService)
@@ -43,7 +44,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 	convHandler := handlers.NewConversationHandler(convService, hub, cfg.JWTSecret)
 	favHandler := handlers.NewFavoriteHandler(favService)
 	userHandler := handlers.NewUserHandler(userService)
-	locationHandler := handlers.NewLocationHandler()
+	locationHandler := handlers.NewLocationHandler(meetupService)
 	uploadHandler := handlers.NewUploadHandler("./uploads", db)
 
 	// Auth Middleware
@@ -73,6 +74,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 		locations := rg.Group("/locations")
 		{
 			locations.GET("", locationHandler.GetAll)
+			locations.GET("/meetup", locationHandler.SuggestMeetup)
 		}
 
 		// Listings routes
@@ -81,6 +83,7 @@ func Setup(db *gorm.DB, cfg config.Config) *gin.Engine {
 			// Public / Explore (optional auth to identify seller for their own inventory)
 			listings.GET("", optionalAuthMiddleware, listingHandler.GetAll)
 			listings.GET("/:id", listingHandler.GetByID)
+			listings.GET("/:id/similar", listingHandler.GetSimilar)
 
 			// Protected
 			listings.POST("", authMiddleware, listingHandler.Create)

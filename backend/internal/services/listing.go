@@ -136,6 +136,12 @@ func (s *ListingService) GetListings(params repositories.ListingFilterParams) ([
 	return s.listingRepo.FindAll(params)
 }
 
+func (s *ListingService) GetSimilarListings(id string, limit int) ([]models.Listing, error) {
+	rec := NewRecommendationService(s.listingRepo)
+	return rec.GetSimilarListings(id, limit)
+}
+
+
 func (s *ListingService) UpdateListing(userID, listingID string, req UpdateListingRequest) (*models.Listing, error) {
 	listing, err := s.listingRepo.FindByID(listingID)
 	if err != nil {

@@ -186,3 +186,17 @@ export const SUPPORTED_LOCATIONS: readonly LocationItem[] = [
 ] as const
 
 export type AppLocation = ButwalLocation | string
+
+export interface MeetupSuggestion {
+  hub_id: string
+  hub_name: string
+  buyer_distance_km: number
+  seller_distance_km: number
+  total_distance_km: number
+  distance_diff_km: number
+  buyer_path: string[]
+  seller_path: string[]
+  is_designated_safe_hub: boolean
+  explanation: string
+}
+

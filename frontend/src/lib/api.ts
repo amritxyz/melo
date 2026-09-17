@@ -18,7 +18,7 @@ import type {
   Pagination,
   UpdateListingPayload,
 } from '#/types/listing'
-import type { LocationItem } from '#/types/location'
+import type { LocationItem, MeetupSuggestion } from '#/types/location'
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from './auth'
 
 export class ApiError extends Error {
@@ -200,6 +200,18 @@ export async function getLocationsApi(): Promise<LocationItem[]> {
   return apiFetch<LocationItem[]>('/api/locations')
 }
 
+export async function getMeetupSuggestionApi(
+  buyerLocation: string,
+  sellerLocation: string,
+): Promise<MeetupSuggestion> {
+  const searchParams = new URLSearchParams()
+  searchParams.set('buyer_location', buyerLocation)
+  searchParams.set('seller_location', sellerLocation)
+  return apiFetch<MeetupSuggestion>(
+    `/api/locations/meetup?${searchParams.toString()}`,
+  )
+}
+
 // ----------------- Listings API -----------------
 
 export async function getListingsApi(
@@ -235,6 +247,16 @@ export async function getListingsApi(
 export async function getListingByIDApi(id: string): Promise<Listing> {
   return apiFetch<Listing>(`/api/listings/${encodeURIComponent(id)}`)
 }
+
+export async function getSimilarListingsApi(
+  id: string,
+  limit: number = 4,
+): Promise<Listing[]> {
+  return apiFetch<Listing[]>(
+    `/api/listings/${encodeURIComponent(id)}/similar?limit=${limit}`,
+  )
+}
+
 
 export async function createListingApi(
   payload: CreateListingPayload,

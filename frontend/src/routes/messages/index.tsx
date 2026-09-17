@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft, Check, CheckCheck, Send } from 'lucide-react'
+import { ArrowLeft, Check, CheckCheck, Send, Navigation } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
+import { MeetupModal } from '#/components/listings/MeetupModal'
 import { Navbar } from '#/components/layout/Navbar'
 import { UserAvatar } from '#/components/avatars'
 import { useAuth } from '#/hooks/useAuth'
@@ -45,7 +46,9 @@ function MessagesPage() {
   const markReadMutation = useMarkConversationRead()
 
   const [inputContent, setInputContent] = React.useState('')
+  const [showMeetupModal, setShowMeetupModal] = React.useState(false)
   const messagesEndRef = React.useRef<HTMLDivElement | null>(null)
+
 
   const { isConnected, sendWebSocketMessage, sendReadReceipt } =
     useChatWebSocket(selectedConvId)
@@ -277,22 +280,36 @@ function MessagesPage() {
                     </div>
                   </div>
 
-                  {/* Item Reference */}
-                  {currentConv.listing && (
-                    <Link
-                      to="/products/$listingId"
-                      params={{ listingId: currentConv.listing.id }}
-                      className="text-right hover:underline shrink-0 max-w-[200px]"
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-7 text-[11px] gap-1 px-2 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 bg-amber-50/40 dark:bg-amber-950/20"
+                      onClick={() => setShowMeetupModal(true)}
                     >
-                      <span className="block text-[11px] truncate text-zinc-700 dark:text-zinc-300">
-                        {formatTitleCase(currentConv.listing.title)}
-                      </span>
-                      <span className="block text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
-                        NPR {currentConv.listing.price.toLocaleString()}
-                      </span>
-                    </Link>
-                  )}
+                      <Navigation className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                      <span className="hidden sm:inline">Safe Meetup</span>
+                    </Button>
+
+                    {/* Item Reference */}
+                    {currentConv.listing && (
+                      <Link
+                        to="/products/$listingId"
+                        params={{ listingId: currentConv.listing.id }}
+                        className="text-right hover:underline max-w-[160px]"
+                      >
+                        <span className="block text-[11px] truncate text-zinc-700 dark:text-zinc-300">
+                          {formatTitleCase(currentConv.listing.title)}
+                        </span>
+                        <span className="block text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
+                          NPR {currentConv.listing.price.toLocaleString()}
+                        </span>
+                      </Link>
+                    )}
+                  </div>
                 </div>
+
 
                 {/* Messages Stream */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-2 text-xs font-mono">
@@ -378,8 +395,21 @@ function MessagesPage() {
                     </Button>
                   </form>
                 </div>
+
+                <MeetupModal
+                  isOpen={showMeetupModal}
+                  onClose={() => setShowMeetupModal(false)}
+                  sellerLocation={
+                    currentConv.listing?.location ||
+                    otherParticipant?.location ||
+                    'Traffic Chowk, Butwal'
+                  }
+                  initialBuyerLocation={user.location || 'Devinagar, Butwal'}
+                  sellerName={otherParticipant?.username || 'Trader'}
+                />
               </>
             ) : (
+
               <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-xs font-mono text-zinc-500">
                 <p>Select a thread from the left pane to view messages.</p>
               </div>

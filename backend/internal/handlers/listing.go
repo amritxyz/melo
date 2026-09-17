@@ -121,6 +121,31 @@ func (h *ListingHandler) GetByID(c *gin.Context) {
 	})
 }
 
+func (h *ListingHandler) GetSimilar(c *gin.Context) {
+	id := c.Param("id")
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "4"))
+	similar, err := h.listingService.GetSimilarListings(id, limit)
+	if err != nil {
+		status := http.StatusInternalServerError
+		if errors.Is(err, services.ErrListingNotFound) {
+			status = http.StatusNotFound
+		}
+		c.JSON(status, gin.H{
+			"success": false,
+			"error": gin.H{
+				"message": err.Error(),
+			},
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    similar,
+	})
+}
+
+
 func (h *ListingHandler) GetAll(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))

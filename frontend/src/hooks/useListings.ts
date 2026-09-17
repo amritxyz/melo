@@ -5,9 +5,11 @@ import {
   getCategoriesApi,
   getListingByIDApi,
   getListingsApi,
+  getSimilarListingsApi,
   markListingSoldApi,
   updateListingApi,
 } from '#/lib/api'
+
 import type {
   CreateListingPayload,
   ListingFilterParams,
@@ -41,6 +43,16 @@ export function useListing(id: string) {
     enabled: !!id,
   })
 }
+
+export function useSimilarListings(id: string, limit = 4) {
+  return useQuery({
+    queryKey: ['listings', 'similar', id, limit],
+    queryFn: () => getSimilarListingsApi(id, limit),
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5,
+  })
+}
+
 
 export function useCreateListing() {
   const queryClient = useQueryClient()
