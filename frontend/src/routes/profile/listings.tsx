@@ -12,6 +12,10 @@ import {
   MapPin,
   Calendar,
   Pencil,
+  User as UserIcon,
+  Search,
+  ArrowUpDown,
+  X,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
@@ -34,6 +38,8 @@ function MyListingsPage() {
   const [activeTab, setActiveTab] = React.useState<'all' | 'active' | 'sold'>(
     'all',
   )
+  const [inventorySearch, setInventorySearch] = React.useState('')
+  const [sortBy, setSortBy] = React.useState<'newest' | 'price-asc' | 'price-desc' | 'title'>('newest')
 
   const [confirmSoldId, setConfirmSoldId] = React.useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = React.useState<string | null>(
@@ -62,7 +68,31 @@ function MyListingsPage() {
   const soldCount = allUserListings.filter((l) => l.status === 'sold').length
   const totalCount = allUserListings.length
 
-  const listings = data?.listings || []
+  const rawListings = data?.listings || []
+
+  const listings = React.useMemo(() => {
+    let result = [...rawListings]
+    if (inventorySearch.trim()) {
+      const q = inventorySearch.toLowerCase().trim()
+      result = result.filter(
+        (item) =>
+          item.title.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q) ||
+          (item.category?.name && item.category.name.toLowerCase().includes(q)),
+      )
+    }
+
+    result.sort((a, b) => {
+      if (sortBy === 'price-asc') return a.price - b.price
+      if (sortBy === 'price-desc') return b.price - a.price
+      if (sortBy === 'title') return a.title.localeCompare(b.title)
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+    })
+
+    return result
+  }, [rawListings, inventorySearch, sortBy])
 
   const handleConfirmSold = async (id: string) => {
     await markSoldMutation.mutateAsync(id)
@@ -142,12 +172,24 @@ function MyListingsPage() {
             </p>
           </div>
 
-          <Link to="/sell">
-            <Button size="sm" className="gap-1.5 font-mono text-xs">
-              <Plus className="w-3.5 h-3.5" />
-              <span>Create Listing</span>
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <Link to="/users/$userId" params={{ userId: user.id }}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 font-mono text-xs"
+              >
+                <UserIcon className="w-3.5 h-3.5 text-zinc-400" />
+                <span className="hidden sm:inline">Storefront</span>
+              </Button>
+            </Link>
+            <Link to="/sell">
+              <Button size="sm" className="gap-1.5 font-mono text-xs">
+                <Plus className="w-3.5 h-3.5" />
+                <span>Create Listing</span>
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Row */}
@@ -189,32 +231,74 @@ function MyListingsPage() {
           </div>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="flex items-center gap-1.5 border-b border-zinc-200 dark:border-zinc-800 pb-2">
-          {(['all', 'active', 'sold'] as const).map((tab) => {
-            const count =
-              tab === 'all'
-                ? totalCount
-                : tab === 'active'
-                  ? activeCount
-                  : soldCount
-            const label =
-              tab === 'all' ? 'All' : tab === 'active' ? 'Active' : 'Sold'
-            const isSelected = activeTab === tab
-            return (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-2.5 py-1 rounded-xs text-xs font-mono transition-colors cursor-pointer border ${
-                  isSelected
-                    ? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                }`}
+        {/* Controls Bar: Filter Tabs + Search & Sort */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+          {/* Tabs */}
+          <div className="flex items-center gap-1.5 overflow-x-auto">
+            {(['all', 'active', 'sold'] as const).map((tab) => {
+              const count =
+                tab === 'all'
+                  ? totalCount
+                  : tab === 'active'
+                    ? activeCount
+                    : soldCount
+              const label =
+                tab === 'all' ? 'All' : tab === 'active' ? 'Active' : 'Sold'
+              const isSelected = activeTab === tab
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-2.5 py-1 rounded-xs text-xs font-mono transition-colors cursor-pointer border whitespace-nowrap ${
+                    isSelected
+                      ? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
+                      : 'text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                  }`}
+                >
+                  {label} [{count}]
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Search in inventory & Sort */}
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1 md:w-56">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+              <input
+                type="text"
+                value={inventorySearch}
+                onChange={(e) => setInventorySearch(e.target.value)}
+                placeholder="Filter inventory..."
+                className="w-full pl-8 pr-7 py-1 text-xs font-mono bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-600 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400"
+              />
+              {inventorySearch && (
+                <button
+                  type="button"
+                  onClick={() => setInventorySearch('')}
+                  aria-label="Clear inventory filter"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                aria-label="Sort inventory listings"
+                className="h-7 px-2 pr-6 text-xs font-mono bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs text-zinc-700 dark:text-zinc-300 focus:outline-none cursor-pointer appearance-none"
               >
-                {label} [{count}]
-              </button>
-            )
-          })}
+                <option value="newest">Sort: Newest</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="title">Title: A to Z</option>
+              </select>
+              <ArrowUpDown className="w-3 h-3 absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+            </div>
+          </div>
         </div>
 
         {/* Listings Management List */}
@@ -226,22 +310,36 @@ function MyListingsPage() {
           <div className="py-12 text-center rounded-xs border border-dashed border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 space-y-2">
             <Package className="w-8 h-8 text-zinc-400 mx-auto stroke-[1.5]" />
             <h3 className="text-xs font-bold font-mono">
-              {activeTab === 'sold'
-                ? 'No sold items yet'
-                : activeTab === 'active'
-                  ? 'No active items listed'
-                  : 'You have not listed any items yet'}
+              {inventorySearch.trim()
+                ? `No listings matching "${inventorySearch}"`
+                : activeTab === 'sold'
+                  ? 'No sold items yet'
+                  : activeTab === 'active'
+                    ? 'No active items listed'
+                    : 'You have not listed any items yet'}
             </h3>
             <p className="text-xs text-zinc-500 max-w-sm mx-auto">
-              Turn your unused items into cash. Post a listing in just a few
-              minutes.
+              {inventorySearch.trim()
+                ? 'Try searching with different terms or clear the filter.'
+                : 'Turn your unused items into cash. Post a listing in just a few minutes.'}
             </p>
             <div className="pt-2">
-              <Link to="/sell">
-                <Button size="sm" className="font-mono text-xs">
-                  Post Your First Listing
+              {inventorySearch.trim() ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="font-mono text-xs"
+                  onClick={() => setInventorySearch('')}
+                >
+                  Clear Filter
                 </Button>
-              </Link>
+              ) : (
+                <Link to="/sell">
+                  <Button size="sm" className="font-mono text-xs">
+                    Post Your First Listing
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         ) : (
@@ -257,6 +355,12 @@ function MyListingsPage() {
               const isConfirmingSold = confirmSoldId === item.id
               const isConfirmingDelete = confirmDeleteId === item.id
 
+              const primaryImg =
+                item.images && item.images.length > 0
+                  ? item.images.find((img) => img.is_primary)?.url ||
+                    item.images[0].url
+                  : null
+
               return (
                 <div
                   key={item.id}
@@ -269,8 +373,17 @@ function MyListingsPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     {/* Item Info */}
                     <div className="flex items-start gap-3">
-                      <div className="w-12 h-12 rounded-xs bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shrink-0 flex items-center justify-center">
-                        <Tag className="w-5 h-5 text-zinc-400" />
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xs bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shrink-0 overflow-hidden flex items-center justify-center relative">
+                        {primaryImg ? (
+                          <img
+                            src={primaryImg}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <Tag className="w-5 h-5 text-zinc-400" />
+                        )}
                       </div>
 
                       <div className="min-w-0">
@@ -292,9 +405,20 @@ function MyListingsPage() {
                           {formatTitleCase(item.title)}
                         </Link>
 
-                        <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-500 mt-1">
+                        <div className="flex flex-wrap items-center gap-2.5 text-[11px] font-mono text-zinc-500 mt-1">
                           <span className="font-bold text-zinc-900 dark:text-zinc-100">
                             {formattedPrice}
+                          </span>
+                          <span
+                            className={`inline-flex items-center px-1.5 py-0.5 rounded-xs text-[10px] font-mono border ${
+                              isItemSold || (item.quantity ?? 1) <= 0
+                                ? 'bg-zinc-100 text-zinc-500 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
+                                : (item.quantity ?? 1) > 1
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800'
+                                  : 'bg-zinc-50 text-zinc-600 border-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:border-zinc-800'
+                            }`}
+                          >
+                            Qty: {item.quantity ?? 1}
                           </span>
                           {item.location && (
                             <span className="flex items-center gap-1">

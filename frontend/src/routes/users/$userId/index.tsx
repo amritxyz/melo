@@ -12,12 +12,17 @@ import {
   Tag,
   X,
   Pencil,
+  Share2,
+  Check,
+  LayoutGrid,
+  List,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import { RatingStars } from '#/components/ui/RatingStars'
 import { Navbar } from '#/components/layout/Navbar'
 import { UserAvatar } from '#/components/avatars'
+import { ProductGrid } from '#/components/listings/ProductGrid'
 import { useAuth } from '#/hooks/useAuth'
 import {
   useUserProfile,
@@ -45,6 +50,8 @@ function PublicUserProfilePage() {
   const [activeTab, setActiveTab] = React.useState<
     'active' | 'sold' | 'reviews'
   >('active')
+  const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid')
+  const [copied, setCopied] = React.useState(false)
   const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false)
   const [ratingVal, setRatingVal] = React.useState(5)
   const [commentVal, setCommentVal] = React.useState('')
@@ -79,6 +86,21 @@ function PublicUserProfilePage() {
   const reviews = reviewsData?.reviews || []
   const activeListings = activeListingsData?.listings || []
   const soldListings = soldListingsData?.listings || []
+
+  const positiveRate =
+    reviews.length > 0
+      ? Math.round(
+          (reviews.filter((r) => r.rating >= 4).length / reviews.length) * 100,
+        )
+      : null
+
+  const handleShare = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(window.location.href)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
 
   const handleMessageSeller = async () => {
     if (!isAuthenticated) {
@@ -187,45 +209,66 @@ function PublicUserProfilePage() {
             </span>
           </div>
 
-          {!isSelf ? (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  if (!isAuthenticated) {
-                    navigate({ to: '/login' })
-                  } else {
-                    setIsReviewModalOpen(true)
-                  }
-                }}
-                className="gap-1.5 font-mono text-xs"
-              >
-                <Star className="w-3.5 h-3.5" />
-                <span>Rate & Review</span>
-              </Button>
-              <Button
-                size="sm"
-                onClick={handleMessageSeller}
-                isLoading={startConvMutation.isPending}
-                className="gap-1.5 font-mono text-xs"
-              >
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span>Message Seller</span>
-              </Button>
-            </div>
-          ) : (
-            <Link to="/profile">
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-1.5 font-mono text-xs"
-              >
-                <Pencil className="w-3.5 h-3.5" />
-                <span>Edit Profile</span>
-              </Button>
-            </Link>
-          )}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleShare}
+              className="gap-1.5 font-mono text-xs"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span>Copied link!</span>
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>Share</span>
+                </>
+              )}
+            </Button>
+
+            {!isSelf ? (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      navigate({ to: '/login' })
+                    } else {
+                      setIsReviewModalOpen(true)
+                    }
+                  }}
+                  className="gap-1.5 font-mono text-xs"
+                >
+                  <Star className="w-3.5 h-3.5" />
+                  <span>Rate & Review</span>
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleMessageSeller}
+                  isLoading={startConvMutation.isPending}
+                  className="gap-1.5 font-mono text-xs"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Message Seller</span>
+                </Button>
+              </>
+            ) : (
+              <Link to="/profile">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 font-mono text-xs"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>Edit Profile</span>
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Profile Card */}
@@ -250,12 +293,17 @@ function PublicUserProfilePage() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <RatingStars
                   rating={profile.rating}
                   totalCount={profile.review_count}
                   size="sm"
                 />
+                {positiveRate !== null && (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-xs text-[10px] font-mono bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                    {positiveRate}% Positive Feedback
+                  </span>
+                )}
               </div>
 
               {/* Bio */}
@@ -293,152 +341,93 @@ function PublicUserProfilePage() {
         </div>
 
         {/* Tab Selector */}
-        <div className="flex items-center gap-1.5 border-b border-zinc-200 dark:border-zinc-800 pb-2">
-          <button
-            onClick={() => setActiveTab('active')}
-            className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'active'
-                ? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
-                : 'text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-            }`}
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>Active Listings [{activeListings.length}]</span>
-          </button>
+        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-2">
+          <div className="flex items-center gap-1.5 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('active')}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'active'
+                  ? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
+                  : 'text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span>Active Listings [{activeListings.length}]</span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('sold')}
-            className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'sold'
-                ? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
-                : 'text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-            }`}
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Sold [{soldListings.length}]</span>
-          </button>
+            <button
+              onClick={() => setActiveTab('sold')}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'sold'
+                  ? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
+                  : 'text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+              }`}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Sold [{soldListings.length}]</span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('reviews')}
-            className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'reviews'
-                ? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
-                : 'text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-            }`}
-          >
-            <Star className="w-3.5 h-3.5" />
-            <span>Reviews [{reviews.length}]</span>
-          </button>
+            <button
+              onClick={() => setActiveTab('reviews')}
+              className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'reviews'
+                  ? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
+                  : 'text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+              }`}
+            >
+              <Star className="w-3.5 h-3.5" />
+              <span>Reviews [{reviews.length}]</span>
+            </button>
+          </div>
+
+          {activeTab !== 'reviews' && (
+            <div className="hidden sm:flex items-center border border-zinc-300 dark:border-zinc-700 rounded-xs overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                title="Grid view"
+                className={`p-1.5 transition-colors cursor-pointer ${
+                  viewMode === 'grid'
+                    ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                    : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 bg-white dark:bg-zinc-900'
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('list')}
+                title="List view"
+                className={`p-1.5 transition-colors cursor-pointer border-l border-zinc-300 dark:border-zinc-700 ${
+                  viewMode === 'list'
+                    ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                    : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 bg-white dark:bg-zinc-900'
+                }`}
+              >
+                <List className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Tab 1: Active Listings */}
         {activeTab === 'active' && (
-          <div>
-            {activeLoading ? (
-              <div className="py-8 text-center text-xs font-mono text-zinc-500">
-                Loading listings...
-              </div>
-            ) : activeListings.length === 0 ? (
-              <div className="py-12 text-center bg-white dark:bg-zinc-900 rounded-xs border border-dashed border-zinc-200 dark:border-zinc-800 p-6 space-y-1">
-                <ShoppingBag className="w-6 h-6 text-zinc-400 mx-auto mb-2" />
-                <p className="text-xs font-mono text-zinc-700 dark:text-zinc-300">
-                  No active listings currently available
-                </p>
-                <p className="text-[11px] text-zinc-500">
-                  Check back later or browse other marketplace sellers.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {activeListings.map((item) => (
-                  <Link
-                    key={item.id}
-                    to="/products/$listingId"
-                    params={{ listingId: item.id }}
-                    className="group bg-white dark:bg-zinc-900 rounded-xs border border-zinc-200 dark:border-zinc-800 overflow-hidden hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors flex flex-col"
-                  >
-                    <div className="h-32 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center relative border-b border-zinc-200 dark:border-zinc-800">
-                      <Tag className="w-6 h-6 text-zinc-400" />
-                      <div className="absolute top-2 left-2">
-                        <ConditionBadge condition={item.condition} size="sm" />
-                      </div>
-                    </div>
-                    <div className="p-3 flex flex-col flex-1 justify-between gap-2">
-                      <div>
-                        <h3 className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100 group-hover:underline line-clamp-1">
-                          {formatTitleCase(item.title)}
-                        </h3>
-                        <p className="text-[11px] text-zinc-500 line-clamp-2 mt-1">
-                          {item.description}
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800 text-[11px] font-mono">
-                        <span className="font-bold text-zinc-900 dark:text-zinc-100">
-                          {formatCurrency(item.price)}
-                        </span>
-                        {item.location && (
-                          <span className="text-zinc-500 flex items-center gap-1">
-                            <MapPin className="w-3 h-3 text-zinc-400" />
-                            {formatLocation(item.location)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <ProductGrid
+            listings={activeListings}
+            isLoading={activeLoading}
+            viewMode={viewMode}
+            emptyMessage="No active listings currently available from this seller."
+          />
         )}
 
         {/* Tab 2: Sold Items */}
         {activeTab === 'sold' && (
-          <div>
-            {soldLoading ? (
-              <div className="py-8 text-center text-xs font-mono text-zinc-500">
-                Loading sold listings...
-              </div>
-            ) : soldListings.length === 0 ? (
-              <div className="py-12 text-center bg-white dark:bg-zinc-900 rounded-xs border border-dashed border-zinc-200 dark:border-zinc-800 p-6 space-y-1">
-                <CheckCircle2 className="w-6 h-6 text-zinc-400 mx-auto mb-2" />
-                <p className="text-xs font-mono text-zinc-700 dark:text-zinc-300">
-                  No sold items recorded
-                </p>
-                <p className="text-[11px] text-zinc-500">
-                  Items marked as sold will be archived here.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {soldListings.map((item) => (
-                  <Link
-                    key={item.id}
-                    to="/products/$listingId"
-                    params={{ listingId: item.id }}
-                    className="opacity-75 hover:opacity-100 group bg-white dark:bg-zinc-900 rounded-xs border border-zinc-200 dark:border-zinc-800 overflow-hidden hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors flex flex-col"
-                  >
-                    <div className="h-32 bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center relative border-b border-zinc-200 dark:border-zinc-800">
-                      <Tag className="w-6 h-6 text-zinc-400" />
-                      <div className="absolute top-2 left-2">
-                        <StatusBadge status="sold" size="sm" />
-                      </div>
-                    </div>
-                    <div className="p-3 flex flex-col flex-1 justify-between gap-2">
-                      <h3 className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">
-                        {formatTitleCase(item.title)}
-                      </h3>
-                      <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800 text-[11px] font-mono">
-                        <span className="text-zinc-500 line-through">
-                          {formatCurrency(item.price)}
-                        </span>
-                        <span className="text-zinc-400">Sold</span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <ProductGrid
+            listings={soldListings}
+            isLoading={soldLoading}
+            viewMode={viewMode}
+            emptyMessage="No sold items recorded for this seller."
+          />
         )}
 
         {/* Tab 3: Reviews */}

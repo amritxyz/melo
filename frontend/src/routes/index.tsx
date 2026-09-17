@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { Search, Plus, Filter, X } from 'lucide-react'
+import { Plus, Filter, X, LayoutGrid, List, RotateCcw } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ProductGrid } from '#/components/listings/ProductGrid'
 import { FilterSidebar } from '#/components/listings/FilterSidebar'
@@ -70,31 +70,27 @@ function Home() {
   const sortBy: SortOption = searchParams.sort || 'newest'
   const page = searchParams.page || 1
 
-  // Local input state for search box typing
-  const [searchInput, setSearchInput] = React.useState(searchQuery)
+  const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid')
 
-  // Keep local search input in sync if URL query changes externally (e.g. back/forward button or reset)
   React.useEffect(() => {
-    setSearchInput(searchQuery)
-  }, [searchQuery])
-
-  // Debounced search effect updating the URL
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      const trimmed = searchInput.trim()
-      if (trimmed !== searchQuery) {
-        navigate({
-          search: (prev) => ({
-            ...prev,
-            q: trimmed || undefined,
-            page: undefined,
-          }),
-          replace: true,
-        })
+    try {
+      const saved = localStorage.getItem('melo_view_mode')
+      if (saved === 'list' || saved === 'grid') {
+        setViewMode(saved)
       }
-    }, 250)
-    return () => clearTimeout(timer)
-  }, [searchInput, searchQuery, navigate])
+    } catch {
+      // ignore storage errors
+    }
+  }, [])
+
+  const handleSetViewMode = (mode: 'grid' | 'list') => {
+    setViewMode(mode)
+    try {
+      localStorage.setItem('melo_view_mode', mode)
+    } catch {
+      // ignore storage errors
+    }
+  }
 
   const { data, isLoading: listingsLoading } = useListings({
     page,
@@ -111,7 +107,6 @@ function Home() {
   const totalPages = Math.ceil(total / 16) || 1
 
   const handleResetFilters = () => {
-    setSearchInput('')
     navigate({
       search: () => ({}),
     })
@@ -216,6 +211,8 @@ function Home() {
         </div>
       </div>
 
+
+
       {/* Main Two-Column Layout */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
@@ -270,21 +267,72 @@ function Home() {
 
           {/* Results Main Column */}
           <div className="md:col-span-3 space-y-4">
-            {/* Search Bar & Stats Header */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
-                <input
-                  type="search"
-                  placeholder="Filter listings by keyword (e.g. ThinkPad, gravel bike, desk)..."
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  className="w-full h-8 pl-8 pr-3 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-500"
-                />
+            {/* Results Header Toolbar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-mono font-semibold text-zinc-900 dark:text-zinc-100">
+                  {total} {total === 1 ? 'item' : 'items'}
+                </span>
+                {searchQuery && (
+                  <span className="text-xs font-mono text-zinc-500">
+                    matching <span className="text-zinc-900 dark:text-zinc-100 font-semibold">"{searchQuery}"</span>
+                  </span>
+                )}
+                {!searchQuery && !hasActiveFilters && (
+                  <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-mono text-zinc-500 ml-2">
+                    <span className="text-zinc-400 text-[10px]">Popular:</span>
+                    {['ThinkPad', 'Bicycle', 'Desk', 'Guitar', 'Monitor'].map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() =>
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              q: tag,
+                              page: undefined,
+                            }),
+                          })
+                        }
+                        className="px-1.5 py-0.5 rounded-xs border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 bg-zinc-50 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 transition-colors cursor-pointer"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              <div className="text-xs font-mono text-zinc-500 shrink-0 self-center">
-                [{total} {total === 1 ? 'result' : 'results'}]
+              {/* Grid / List View Toggle */}
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <div className="flex items-center border border-zinc-200 dark:border-zinc-800 rounded-xs overflow-hidden bg-white dark:bg-zinc-900">
+                  <button
+                    type="button"
+                    onClick={() => handleSetViewMode('grid')}
+                    className={`p-1.5 transition-colors cursor-pointer ${
+                      viewMode === 'grid'
+                        ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold'
+                        : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                    }`}
+                    title="Grid view"
+                    aria-label="Grid view"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSetViewMode('list')}
+                    className={`p-1.5 transition-colors cursor-pointer border-l border-zinc-200 dark:border-zinc-800 ${
+                      viewMode === 'list'
+                        ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold'
+                        : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                    }`}
+                    title="List view"
+                    aria-label="List view"
+                  >
+                    <List className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -357,7 +405,6 @@ function Home() {
                     query: &quot;{searchQuery}&quot;
                     <button
                       onClick={() => {
-                        setSearchInput('')
                         navigate({
                           search: (prev) => ({
                             ...prev,
@@ -372,6 +419,15 @@ function Home() {
                     </button>
                   </span>
                 )}
+
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="font-mono text-[10px] text-red-600 dark:text-red-400 hover:underline flex items-center gap-0.5 ml-1 cursor-pointer"
+                >
+                  <RotateCcw className="w-2.5 h-2.5" />
+                  <span>Clear all</span>
+                </button>
               </div>
             )}
 
@@ -379,6 +435,18 @@ function Home() {
             <ProductGrid
               listings={listings}
               isLoading={listingsLoading}
+              viewMode={viewMode}
+              onResetFilters={handleResetFilters}
+              categories={categories}
+              onSelectCategory={(id) => {
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    category: id,
+                    page: undefined,
+                  }),
+                })
+              }}
               emptyMessage={
                 hasActiveFilters
                   ? 'No listings match the selected query or filters.'

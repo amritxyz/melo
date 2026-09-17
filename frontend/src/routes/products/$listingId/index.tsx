@@ -9,6 +9,9 @@ import {
   Pencil,
   MessageSquare,
   Navigation,
+  Share2,
+  Check,
+  ShieldCheck,
 } from 'lucide-react'
 
 import { Button } from '#/components/ui/Button'
@@ -30,6 +33,13 @@ import {
 } from '#/hooks/useListings'
 import { formatTitleCase, formatLocation, formatName } from '#/lib/utils'
 
+const conditionNotes: Record<string, string> = {
+  new: 'Brand new, unopened and unused.',
+  like_new: 'Nearly new, minimal prior use with no visible flaws.',
+  good: 'Fully operational with minor cosmetic marks of normal use.',
+  fair: 'Working properly with noticeable wear or cosmetic marks.',
+  poor: 'Heavy wear; functional or suitable for spare parts/repair.',
+}
 
 export const Route = createFileRoute('/products/$listingId/')({
   component: ProductDetailPage,
@@ -43,6 +53,7 @@ function ProductDetailPage() {
   const [showSoldConfirm, setShowSoldConfirm] = React.useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false)
   const [showMeetupModal, setShowMeetupModal] = React.useState(false)
+  const [copiedShare, setCopiedShare] = React.useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = React.useState(0)
   const [failedImages, setFailedImages] = React.useState<
     Record<string, boolean>
@@ -56,6 +67,14 @@ function ProductDetailPage() {
   const markSoldMutation = useMarkListingSold()
   const deleteMutation = useDeleteListing()
   const startConvMutation = useStartConversation()
+
+  const handleShare = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(window.location.href)
+      setCopiedShare(true)
+      setTimeout(() => setCopiedShare(false), 2000)
+    }
+  }
 
   const handleMessageSeller = async () => {
     if (!currentUser) {
@@ -141,22 +160,35 @@ function ProductDetailPage() {
 
       {/* Breadcrumbs */}
       <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 py-2 text-xs font-mono">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1.5 text-zinc-500">
-          <Link to="/" className="hover:underline">
-            marketplace
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 text-zinc-500 overflow-hidden truncate">
+            <Link to="/" className="hover:underline shrink-0">
+              marketplace
+            </Link>
+            <span>/</span>
+            {listing.category && (
+              <>
+                <Link
+                  to="/"
+                  search={{ category: listing.category_id }}
+                  className="text-zinc-700 dark:text-zinc-300 hover:underline shrink-0"
+                >
+                  {listing.category.name.toLowerCase()}
+                </Link>
+                <span>/</span>
+              </>
+            )}
+            <span className="text-zinc-900 dark:text-zinc-100 truncate">
+              {formatTitleCase(listing.title)}
+            </span>
+          </div>
+
+          <Link
+            to="/"
+            className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:underline shrink-0 text-[11px]"
+          >
+            ← Back to results
           </Link>
-          <span>/</span>
-          {listing.category && (
-            <>
-              <span className="text-zinc-700 dark:text-zinc-300">
-                {listing.category.name.toLowerCase()}
-              </span>
-              <span>/</span>
-            </>
-          )}
-          <span className="text-zinc-900 dark:text-zinc-100 truncate max-w-[200px] sm:max-w-none">
-            {formatTitleCase(listing.title)}
-          </span>
         </div>
       </div>
 
@@ -210,11 +242,30 @@ function ProductDetailPage() {
                   )}
                 </div>
 
-                {!isOwner && (
-                  <div className="absolute top-2 right-2 z-10">
+                <div className="absolute top-2 right-2 z-10 flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    className="h-6 px-2 rounded-xs border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 flex items-center gap-1 text-[11px] font-mono shadow-xs backdrop-blur-xs cursor-pointer transition-colors"
+                    title="Copy listing link"
+                  >
+                    {copiedShare ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-600 font-semibold">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-3 h-3" />
+                        <span>Share</span>
+                      </>
+                    )}
+                  </button>
+
+                  {!isOwner && (
                     <FavoriteButton listingId={listing.id} variant="badge" />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* Thumbnails if multiple images */}
@@ -294,11 +345,16 @@ function ProductDetailPage() {
                     {listing.category?.name || 'General'}
                   </span>
                 </div>
-                <div className="flex px-3 py-1.5 justify-between">
-                  <span className="text-zinc-500">Condition:</span>
-                  <span className="capitalize text-zinc-900 dark:text-zinc-100">
-                    {listing.condition.replace('_', ' ')}
-                  </span>
+                <div className="flex px-3 py-2 justify-between items-start gap-4">
+                  <span className="text-zinc-500 shrink-0">Condition:</span>
+                  <div className="text-right">
+                    <span className="capitalize text-zinc-900 dark:text-zinc-100 font-semibold block">
+                      {listing.condition.replace('_', ' ')}
+                    </span>
+                    <span className="text-[10px] text-zinc-500 block">
+                      {conditionNotes[listing.condition] || 'Standard pre-owned condition.'}
+                    </span>
+                  </div>
                 </div>
                 <div className="flex px-3 py-1.5 justify-between">
                   <span className="text-zinc-500">Listed:</span>
@@ -378,7 +434,18 @@ function ProductDetailPage() {
                 )}
               </div>
 
-              <div className="pt-2">
+              {/* Seller's other items link (eBay pattern) */}
+              <div className="pt-1">
+                <Link
+                  to="/users/$userId"
+                  params={{ userId: listing.seller_id }}
+                  className="block text-center py-1 text-xs font-mono border border-zinc-200 dark:border-zinc-800 rounded-xs bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors"
+                >
+                  Seller&apos;s other items →
+                </Link>
+              </div>
+
+              <div className="pt-1">
                 <Button
                   type="button"
                   variant="outline"
@@ -390,8 +457,6 @@ function ProductDetailPage() {
                   <span>Meetup Calculator</span>
                 </Button>
               </div>
-
-
 
               {!isOwner && (
                 <div className="pt-2 space-y-2">
@@ -413,6 +478,34 @@ function ProductDetailPage() {
                   />
                 </div>
               )}
+            </div>
+
+            {/* Buyer Safety Guarantee (eBay-style local reassurance) */}
+            <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20 rounded-xs p-3.5 space-y-2 text-xs font-mono">
+              <div className="flex items-center gap-1.5 text-zinc-800 dark:text-zinc-200 font-semibold text-[11px] uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>Buyer Safety & Handover</span>
+              </div>
+              <ul className="space-y-1.5 text-[11px] text-zinc-600 dark:text-zinc-400">
+                <li className="flex items-start gap-1.5">
+                  <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                  <span>
+                    <strong>Inspect before paying:</strong> Always examine and test items in person before completing transaction.
+                  </span>
+                </li>
+                <li className="flex items-start gap-1.5">
+                  <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                  <span>
+                    <strong>Safe public meetup:</strong> Use the Meetup Calculator to find verified hubs like police posts or malls.
+                  </span>
+                </li>
+                <li className="flex items-start gap-1.5">
+                  <span className="text-emerald-600 font-bold shrink-0">✓</span>
+                  <span>
+                    <strong>Direct seller chat:</strong> Communicate transparently through Melo to arrange meetup specifics.
+                  </span>
+                </li>
+              </ul>
             </div>
 
             {/* Owner Management Box */}

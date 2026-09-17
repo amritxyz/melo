@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link, useRouterState } from '@tanstack/react-router'
+import { Link, useRouterState, useNavigate } from '@tanstack/react-router'
 import {
   Heart,
   MessageSquare,
@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  Search,
 } from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { UserAvatar } from '#/components/avatars'
@@ -18,6 +19,7 @@ import { useAuth } from '#/hooks/useAuth'
 import { useUserProfile } from '#/hooks/useUser'
 import { useFavoriteIds } from '#/hooks/useFavorites'
 import { useConversations } from '#/hooks/useChat'
+import { useCategories } from '#/hooks/useListings'
 import { formatName } from '#/lib/utils'
 
 export function Navbar() {
@@ -34,12 +36,35 @@ export function Navbar() {
   const avatarUrl = profile?.avatar_url ?? user?.avatar_url
   const routerState = useRouterState()
   const currentPath = routerState.location.pathname
+  const navigate = useNavigate()
+  const { data: categories = [] } = useCategories()
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = React.useState(false)
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] =
     React.useState(false)
+  const [globalQuery, setGlobalQuery] = React.useState('')
 
   const dropdownRef = React.useRef<HTMLDivElement>(null)
+
+  // Sync state if URL search params change
+  React.useEffect(() => {
+    const params = new URLSearchParams(routerState.location.search)
+    setGlobalQuery(params.get('q') || '')
+  }, [routerState.location.search])
+
+  const handleGlobalSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsMobileSearchOpen(false)
+    navigate({
+      to: '/',
+      search: (prev: Record<string, unknown>) => ({
+        ...prev,
+        q: globalQuery.trim() || undefined,
+        page: undefined,
+      }),
+    })
+  }
 
   // Total unread messages count
   const unreadMessagesCount = React.useMemo(() => {
@@ -66,6 +91,7 @@ export function Navbar() {
   // Close mobile menu and dropdown on route change
   React.useEffect(() => {
     setIsMobileMenuOpen(false)
+    setIsMobileSearchOpen(false)
     setIsProfileDropdownOpen(false)
   }, [currentPath])
 
@@ -76,9 +102,9 @@ export function Navbar() {
 
   return (
     <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 sticky top-0 z-40 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between gap-3">
         {/* Logo and Main Nav */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-5 shrink-0">
           <Link
             to="/"
             className="flex items-center gap-1.5 text-zinc-900 dark:text-zinc-100 hover:text-emerald-700 dark:hover:text-emerald-400"
@@ -113,6 +139,43 @@ export function Navbar() {
               Sell
             </Link>
           </nav>
+        </div>
+
+        {/* Global Search Bar */}
+        <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
+          <form
+            onSubmit={handleGlobalSearch}
+            className="w-full flex items-center border border-zinc-200 dark:border-zinc-800 rounded-xs bg-zinc-50/70 dark:bg-zinc-900/60 focus-within:border-zinc-400 dark:focus-within:border-zinc-600 focus-within:bg-white dark:focus-within:bg-zinc-900 transition-colors overflow-hidden"
+          >
+            <div className="relative flex-1 flex items-center min-w-0">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 text-zinc-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search products in Butwal (e.g. ThinkPad, bicycle, desk)..."
+                value={globalQuery}
+                onChange={(e) => setGlobalQuery(e.target.value)}
+                className="w-full h-8 pl-8 pr-7 bg-transparent text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none font-sans"
+              />
+              {globalQuery && (
+                <button
+                  type="button"
+                  onClick={() => setGlobalQuery('')}
+                  className="absolute right-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer p-0.5"
+                  aria-label="Clear search"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="h-8 px-3 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-mono text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+              title="Search"
+              aria-label="Submit search"
+            >
+              Search
+            </button>
+          </form>
         </div>
 
         {/* Desktop Actions */}
@@ -260,8 +323,20 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Buttons */}
         <div className="flex md:hidden items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setIsMobileSearchOpen((prev) => !prev)
+              setIsMobileMenuOpen(false)
+            }}
+            className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-xs focus:outline-none cursor-pointer"
+            aria-label="Search"
+          >
+            <Search className="w-3.5 h-3.5" />
+          </button>
+
           {isAuthenticated && (
             <Link
               to="/messages"
@@ -274,9 +349,13 @@ export function Navbar() {
               )}
             </Link>
           )}
+
           <button
             type="button"
-            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            onClick={() => {
+              setIsMobileMenuOpen((prev) => !prev)
+              setIsMobileSearchOpen(false)
+            }}
             className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-xs focus:outline-none cursor-pointer"
             aria-label="Toggle navigation menu"
           >
@@ -288,6 +367,43 @@ export function Navbar() {
           </button>
         </div>
       </div>
+
+      {/* Mobile Expandable Search Bar */}
+      {isMobileSearchOpen && (
+        <div className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/90 p-2.5">
+          <form
+            onSubmit={handleGlobalSearch}
+            className="flex items-center border border-zinc-300 dark:border-zinc-700 rounded-xs bg-white dark:bg-zinc-900 overflow-hidden"
+          >
+            <div className="relative flex-1 flex items-center">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 text-zinc-400 pointer-events-none" />
+              <input
+                type="text"
+                autoFocus
+                placeholder="Search products in Butwal..."
+                value={globalQuery}
+                onChange={(e) => setGlobalQuery(e.target.value)}
+                className="w-full h-8 pl-8 pr-7 text-xs bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
+              />
+              {globalQuery && (
+                <button
+                  type="button"
+                  onClick={() => setGlobalQuery('')}
+                  className="absolute right-2 text-zinc-400 cursor-pointer p-0.5"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="h-8 px-3 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-mono font-medium shrink-0 cursor-pointer"
+            >
+              Search
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* Mobile Dropdown Menu */}
       {isMobileMenuOpen && (
