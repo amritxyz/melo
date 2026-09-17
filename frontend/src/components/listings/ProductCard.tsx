@@ -37,7 +37,7 @@ export function ProductCard({ listing, viewMode = 'grid' }: ProductCardProps) {
   if (viewMode === 'list') {
     return (
       <div
-        className={`group flex flex-col sm:flex-row bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs transition-colors hover:border-zinc-400 dark:hover:border-zinc-600 overflow-hidden relative ${
+        className={`group flex flex-col sm:flex-row bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-colors hover:border-zinc-400 dark:hover:border-zinc-600 overflow-hidden relative ${
           isSold ? 'opacity-80' : ''
         }`}
       >
@@ -150,7 +150,7 @@ export function ProductCard({ listing, viewMode = 'grid' }: ProductCardProps) {
 
   return (
     <div
-      className={`group flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs transition-colors hover:border-zinc-400 dark:hover:border-zinc-600 relative ${
+      className={`group flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-colors hover:border-zinc-400 dark:hover:border-zinc-600 relative ${
         isSold ? 'opacity-80' : ''
       }`}
     >

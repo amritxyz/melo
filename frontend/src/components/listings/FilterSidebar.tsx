@@ -46,7 +46,7 @@ export function FilterSidebar({
 }: FilterSidebarProps) {
   return (
     <aside
-      className={`md:col-span-1 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20 p-3 rounded-xs space-y-4 text-xs ${
+      className={`md:col-span-1 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20 p-3 space-y-4 text-xs ${
         isOpenOnMobile ? 'block mb-4' : 'hidden md:block'
       }`}
     >
@@ -74,7 +74,7 @@ export function FilterSidebar({
         <div className="space-y-0.5">
           <button
             onClick={() => onSelectCategory('')}
-            className={`w-full text-left px-2 py-1 rounded-xs transition-colors cursor-pointer flex items-center justify-between ${
+            className={`w-full text-left px-2 py-1 transition-colors cursor-pointer flex items-center justify-between ${
               selectedCategory === ''
                 ? 'bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 font-semibold'
                 : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
@@ -87,7 +87,7 @@ export function FilterSidebar({
               <button
                 key={cat.id}
                 onClick={() => onSelectCategory(cat.id)}
-                className={`w-full text-left px-2 py-1 rounded-xs transition-colors cursor-pointer flex items-center justify-between ${
+                className={`w-full text-left px-2 py-1 transition-colors cursor-pointer flex items-center justify-between ${
                   selectedCategory === cat.id
                     ? 'bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 font-semibold'
                     : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
@@ -109,7 +109,7 @@ export function FilterSidebar({
             <button
               key={cond.id}
               onClick={() => onSelectCondition(cond.id)}
-              className={`w-full text-left px-2 py-1 rounded-xs transition-colors cursor-pointer flex items-center justify-between ${
+              className={`w-full text-left px-2 py-1 transition-colors cursor-pointer flex items-center justify-between ${
                 selectedCondition === cond.id
                   ? 'bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 font-semibold'
                   : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
@@ -129,7 +129,7 @@ export function FilterSidebar({
         <select
           value={selectedLocation}
           onChange={(e) => onSelectLocation(e.target.value)}
-          className="w-full h-8 px-2 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xs text-zinc-900 dark:text-zinc-100 cursor-pointer"
+          className="w-full h-8 px-2 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 cursor-pointer"
         >
           <option value="">All Locations</option>
           {BUTWAL_LOCATIONS.map((loc) => (
@@ -148,7 +148,7 @@ export function FilterSidebar({
         <select
           value={sortBy}
           onChange={(e) => onSelectSortBy(e.target.value as SortOption)}
-          className="w-full h-8 px-2 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xs text-zinc-900 dark:text-zinc-100 cursor-pointer"
+          className="w-full h-8 px-2 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 cursor-pointer"
         >
           <option value="newest">Newest first</option>
           <option value="price_asc">Price: Low to High</option>
