@@ -19,6 +19,7 @@ var (
 	ErrInvalidCondition   = errors.New("invalid condition: must be new, like_new, good, fair, or poor")
 	ErrInvalidStatus      = errors.New("invalid status: must be active, sold, or hidden")
 	ErrListingAlreadySold = errors.New("sold listings cannot be edited")
+	ErrInvalidQuantity    = errors.New("quantity must be at least 1")
 )
 
 type CreateListingRequest struct {
@@ -26,6 +27,7 @@ type CreateListingRequest struct {
 	Title       string                  `json:"title"`
 	Description string                  `json:"description"`
 	Price       float64                 `json:"price"`
+	Quantity    *int                    `json:"quantity"`
 	Condition   models.ListingCondition `json:"condition"`
 	Location    string                  `json:"location"`
 	ImageURLs   []string                `json:"image_urls"`
@@ -36,11 +38,13 @@ type UpdateListingRequest struct {
 	Title       *string                  `json:"title"`
 	Description *string                  `json:"description"`
 	Price       *float64                 `json:"price"`
+	Quantity    *int                     `json:"quantity"`
 	Condition   *models.ListingCondition `json:"condition"`
 	Location    *string                  `json:"location"`
 	Status      *models.ListingStatus    `json:"status"`
 	ImageURLs   *[]string                `json:"image_urls"`
 }
+
 
 type ListingService struct {
 	listingRepo  *repositories.ListingRepository
@@ -84,6 +88,14 @@ func (s *ListingService) CreateListing(sellerID string, req CreateListingRequest
 		return nil, ErrInvalidCondition
 	}
 
+	quantity := 1
+	if req.Quantity != nil {
+		if *req.Quantity <= 0 {
+			return nil, ErrInvalidQuantity
+		}
+		quantity = *req.Quantity
+	}
+
 	if _, err := s.categoryRepo.FindByID(req.CategoryID); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, ErrCategoryNotFound
@@ -108,6 +120,7 @@ func (s *ListingService) CreateListing(sellerID string, req CreateListingRequest
 		Title:       utils.FormatTitle(req.Title),
 		Description: strings.TrimSpace(req.Description),
 		Price:       req.Price,
+		Quantity:    quantity,
 		Condition:   req.Condition,
 		Location:    models.NormalizeLocation(req.Location),
 		Status:      models.StatusActive,
@@ -166,6 +179,16 @@ func (s *ListingService) UpdateListing(userID, listingID string, req UpdateListi
 		listing.Price = *req.Price
 	}
 
+	if req.Quantity != nil {
+		if *req.Quantity < 0 {
+			return nil, ErrInvalidQuantity
+		}
+		listing.Quantity = *req.Quantity
+		if *req.Quantity == 0 {
+			listing.Status = models.StatusSold
+		}
+	}
+
 	if req.Condition != nil {
 		if !isValidCondition(*req.Condition) {
 			return nil, ErrInvalidCondition
@@ -178,6 +201,9 @@ func (s *ListingService) UpdateListing(userID, listingID string, req UpdateListi
 			return nil, ErrInvalidStatus
 		}
 		listing.Status = *req.Status
+		if listing.Status == models.StatusActive && listing.Quantity == 0 {
+			listing.Quantity = 1
+		}
 	}
 
 	if req.CategoryID != nil {

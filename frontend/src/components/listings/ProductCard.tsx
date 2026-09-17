@@ -93,6 +93,11 @@ export function ProductCard({ listing }: ProductCardProps) {
             >
               {formattedPrice}
             </span>
+            {!isSold && (listing.quantity ?? 1) > 1 && (
+              <span className="text-[10px] font-mono text-zinc-500">
+                {listing.quantity} in stock
+              </span>
+            )}
           </div>
 
           <Link

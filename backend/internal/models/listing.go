@@ -34,6 +34,7 @@ type Listing struct {
 	Title       string           `json:"title" gorm:"not null"`
 	Description string           `json:"description" gorm:"type:text;not null"`
 	Price       float64          `json:"price" gorm:"index;not null"`
+	Quantity    int              `json:"quantity" gorm:"not null;default:1"`
 	Condition   ListingCondition `json:"condition" gorm:"index;not null"`
 	Location    string           `json:"location" gorm:"index;not null"`
 	Status      ListingStatus    `json:"status" gorm:"index;not null;default:'active'"`
@@ -49,5 +50,9 @@ func (l *Listing) BeforeCreate(tx *gorm.DB) error {
 	if l.Status == "" {
 		l.Status = StatusActive
 	}
+	if l.Quantity <= 0 {
+		l.Quantity = 1
+	}
 	return nil
 }
+

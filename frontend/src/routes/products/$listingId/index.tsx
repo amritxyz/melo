@@ -199,7 +199,15 @@ function ProductDetailPage() {
 
                 <div className="absolute top-2 left-2 flex items-center gap-1.5 z-10">
                   <ConditionBadge condition={listing.condition} size="sm" />
-                  {isSold && <StatusBadge status={listing.status} size="sm" />}
+                  {isSold ? (
+                    <StatusBadge status={listing.status} size="sm" />
+                  ) : (
+                    (listing.quantity ?? 1) > 1 && (
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-xs text-[10px] font-mono font-medium bg-zinc-900/80 text-white dark:bg-zinc-100/90 dark:text-zinc-900 backdrop-blur-xs">
+                        {listing.quantity} available
+                      </span>
+                    )
+                  )}
                 </div>
 
                 {!isOwner && (
@@ -243,15 +251,24 @@ function ProductDetailPage() {
             {/* Title, Price & Details */}
             <div className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-xs p-4 space-y-4">
               <div>
-                <span
-                  className={`font-mono font-bold text-xl sm:text-2xl block ${
-                    isSold
-                      ? 'text-zinc-400 line-through'
-                      : 'text-zinc-900 dark:text-zinc-100'
-                  }`}
-                >
-                  {formattedPrice}
-                </span>
+                <div className="flex items-baseline justify-between gap-2">
+                  <span
+                    className={`font-mono font-bold text-xl sm:text-2xl block ${
+                      isSold
+                        ? 'text-zinc-400 line-through'
+                        : 'text-zinc-900 dark:text-zinc-100'
+                    }`}
+                  >
+                    {formattedPrice}
+                  </span>
+                  {!isSold && (
+                    <span className="text-xs font-mono text-zinc-500">
+                      {(listing.quantity ?? 1) > 1
+                        ? `${listing.quantity} available`
+                        : '1 available'}
+                    </span>
+                  )}
+                </div>
                 <h1 className="text-base sm:text-lg font-bold mt-1 text-zinc-900 dark:text-zinc-50">
                   {formatTitleCase(listing.title)}
                 </h1>
@@ -259,6 +276,12 @@ function ProductDetailPage() {
 
               {/* Metadata Table */}
               <div className="border border-zinc-200 dark:border-zinc-800 rounded-xs text-xs font-mono divide-y divide-zinc-200 dark:divide-zinc-800">
+                <div className="flex px-3 py-1.5 justify-between">
+                  <span className="text-zinc-500">Available:</span>
+                  <span className="text-zinc-900 dark:text-zinc-100 font-semibold">
+                    {isSold ? '0 (Sold)' : `${listing.quantity ?? 1} in stock`}
+                  </span>
+                </div>
                 <div className="flex px-3 py-1.5 justify-between">
                   <span className="text-zinc-500">Location:</span>
                   <span className="text-zinc-900 dark:text-zinc-100">

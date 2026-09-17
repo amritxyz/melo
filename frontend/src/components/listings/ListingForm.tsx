@@ -42,6 +42,9 @@ export function ListingForm({
   const [price, setPrice] = React.useState(
     initialValues.price ? String(initialValues.price) : '',
   )
+  const [quantity, setQuantity] = React.useState(
+    initialValues.quantity !== undefined ? String(initialValues.quantity) : '1',
+  )
   const [condition, setCondition] = React.useState<ListingCondition>(
     initialValues.condition || 'good',
   )
@@ -70,6 +73,8 @@ export function ListingForm({
     if (initialValues.category_id !== undefined)
       setCategoryId(initialValues.category_id)
     if (initialValues.price !== undefined) setPrice(String(initialValues.price))
+    if (initialValues.quantity !== undefined)
+      setQuantity(String(initialValues.quantity))
     if (initialValues.condition !== undefined)
       setCondition(initialValues.condition)
     if (initialValues.location !== undefined)
@@ -82,6 +87,7 @@ export function ListingForm({
     initialValues.title,
     initialValues.category_id,
     initialValues.price,
+    initialValues.quantity,
     initialValues.condition,
     initialValues.location,
     initialValues.description,
@@ -158,6 +164,12 @@ export function ListingForm({
       return
     }
 
+    const numQuantity = parseInt(quantity, 10)
+    if (isNaN(numQuantity) || numQuantity < 1) {
+      setFormError('Please enter a valid quantity of at least 1.')
+      return
+    }
+
     if (!location.trim()) {
       setFormError('Please provide a location (e.g. city or neighborhood).')
       return
@@ -172,6 +184,7 @@ export function ListingForm({
       title: formatTitleCase(title),
       category_id: categoryId,
       price: numPrice,
+      quantity: numQuantity,
       condition,
       location: formatLocation(location),
       description: description.trim(),
@@ -228,7 +241,7 @@ export function ListingForm({
         />
       </div>
 
-      {/* Price and Location */}
+      {/* Price and Quantity */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input
           label="Price (NPR)"
@@ -241,14 +254,27 @@ export function ListingForm({
           onChange={(e) => setPrice(e.target.value)}
         />
 
-        <LocationSelect
-          label="Location"
+        <Input
+          label="Available Quantity"
+          type="number"
+          min="1"
+          step="1"
           required
-          placeholder="Select Butwal location or custom..."
-          value={location}
-          onChange={setLocation}
+          placeholder="1"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+          helperText="Total units available for sale."
         />
       </div>
+
+      {/* Location */}
+      <LocationSelect
+        label="Location"
+        required
+        placeholder="Select Butwal location or custom..."
+        value={location}
+        onChange={setLocation}
+      />
 
       {/* Image Upload Section */}
       <div className="space-y-2">

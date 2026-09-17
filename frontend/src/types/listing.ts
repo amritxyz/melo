@@ -27,6 +27,7 @@ export interface Listing {
   title: string
   description: string
   price: number
+  quantity?: number
   condition: ListingCondition
   location: string
   status: ListingStatus
@@ -40,6 +41,7 @@ export interface CreateListingPayload {
   title: string
   description: string
   price: number
+  quantity?: number
   condition: ListingCondition
   location: string
   image_urls?: string[]
@@ -50,6 +52,7 @@ export interface UpdateListingPayload {
   title?: string
   description?: string
   price?: number
+  quantity?: number
   condition?: ListingCondition
   location?: string
   status?: ListingStatus

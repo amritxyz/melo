@@ -27,6 +27,7 @@ type CreateListingInput struct {
 	Title       string                  `json:"title" binding:"required,min=3,max=150"`
 	Description string                  `json:"description" binding:"required,min=10"`
 	Price       float64                 `json:"price" binding:"required,gt=0"`
+	Quantity    *int                    `json:"quantity" binding:"omitempty,min=1"`
 	Condition   models.ListingCondition `json:"condition" binding:"required"`
 	Location    string                  `json:"location" binding:"required"`
 	ImageURLs   []string                `json:"image_urls"`
@@ -37,6 +38,7 @@ type UpdateListingInput struct {
 	Title       *string                  `json:"title"`
 	Description *string                  `json:"description"`
 	Price       *float64                 `json:"price"`
+	Quantity    *int                     `json:"quantity" binding:"omitempty,min=0"`
 	Condition   *models.ListingCondition `json:"condition"`
 	Location    *string                  `json:"location"`
 	Status      *models.ListingStatus    `json:"status"`
@@ -71,6 +73,7 @@ func (h *ListingHandler) Create(c *gin.Context) {
 		Title:       input.Title,
 		Description: input.Description,
 		Price:       input.Price,
+		Quantity:    input.Quantity,
 		Condition:   input.Condition,
 		Location:    input.Location,
 		ImageURLs:   input.ImageURLs,
@@ -78,7 +81,7 @@ func (h *ListingHandler) Create(c *gin.Context) {
 
 	if err != nil {
 		status := http.StatusInternalServerError
-		if errors.Is(err, services.ErrInvalidPrice) || errors.Is(err, services.ErrInvalidCondition) {
+		if errors.Is(err, services.ErrInvalidPrice) || errors.Is(err, services.ErrInvalidCondition) || errors.Is(err, services.ErrInvalidQuantity) {
 			status = http.StatusBadRequest
 		} else if errors.Is(err, services.ErrCategoryNotFound) {
 			status = http.StatusNotFound
@@ -218,6 +221,7 @@ func (h *ListingHandler) Update(c *gin.Context) {
 		Title:       input.Title,
 		Description: input.Description,
 		Price:       input.Price,
+		Quantity:    input.Quantity,
 		Condition:   input.Condition,
 		Location:    input.Location,
 		Status:      input.Status,
@@ -230,7 +234,7 @@ func (h *ListingHandler) Update(c *gin.Context) {
 			status = http.StatusForbidden
 		} else if errors.Is(err, services.ErrListingNotFound) {
 			status = http.StatusNotFound
-		} else if errors.Is(err, services.ErrInvalidPrice) || errors.Is(err, services.ErrInvalidCondition) || errors.Is(err, services.ErrInvalidStatus) || errors.Is(err, services.ErrListingAlreadySold) || errors.Is(err, services.ErrCategoryNotFound) {
+		} else if errors.Is(err, services.ErrInvalidPrice) || errors.Is(err, services.ErrInvalidCondition) || errors.Is(err, services.ErrInvalidStatus) || errors.Is(err, services.ErrListingAlreadySold) || errors.Is(err, services.ErrCategoryNotFound) || errors.Is(err, services.ErrInvalidQuantity) {
 			status = http.StatusBadRequest
 		}
 		c.JSON(status, gin.H{
