@@ -4,6 +4,7 @@ import {
   getDeterministicAvatar,
   isAvatarId,
 } from './registry'
+import { cn } from '#/lib/utils'
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 export type AvatarShape = 'circle' | 'rounded' | 'square'
@@ -30,7 +31,7 @@ const sizeClasses: Record<AvatarSize, string> = {
 const shapeClasses: Record<AvatarShape, string> = {
   circle: 'rounded-full',
   rounded: 'rounded-xs',
-  square: 'rounded-xs',
+  square: 'rounded-none',
 }
 
 export const UserAvatar: React.FC<UserAvatarProps> = ({
@@ -51,7 +52,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   const sizeClass = sizeClasses[size]
   const shapeClass = shapeClasses[shape]
-  const containerClass = `relative inline-flex items-center justify-center shrink-0 overflow-hidden select-none aspect-square ${sizeClass} ${shapeClass} ${className}`
+  const containerClass = cn(
+    'relative inline-flex items-center justify-center shrink-0 overflow-hidden select-none aspect-square',
+    sizeClass,
+    shapeClass,
+    className,
+  )
 
   // 1. Check if avatarUrl is a registered Melo SVG avatar ID
   if (avatarUrl && isAvatarId(avatarUrl)) {

@@ -112,7 +112,7 @@ export function Navbar() {
             <span className="font-bold tracking-tight text-base font-mono">
               melo
             </span>
-            <span className="text-[10px] font-mono text-zinc-500 uppercase px-1 py-0.2 border border-zinc-200 dark:border-zinc-800 rounded-xs">
+            <span className="text-[10px] font-mono text-zinc-500 uppercase px-1 py-0.2 border border-zinc-200 dark:border-zinc-800">
               market
             </span>
           </Link>
@@ -141,26 +141,26 @@ export function Navbar() {
           </nav>
         </div>
 
-        {/* Global Search Bar */}
-        <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
+        {/* Global Search Bar (Generous Width, Sleek Height) */}
+        <div className="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md xl:max-w-lg mx-3 lg:mx-6 min-w-0">
           <form
             onSubmit={handleGlobalSearch}
-            className="w-full flex items-center border border-zinc-200 dark:border-zinc-800 rounded-xs bg-zinc-50/70 dark:bg-zinc-900/60 focus-within:border-zinc-400 dark:focus-within:border-zinc-600 focus-within:bg-white dark:focus-within:bg-zinc-900 transition-colors overflow-hidden"
+            className="w-full flex items-center border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/60 focus-within:border-zinc-400 dark:focus-within:border-zinc-600 focus-within:bg-white dark:focus-within:bg-zinc-900 transition-colors overflow-hidden"
           >
             <div className="relative flex-1 flex items-center min-w-0">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 text-zinc-400 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 absolute left-2 text-zinc-400 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search products in Butwal (e.g. ThinkPad, bicycle, desk)..."
+                placeholder="Search products..."
                 value={globalQuery}
                 onChange={(e) => setGlobalQuery(e.target.value)}
-                className="w-full h-8 pl-8 pr-7 bg-transparent text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none font-sans"
+                className="w-full h-7 pl-7 pr-6 bg-transparent text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none font-sans"
               />
               {globalQuery && (
                 <button
                   type="button"
                   onClick={() => setGlobalQuery('')}
-                  className="absolute right-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer p-0.5"
+                  className="absolute right-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer p-0.5"
                   aria-label="Clear search"
                 >
                   <X className="w-3 h-3" />
@@ -169,7 +169,7 @@ export function Navbar() {
             </div>
             <button
               type="submit"
-              className="h-8 px-3 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-mono text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+              className="h-7 px-2.5 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-mono text-[11px] hover:bg-zinc-800 dark:hover:bg-zinc-200 flex items-center justify-center transition-colors cursor-pointer shrink-0"
               title="Search"
               aria-label="Submit search"
             >
@@ -179,15 +179,15 @@ export function Navbar() {
         </div>
 
         {/* Desktop Actions */}
-        <div className="hidden md:flex items-center gap-2.5 text-xs">
+        <div className="hidden md:flex items-center gap-2 text-xs">
           {authLoading ? (
-            <div className="w-16 h-7 bg-zinc-100 dark:bg-zinc-800 rounded-xs animate-pulse" />
+            <div className="w-16 h-7 bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
           ) : isAuthenticated && user ? (
             <>
               {/* Saved Items */}
               <Link
                 to="/favorites"
-                className={`px-2 py-1 rounded-xs border transition-colors flex items-center gap-1.5 ${
+                className={`px-2 py-1 border transition-colors flex items-center gap-1.5 ${
                   isActive('/favorites')
                     ? 'border-zinc-400 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
                     : 'border-transparent text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-zinc-900 dark:hover:text-zinc-100'
@@ -204,7 +204,7 @@ export function Navbar() {
               {/* Messages */}
               <Link
                 to="/messages"
-                className={`px-2 py-1 rounded-xs border transition-colors flex items-center gap-1.5 ${
+                className={`px-2 py-1 border transition-colors flex items-center gap-1.5 ${
                   isActive('/messages')
                     ? 'border-zinc-400 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100'
                     : 'border-transparent text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-zinc-900 dark:hover:text-zinc-100'
@@ -222,7 +222,7 @@ export function Navbar() {
 
               {/* Sell CTA */}
               <Link to="/sell">
-                <Button size="sm" variant="secondary" className="gap-1">
+                <Button size="sm" variant="secondary" className="gap-1 rounded-none">
                   <Plus className="w-3.5 h-3.5" />
                   <span>New Listing</span>
                 </Button>
@@ -233,7 +233,7 @@ export function Navbar() {
                 <button
                   type="button"
                   onClick={() => setIsProfileDropdownOpen((prev) => !prev)}
-                  className="flex items-center gap-1.5 py-1 px-2 rounded-xs border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors focus:outline-none cursor-pointer"
+                  className="flex items-center gap-1.5 py-1 px-2 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors focus:outline-none cursor-pointer"
                   aria-expanded={isProfileDropdownOpen}
                   aria-label="User menu"
                 >
@@ -242,7 +242,7 @@ export function Navbar() {
                     username={user.username}
                     size="sm"
                     shape="square"
-                    className="w-5 h-5 rounded-xs"
+                    className="w-5 h-5 rounded-none"
                   />
                   <span className="font-mono text-xs text-zinc-800 dark:text-zinc-200 max-w-[100px] truncate">
                     {formatName(user.username)}
@@ -255,7 +255,7 @@ export function Navbar() {
                 </button>
 
                 {isProfileDropdownOpen && (
-                  <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xs py-1 z-50">
+                  <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 py-1 z-50">
                     <div className="px-3 py-1.5 border-b border-zinc-200 dark:border-zinc-800 text-[11px]">
                       <p className="text-zinc-500">Signed in as</p>
                       <p className="font-mono font-semibold text-zinc-900 dark:text-zinc-100 truncate">
@@ -331,7 +331,7 @@ export function Navbar() {
               setIsMobileSearchOpen((prev) => !prev)
               setIsMobileMenuOpen(false)
             }}
-            className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-xs focus:outline-none cursor-pointer"
+            className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 focus:outline-none cursor-pointer"
             aria-label="Search"
           >
             <Search className="w-3.5 h-3.5" />
@@ -356,7 +356,7 @@ export function Navbar() {
               setIsMobileMenuOpen((prev) => !prev)
               setIsMobileSearchOpen(false)
             }}
-            className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-xs focus:outline-none cursor-pointer"
+            className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 focus:outline-none cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {isMobileMenuOpen ? (
@@ -370,26 +370,26 @@ export function Navbar() {
 
       {/* Mobile Expandable Search Bar */}
       {isMobileSearchOpen && (
-        <div className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/90 p-2.5">
+        <div className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/90 p-2">
           <form
             onSubmit={handleGlobalSearch}
-            className="flex items-center border border-zinc-300 dark:border-zinc-700 rounded-xs bg-white dark:bg-zinc-900 overflow-hidden"
+            className="flex items-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden"
           >
             <div className="relative flex-1 flex items-center">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 text-zinc-400 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 absolute left-2 text-zinc-400 pointer-events-none" />
               <input
                 type="text"
                 autoFocus
-                placeholder="Search products in Butwal..."
+                placeholder="Search products..."
                 value={globalQuery}
                 onChange={(e) => setGlobalQuery(e.target.value)}
-                className="w-full h-8 pl-8 pr-7 text-xs bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
+                className="w-full h-7 pl-7 pr-6 text-xs bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
               />
               {globalQuery && (
                 <button
                   type="button"
                   onClick={() => setGlobalQuery('')}
-                  className="absolute right-2 text-zinc-400 cursor-pointer p-0.5"
+                  className="absolute right-1.5 text-zinc-400 cursor-pointer p-0.5"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -397,7 +397,7 @@ export function Navbar() {
             </div>
             <button
               type="submit"
-              className="h-8 px-3 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-mono font-medium shrink-0 cursor-pointer"
+              className="h-7 px-2.5 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-[11px] font-mono font-medium shrink-0 cursor-pointer"
             >
               Search
             </button>
@@ -411,7 +411,7 @@ export function Navbar() {
           <nav className="flex flex-col space-y-1">
             <Link
               to="/"
-              className={`px-2 py-1.5 rounded-xs ${
+              className={`px-2 py-1.5 ${
                 isActive('/')
                   ? 'bg-zinc-100 dark:bg-zinc-800 font-semibold'
                   : 'text-zinc-700 dark:text-zinc-300'
