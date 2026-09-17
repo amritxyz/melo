@@ -1,10 +1,13 @@
 package repositories
 
 import (
+	"regexp"
 	"strings"
 
 	"codeberg.org/amritxyz/melo/internal/models"
+	"codeberg.org/amritxyz/melo/internal/utils"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type ListingRepository struct {
@@ -65,35 +68,57 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 	query := r.db.Model(&models.Listing{})
 
 	if params.CategoryID != "" {
-		query = query.Where("category_id = ?", params.CategoryID)
+		query = query.Where("listings.category_id = ?", params.CategoryID)
 	}
 
 	if params.SellerID != "" {
-		query = query.Where("seller_id = ?", params.SellerID)
+		query = query.Where("listings.seller_id = ?", params.SellerID)
 	}
 
 	if params.Status != "" {
-		query = query.Where("status = ?", params.Status)
+		query = query.Where("listings.status = ?", params.Status)
 	} else if params.SellerID == "" {
 		// By default for general explore queries without status, only show active
-		query = query.Where("status = ?", models.StatusActive)
+		query = query.Where("listings.status = ?", models.StatusActive)
 	} else {
 		// For seller inventory without status filter, show active and sold (exclude hidden)
-		query = query.Where("status != ?", models.StatusHidden)
+		query = query.Where("listings.status != ?", models.StatusHidden)
 	}
 
 	if params.Condition != "" && params.Condition != "all" {
-		query = query.Where("condition = ?", params.Condition)
-	}
-
-	if params.Search != "" {
-		pattern := "%" + strings.ToLower(params.Search) + "%"
-		query = query.Where("LOWER(title) LIKE ? OR LOWER(description) LIKE ?", pattern, pattern)
+		query = query.Where("listings.condition = ?", params.Condition)
 	}
 
 	if params.Location != "" {
 		locPattern := "%" + strings.ToLower(strings.TrimSpace(params.Location)) + "%"
-		query = query.Where("LOWER(location) LIKE ?", locPattern)
+		query = query.Where("LOWER(listings.location) LIKE ?", locPattern)
+	}
+
+	cleanedSearch := utils.CleanSearchQuery(params.Search)
+	tokens := utils.TokenizeSearchQuery(cleanedSearch)
+
+	if len(tokens) > 0 {
+		query = query.Joins("LEFT JOIN categories ON categories.id = listings.category_id")
+
+		for _, tok := range tokens {
+			variants := utils.GetSearchVariants(tok)
+			var orClauses []string
+			var orArgs []interface{}
+			for _, v := range variants {
+				pat := "%" + strings.ToLower(v) + "%"
+				orClauses = append(orClauses,
+					"LOWER(listings.title) LIKE ?",
+					"LOWER(listings.description) LIKE ?",
+					"LOWER(categories.name) LIKE ?",
+				)
+				orArgs = append(orArgs, pat, pat, pat)
+			}
+			if len(tok) >= 4 {
+				orClauses = append(orClauses, "word_similarity(?, listings.title) >= 0.45")
+				orArgs = append(orArgs, tok)
+			}
+			query = query.Where("("+strings.Join(orClauses, " OR ")+")", orArgs...)
+		}
 	}
 
 	var total int64
@@ -101,22 +126,130 @@ func (r *ListingRepository) FindAll(params ListingFilterParams) ([]models.Listin
 		return nil, 0, err
 	}
 
-	orderClause := "created_at DESC"
+	// Fallback to relaxed search if multi-token conjunction produced 0 matches
+	if total == 0 && len(tokens) > 1 {
+		fallbackQuery := r.db.Model(&models.Listing{})
+		if params.CategoryID != "" {
+			fallbackQuery = fallbackQuery.Where("listings.category_id = ?", params.CategoryID)
+		}
+		if params.SellerID != "" {
+			fallbackQuery = fallbackQuery.Where("listings.seller_id = ?", params.SellerID)
+		}
+		if params.Status != "" {
+			fallbackQuery = fallbackQuery.Where("listings.status = ?", params.Status)
+		} else if params.SellerID == "" {
+			fallbackQuery = fallbackQuery.Where("listings.status = ?", models.StatusActive)
+		} else {
+			fallbackQuery = fallbackQuery.Where("listings.status != ?", models.StatusHidden)
+		}
+		if params.Condition != "" && params.Condition != "all" {
+			fallbackQuery = fallbackQuery.Where("listings.condition = ?", params.Condition)
+		}
+		if params.Location != "" {
+			locPattern := "%" + strings.ToLower(strings.TrimSpace(params.Location)) + "%"
+			fallbackQuery = fallbackQuery.Where("LOWER(listings.location) LIKE ?", locPattern)
+		}
+
+		fallbackQuery = fallbackQuery.Joins("LEFT JOIN categories ON categories.id = listings.category_id")
+		var orClauses []string
+		var orArgs []interface{}
+		for _, tok := range tokens {
+			variants := utils.GetSearchVariants(tok)
+			for _, v := range variants {
+				pat := "%" + strings.ToLower(v) + "%"
+				orClauses = append(orClauses,
+					"LOWER(listings.title) LIKE ?",
+					"LOWER(listings.description) LIKE ?",
+					"LOWER(categories.name) LIKE ?",
+				)
+				orArgs = append(orArgs, pat, pat, pat)
+			}
+			if len(tok) >= 4 {
+				orClauses = append(orClauses, "word_similarity(?, listings.title) >= 0.45")
+				orArgs = append(orArgs, tok)
+			}
+		}
+		fallbackQuery = fallbackQuery.Where("("+strings.Join(orClauses, " OR ")+")", orArgs...)
+
+		var fallbackTotal int64
+		if err := fallbackQuery.Count(&fallbackTotal).Error; err == nil && fallbackTotal > 0 {
+			query = fallbackQuery
+			total = fallbackTotal
+		}
+	}
+
+	orderClause := "listings.created_at DESC"
 	switch params.SortBy {
 	case "price_asc":
-		orderClause = "price ASC, created_at DESC"
+		orderClause = "listings.price ASC, listings.created_at DESC"
+		query = query.Order(orderClause)
 	case "price_desc":
-		orderClause = "price DESC, created_at DESC"
+		orderClause = "listings.price DESC, listings.created_at DESC"
+		query = query.Order(orderClause)
+	default:
+		if len(tokens) > 0 {
+			var scoreParts []string
+			var scoreArgs []interface{}
+
+			// Exact full title match
+			scoreParts = append(scoreParts, "CASE WHEN LOWER(listings.title) = ? THEN 100.0 ELSE 0.0 END")
+			scoreArgs = append(scoreArgs, strings.ToLower(cleanedSearch))
+
+			// Full phrase in title
+			fullPat := "%" + strings.ToLower(cleanedSearch) + "%"
+			scoreParts = append(scoreParts, "CASE WHEN LOWER(listings.title) LIKE ? THEN 50.0 ELSE 0.0 END")
+			scoreArgs = append(scoreArgs, fullPat)
+
+			// Full phrase in category
+			scoreParts = append(scoreParts, "CASE WHEN LOWER(categories.name) LIKE ? THEN 30.0 ELSE 0.0 END")
+			scoreArgs = append(scoreArgs, fullPat)
+
+			// Full phrase in description
+			scoreParts = append(scoreParts, "CASE WHEN LOWER(listings.description) LIKE ? THEN 15.0 ELSE 0.0 END")
+			scoreArgs = append(scoreArgs, fullPat)
+
+			for _, tok := range tokens {
+				variants := utils.GetSearchVariants(tok)
+				for _, v := range variants {
+					pat := "%" + strings.ToLower(v) + "%"
+					safeTok := regexp.QuoteMeta(v)
+
+					// Word boundary match in title
+					scoreParts = append(scoreParts, "CASE WHEN listings.title ~* ? THEN 35.0 ELSE 0.0 END")
+					scoreArgs = append(scoreArgs, `\m`+safeTok+`\M`)
+
+					// Substring match in title
+					scoreParts = append(scoreParts, "CASE WHEN LOWER(listings.title) LIKE ? THEN 20.0 ELSE 0.0 END")
+					scoreArgs = append(scoreArgs, pat)
+
+					// Category match
+					scoreParts = append(scoreParts, "CASE WHEN LOWER(categories.name) LIKE ? THEN 15.0 ELSE 0.0 END")
+					scoreArgs = append(scoreArgs, pat)
+
+					// Description match
+					scoreParts = append(scoreParts, "CASE WHEN LOWER(listings.description) LIKE ? THEN 8.0 ELSE 0.0 END")
+					scoreArgs = append(scoreArgs, pat)
+				}
+
+				scoreParts = append(scoreParts, "(word_similarity(?, listings.title) * 25.0)")
+				scoreArgs = append(scoreArgs, tok)
+			}
+
+			scoreExpr := "(" + strings.Join(scoreParts, " + ") + ")"
+			query = query.Clauses(clause.OrderBy{Expression: gorm.Expr(scoreExpr + " DESC, listings.created_at DESC", scoreArgs...)})
+		} else {
+			query = query.Order(orderClause)
+		}
 	}
 
 	var listings []models.Listing
 	err := query.
+		Select("listings.*").
 		Preload("Category").
 		Preload("Images").
 		Preload("Seller", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "username", "email", "phone_number", "avatar_url", "bio", "location", "created_at")
 		}).
-		Order(orderClause).
 		Limit(limit).
 		Offset(offset).
 		Find(&listings).Error
