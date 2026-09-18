@@ -239,7 +239,7 @@ function MessagesPage() {
                       </div>
 
                       {hasUnread && (
-                        <span className="font-mono text-[10px] font-bold text-[#A8843D] dark:text-[#C4A053] shrink-0">
+                        <span className="font-mono text-[10px] font-bold text-primary shrink-0">
                           *
                         </span>
                       )}
@@ -313,7 +313,7 @@ function MessagesPage() {
                           <span className="block text-[11px] truncate text-zinc-700 dark:text-zinc-300">
                             {formatTitleCase(currentConv.listing.title)}
                           </span>
-                          <span className="block text-[10px] font-bold text-[#A8843D] dark:text-[#C4A053]">
+                          <span className="block text-[10px] font-bold text-primary">
                             NPR {currentConv.listing.price.toLocaleString()}
                           </span>
                         </Link>
@@ -348,7 +348,7 @@ function MessagesPage() {
                           {formatTitleCase(currentConv.listing.title)}
                         </span>
                       </div>
-                      <span className="font-bold font-mono text-[#A8843D] dark:text-[#C4A053] shrink-0">
+                      <span className="font-bold font-mono text-primary shrink-0">
                         NPR {currentConv.listing.price.toLocaleString()}
                       </span>
                     </Link>

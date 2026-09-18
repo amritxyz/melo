@@ -349,7 +349,7 @@ export function Navbar() {
             >
               <MessageSquare className="w-4 h-4" />
               {unreadMessagesCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#A8843D] dark:bg-[#C4A053] rounded-none" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-none" />
               )}
             </Link>
           )}

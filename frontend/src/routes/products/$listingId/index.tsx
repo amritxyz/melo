@@ -241,7 +241,7 @@ function ProductDetailPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 pb-24 md:pb-8 w-full flex-1 space-y-8">
         {/* Sold Notice */}
         {isSold && (
-          <div className="border border-red-300 dark:border-red-900 bg-red-50/50 dark:bg-red-950/30 p-2 rounded-none text-xs font-mono text-red-800 dark:text-red-300 flex items-center justify-between">
+          <div className="border border-destructive/30 bg-destructive/10 p-2 rounded-none text-xs font-mono text-destructive flex items-center justify-between">
             <span>[SOLD] This item has been marked as sold.</span>
             <StatusBadge status="sold" size="sm" />
           </div>
@@ -491,9 +491,7 @@ function ProductDetailPage() {
                 <div>
                   <span
                     className={`font-mono font-bold text-sm sm:text-base block ${
-                      isSold
-                        ? 'text-zinc-400 line-through'
-                        : 'text-[#A8843D] dark:text-[#C4A053]'
+                      isSold ? 'text-zinc-400 line-through' : 'text-primary'
                     }`}
                   >
                     {formattedPrice}
@@ -632,9 +630,9 @@ function ProductDetailPage() {
 
                     {/* Delete Confirmation */}
                     {showDeleteConfirm && (
-                      <div className="p-2 border border-red-300 dark:border-red-800 bg-red-50/50 dark:bg-red-950/30 text-xs font-mono space-y-1.5">
+                      <div className="p-2 border border-destructive/30 bg-destructive/10 text-xs font-mono space-y-1.5">
                         <div className="flex items-start gap-1.5">
-                          <AlertTriangle className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
+                          <AlertTriangle className="w-3.5 h-3.5 text-destructive shrink-0 mt-0.5" />
                           <div>
                             <p className="font-bold text-[11px]">
                               Permanently delete?
@@ -841,16 +839,14 @@ function ProductDetailPage() {
       </main>
 
       {/* Mobile Sticky Buy Box Bar (Requirement 4) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAF8F3]/95 dark:bg-[#141312]/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 p-2.5 px-4 flex items-center justify-between gap-3">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border p-2.5 px-4 flex items-center justify-between gap-3">
         <div className="min-w-0 flex-1">
           <span className="text-[10px] font-mono text-zinc-500 uppercase block tracking-wider">
             {isSold ? 'Status' : 'Price'}
           </span>
           <span
             className={`font-mono font-bold text-sm sm:text-base block truncate ${
-              isSold
-                ? 'text-zinc-400 line-through'
-                : 'text-[#A8843D] dark:text-[#C4A053]'
+              isSold ? 'text-zinc-400 line-through' : 'text-primary'
             }`}
           >
             {formattedPrice}

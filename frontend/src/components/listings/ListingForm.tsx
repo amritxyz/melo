@@ -204,7 +204,7 @@ export function ListingForm({
       {activeError && (
         <div
           role="alert"
-          className="p-2.5 rounded-none bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-900 text-red-700 dark:text-red-300"
+          className="p-2.5 rounded-none bg-destructive/10 border border-destructive/30 text-destructive"
         >
           {activeError}
         </div>

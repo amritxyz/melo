@@ -553,7 +553,7 @@ function PublicUserProfilePage() {
             </div>
 
             {reviewError && (
-              <div className="p-2.5 rounded-none bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-700 dark:text-red-300 font-mono">
+              <div className="p-2.5 rounded-none bg-destructive/10 border border-destructive/30 text-xs text-destructive font-mono">
                 {reviewError}
               </div>
             )}

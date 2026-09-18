@@ -90,7 +90,7 @@ function SignupPage() {
           {errorMessage && (
             <div
               role="alert"
-              className="mb-4 p-2.5 rounded-none bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-900 text-xs font-mono text-red-700 dark:text-red-300"
+              className="mb-4 p-2.5 rounded-none bg-destructive/10 border border-destructive/30 text-xs font-mono text-destructive"
             >
               {errorMessage}
             </div>

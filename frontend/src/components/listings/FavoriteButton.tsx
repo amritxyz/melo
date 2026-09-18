@@ -52,15 +52,17 @@ export function FavoriteButton({
           'flex items-center justify-center gap-1.5 rounded-none border font-mono font-medium transition-colors cursor-pointer',
           sizeClasses[size],
           favorited
-            ? 'border-red-400 dark:border-red-700 bg-transparent text-red-700 dark:text-red-400'
-            : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100',
+            ? 'border-destructive bg-transparent text-destructive'
+            : 'border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground',
           className,
         )}
         aria-label={favorited ? 'Remove from wishlist' : 'Save to wishlist'}
       >
         <Heart
           className={`w-3.5 h-3.5 ${
-            favorited ? 'fill-red-500 text-red-500' : 'text-zinc-400 stroke-[2]'
+            favorited
+              ? 'fill-destructive text-destructive'
+              : 'text-muted-foreground stroke-[2]'
           }`}
         />
         <span>{favorited ? 'Wishlisted' : 'Save to Wishlist'}</span>
@@ -75,15 +77,15 @@ export function FavoriteButton({
       disabled={toggleMutation.isPending}
       className={`min-w-[28px] min-h-[28px] flex items-center justify-center p-1 rounded-none border transition-colors z-10 cursor-pointer ${
         favorited
-          ? 'bg-white/90 dark:bg-zinc-900/90 border-red-400 dark:border-red-700 text-red-600'
-          : 'bg-white/90 dark:bg-zinc-900/90 border-zinc-300 dark:border-zinc-700 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:border-zinc-500'
+          ? 'bg-card/90 border-destructive text-destructive'
+          : 'bg-card/90 border-border text-muted-foreground hover:text-foreground hover:border-zinc-500'
       } ${className}`}
       aria-label={favorited ? 'Remove from wishlist' : 'Save to wishlist'}
       title={favorited ? 'Remove from wishlist' : 'Save to wishlist'}
     >
       <Heart
         className={`w-3.5 h-3.5 ${
-          favorited ? 'fill-red-500 text-red-500' : 'stroke-[2]'
+          favorited ? 'fill-destructive text-destructive' : 'stroke-[2]'
         }`}
       />
     </button>

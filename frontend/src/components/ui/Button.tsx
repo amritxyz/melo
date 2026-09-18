@@ -21,19 +21,18 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-mono font-medium rounded-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A8843D] dark:focus-visible:ring-[#C4A053] disabled:opacity-50 disabled:pointer-events-none cursor-pointer'
+      'inline-flex items-center justify-center font-mono font-medium rounded-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50 disabled:pointer-events-none cursor-pointer'
 
     const variants = {
       primary:
-        'bg-[#A8843D] text-[#FAF8F3] hover:bg-[#967433] active:bg-[#826428] border border-[#856729] dark:bg-[#C4A053] dark:text-[#141312] dark:hover:bg-[#B59142] dark:border-[#967433]',
+        'bg-primary text-primary-foreground hover:bg-primary/90 active:opacity-80 border border-primary',
       secondary:
-        'bg-zinc-100 text-zinc-900 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700 border border-zinc-300 dark:border-zinc-700',
-      outline:
-        'border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100',
+        'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border',
+      outline: 'border border-border bg-card hover:bg-muted text-foreground',
       ghost:
-        'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-transparent',
+        'hover:bg-muted text-muted-foreground hover:text-foreground border border-transparent',
       danger:
-        'border border-red-700 dark:border-red-600 text-red-700 dark:text-red-400 bg-transparent hover:bg-red-50 dark:hover:bg-red-950/30',
+        'border border-destructive text-destructive bg-transparent hover:bg-destructive/10 dark:hover:bg-destructive/20',
     }
 
     const sizes = {

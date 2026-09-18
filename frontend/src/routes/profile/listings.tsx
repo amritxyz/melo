@@ -416,7 +416,7 @@ function MyListingsPage() {
                         </Link>
 
                         <div className="flex flex-wrap items-center gap-2.5 text-[11px] font-mono text-zinc-500 mt-1">
-                          <span className="font-bold text-[#A8843D] dark:text-[#C4A053]">
+                          <span className="font-bold text-primary">
                             {formattedPrice}
                           </span>
                           <span
@@ -495,7 +495,7 @@ function MyListingsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-red-600 hover:text-red-700 dark:text-red-400 h-7 px-2"
+                          className="text-destructive hover:text-destructive/80 h-7 px-2"
                           onClick={() => {
                             setConfirmDeleteId(item.id)
                             setConfirmSoldId(null)
@@ -509,10 +509,10 @@ function MyListingsPage() {
 
                   {/* Inline Warning for Mark as Sold */}
                   {isConfirmingSold && (
-                    <div className="mt-3 p-2.5 rounded-none bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono">
+                    <div className="mt-3 p-2.5 rounded-none bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-xs text-zinc-900 dark:text-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono">
                       <div className="flex items-center gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                        <span>Mark as sold? This cannot be undone.</span>
+                        <AlertTriangle className="w-3.5 h-3.5 text-zinc-600 dark:text-zinc-400 shrink-0" />
+                        <span>Mark item as sold to prevent new chats?</span>
                       </div>
                       <div className="flex items-center gap-1.5 self-end sm:self-auto">
                         <Button
@@ -540,9 +540,9 @@ function MyListingsPage() {
 
                   {/* Inline Warning for Delete */}
                   {isConfirmingDelete && (
-                    <div className="mt-3 p-2.5 rounded-none bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 text-xs text-red-900 dark:text-red-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono">
+                    <div className="mt-3 p-2.5 rounded-none bg-destructive/10 border border-destructive/30 text-xs text-destructive flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono">
                       <div className="flex items-center gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                        <AlertTriangle className="w-3.5 h-3.5 text-destructive shrink-0" />
                         <span>Permanently delete this listing?</span>
                       </div>
                       <div className="flex items-center gap-1.5 self-end sm:self-auto">

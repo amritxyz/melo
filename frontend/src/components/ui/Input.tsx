@@ -26,15 +26,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           ref={ref}
           className={cn(
-            'flex h-8 w-full rounded-none border bg-white dark:bg-zinc-900 px-2.5 py-1 text-xs font-mono text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
+            'flex h-8 w-full rounded-none border bg-card px-2.5 py-1 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
             error
-              ? 'border-red-600 focus:border-red-600'
-              : 'border-zinc-300 dark:border-zinc-700',
+              ? 'border-destructive focus:border-destructive'
+              : 'border-input',
             className,
           )}
           {...props}
         />
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && <p className="text-xs text-destructive font-mono">{error}</p>}
         {!error && helperText && (
           <p className="text-xs text-zinc-500">{helperText}</p>
         )}

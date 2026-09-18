@@ -19,18 +19,12 @@ export function Badge({
     'inline-flex items-center font-mono rounded-none border transition-colors leading-none bg-transparent dark:bg-transparent'
 
   const variants = {
-    default:
-      'border-zinc-400 dark:border-zinc-600 text-zinc-900 dark:text-zinc-100',
-    success:
-      'border-zinc-400 dark:border-zinc-600 text-zinc-900 dark:text-zinc-100',
-    warning:
-      'border-zinc-400 dark:border-zinc-600 text-zinc-900 dark:text-zinc-100',
-    danger:
-      'border-red-700/80 dark:border-red-600/80 text-red-700 dark:text-red-400',
-    secondary:
-      'border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300',
-    outline:
-      'border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300',
+    default: 'border-border text-muted-foreground',
+    success: 'border-border text-foreground',
+    warning: 'border-border text-muted-foreground',
+    danger: 'border-destructive text-destructive',
+    secondary: 'border-border text-muted-foreground',
+    outline: 'border-border text-muted-foreground',
   }
 
   const sizes = {
@@ -70,7 +64,7 @@ export function ConditionBadge({
       variant="default"
       size={size}
       className={cn(
-        'bg-white/90 dark:bg-zinc-900/90 text-zinc-900 dark:text-zinc-100 border-zinc-400 dark:border-zinc-600',
+        'bg-card/90 text-muted-foreground border-border',
         className,
       )}
     >
@@ -102,7 +96,7 @@ export function StatusBadge({
     <Badge
       variant={variant}
       size={size}
-      className={cn('bg-white/90 dark:bg-zinc-900/90', className)}
+      className={cn('bg-card/90', className)}
     >
       {text}
     </Badge>

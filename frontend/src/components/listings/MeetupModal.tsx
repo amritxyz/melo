@@ -109,7 +109,7 @@ export function MeetupModal({
               Finding optimal meetup location...
             </div>
           ) : isError || !suggestion ? (
-            <div className="p-3 text-xs font-mono text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 rounded-none border border-red-200 dark:border-red-900">
+            <div className="p-3 text-xs font-mono text-destructive bg-destructive/10 rounded-none border border-destructive/30">
               Could not determine route between the selected locations.
             </div>
           ) : (

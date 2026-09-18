@@ -119,9 +119,7 @@ export function ProductCard({ listing, viewMode = 'grid' }: ProductCardProps) {
             <div className="flex items-baseline gap-2">
               <span
                 className={`font-mono font-bold text-base sm:text-lg ${
-                  isSold
-                    ? 'text-zinc-400 line-through'
-                    : 'text-[#A8843D] dark:text-[#C4A053]'
+                  isSold ? 'text-zinc-400 line-through' : 'text-primary'
                 }`}
               >
                 {formattedPrice}
@@ -205,9 +203,7 @@ export function ProductCard({ listing, viewMode = 'grid' }: ProductCardProps) {
           <div className="flex items-baseline justify-between gap-2 mb-1">
             <span
               className={`font-mono font-bold text-xs sm:text-sm ${
-                isSold
-                  ? 'text-zinc-400 line-through'
-                  : 'text-[#A8843D] dark:text-[#C4A053]'
+                isSold ? 'text-zinc-400 line-through' : 'text-primary'
               }`}
             >
               {formattedPrice}
