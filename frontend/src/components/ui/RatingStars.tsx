@@ -5,7 +5,7 @@ import { cn } from '#/lib/utils'
 interface RatingStarsProps {
   rating: number
   totalCount?: number
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
   interactive?: boolean
   onChange?: (rating: number) => void
   showScore?: boolean
@@ -24,6 +24,7 @@ export function RatingStars({
   const [hoverRating, setHoverRating] = React.useState<number | null>(null)
 
   const starSizes = {
+    xs: 'w-3 h-3',
     sm: 'w-3.5 h-3.5',
     md: 'w-4 h-4',
     lg: 'w-6 h-6',
@@ -70,7 +71,13 @@ export function RatingStars({
         <span
           className={cn(
             'font-mono text-zinc-800 dark:text-zinc-200',
-            size === 'sm' ? 'text-xs' : size === 'lg' ? 'text-sm' : 'text-xs',
+            size === 'xs'
+              ? 'text-[10px]'
+              : size === 'sm'
+                ? 'text-xs'
+                : size === 'lg'
+                  ? 'text-sm'
+                  : 'text-xs',
           )}
         >
           {rating > 0 ? rating.toFixed(1) : 'New'}

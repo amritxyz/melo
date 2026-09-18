@@ -228,7 +228,7 @@ function ProductDetailPage() {
                 </div>
               )}
 
-              <div className="absolute top-2 left-2 flex items-center gap-1.5 z-10">
+              <div className="absolute top-1.5 left-1.5 flex items-center gap-1 z-10 pointer-events-none">
                 <ConditionBadge condition={listing.condition} size="sm" />
                 {isSold ? (
                   <StatusBadge status={listing.status} size="sm" />
@@ -241,17 +241,19 @@ function ProductDetailPage() {
                 )}
               </div>
 
-              <div className="absolute top-2 right-2 z-10 flex items-center gap-1.5">
+              <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-1">
                 <button
                   type="button"
                   onClick={handleShare}
-                  className="h-5 px-1.5 rounded-xs border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 flex items-center gap-1 text-[10px] font-mono shadow-xs backdrop-blur-xs cursor-pointer transition-colors"
+                  className="h-6 px-1.5 rounded-xs border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 flex items-center gap-1 text-[10px] font-mono shadow-xs backdrop-blur-xs cursor-pointer transition-colors"
                   title="Copy listing link"
                 >
                   {copiedShare ? (
                     <>
                       <Check className="w-3 h-3 text-emerald-600" />
-                      <span className="text-emerald-600 font-semibold">Copied</span>
+                      <span className="text-emerald-600 font-semibold">
+                        Copied
+                      </span>
                     </>
                   ) : (
                     <>
@@ -299,28 +301,28 @@ function ProductDetailPage() {
           </div>
 
           {/* Right: Buy Box / Action Column (5 cols) */}
-          <div className="md:col-span-5 space-y-3">
+          <div className="md:col-span-5 space-y-2.5">
             {/* Title & Category Tag */}
             <div>
               {listing.category && (
                 <Link
                   to="/"
                   search={{ category: listing.category_id }}
-                  className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 hover:underline inline-block mb-0.5"
+                  className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 hover:underline inline-block mb-1"
                 >
                   {listing.category.name}
                 </Link>
               )}
-              <h1 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-50 leading-snug">
+              <h1 className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-50 leading-snug">
                 {formatTitleCase(listing.title)}
               </h1>
             </div>
 
             {/* Price Box */}
-            <div className="border-y border-zinc-200 dark:border-zinc-800 py-2.5 flex items-baseline justify-between gap-2">
+            <div className="border-y border-zinc-200 dark:border-zinc-800 py-2 flex items-baseline justify-between gap-2">
               <div>
                 <span
-                  className={`font-mono font-bold text-lg sm:text-xl block ${
+                  className={`font-mono font-bold text-sm sm:text-base block ${
                     isSold
                       ? 'text-zinc-400 line-through'
                       : 'text-zinc-900 dark:text-zinc-100'
@@ -330,27 +332,29 @@ function ProductDetailPage() {
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[11px] font-mono text-zinc-500 block">
+                <span className="text-[10px] font-mono text-zinc-500 block">
                   {isSold
                     ? '0 available (Sold)'
                     : (listing.quantity ?? 1) > 1
-                    ? `${listing.quantity} available`
-                    : '1 available'}
+                      ? `${listing.quantity} available`
+                      : '1 available'}
                 </span>
               </div>
             </div>
 
             {/* Quick Specs (Condition & Location) */}
-            <div className="flex items-center justify-between text-xs font-mono py-1.5 px-2.5 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/40">
+            <div className="flex items-center justify-between text-[10px] font-mono py-1.5 px-2.5 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/40">
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="text-[10px] uppercase tracking-wider text-zinc-400 dark:text-zinc-500 shrink-0">Condition</span>
-                <span className="font-semibold capitalize text-zinc-900 dark:text-zinc-100 truncate">
-                  {listing.condition.replace('_', ' ')}
+                <span className="uppercase tracking-wider text-zinc-400 dark:text-zinc-500 shrink-0">
+                  Condition
                 </span>
+                <ConditionBadge condition={listing.condition} size="sm" />
               </div>
-              <div className="flex items-center gap-1 text-zinc-600 dark:text-zinc-400 shrink-0 text-[11px]">
+              <div className="flex items-center gap-1 text-zinc-500 dark:text-zinc-400 shrink-0 truncate max-w-[160px]">
                 <MapPin className="w-3 h-3 text-zinc-400 shrink-0" />
-                <span className="truncate">{formatLocation(listing.location)}</span>
+                <span className="truncate">
+                  {formatLocation(listing.location)}
+                </span>
               </div>
             </div>
 
@@ -360,8 +364,8 @@ function ProductDetailPage() {
                 <>
                   {!isSold ? (
                     <Button
-                      className="w-full gap-1.5 text-xs font-medium h-8 rounded-none"
-                      size="md"
+                      size="sm"
+                      className="w-full gap-1.5 text-xs font-medium h-7 rounded-none"
                       isLoading={startConvMutation.isPending}
                       onClick={handleMessageSeller}
                     >
@@ -369,7 +373,7 @@ function ProductDetailPage() {
                       <span>Contact Seller</span>
                     </Button>
                   ) : (
-                    <div className="py-1.5 px-2 text-center bg-zinc-100 dark:bg-zinc-800/60 text-xs font-mono text-zinc-500">
+                    <div className="py-1 px-2 text-center bg-zinc-100 dark:bg-zinc-800/60 text-xs font-mono text-zinc-500">
                       This item is marked as sold
                     </div>
                   )}
@@ -378,18 +382,19 @@ function ProductDetailPage() {
                     <Button
                       type="button"
                       variant="outline"
-                      size="md"
-                      className="w-full gap-1 font-mono text-xs text-zinc-700 dark:text-zinc-300 h-8 rounded-none"
+                      size="sm"
+                      className="w-full gap-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 h-7 rounded-none"
                       onClick={() => setShowMeetupModal(true)}
                     >
-                      <Navigation className="w-3 h-3 text-zinc-500" />
+                      <Navigation className="w-3.5 h-3.5 text-zinc-500" />
                       <span>Meetup Spot</span>
                     </Button>
 
                     <FavoriteButton
                       listingId={listing.id}
                       variant="button"
-                      className="w-full h-8 text-xs font-mono rounded-none"
+                      size="sm"
+                      className="w-full h-7 rounded-none"
                     />
                   </div>
                 </>
@@ -400,7 +405,9 @@ function ProductDetailPage() {
                     <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
                       Your Listing
                     </span>
-                    <span className="text-[10px] font-mono text-zinc-500">Owner Controls</span>
+                    <span className="text-[10px] font-mono text-zinc-500">
+                      Owner Controls
+                    </span>
                   </div>
 
                   {isSold && (
@@ -452,7 +459,9 @@ function ProductDetailPage() {
                       <div className="flex items-start gap-1.5">
                         <AlertTriangle className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-bold text-[11px]">Permanently delete?</p>
+                          <p className="font-bold text-[11px]">
+                            Permanently delete?
+                          </p>
                           <p className="text-zinc-600 dark:text-zinc-400 text-[10px]">
                             Removes listing completely.
                           </p>
@@ -529,7 +538,7 @@ function ProductDetailPage() {
             </div>
 
             {/* Compact Seller Information */}
-            <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 p-2.5 space-y-2">
+            <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 p-2">
               <div className="flex items-center justify-between gap-2">
                 <Link
                   to="/users/$userId"
@@ -541,18 +550,18 @@ function ProductDetailPage() {
                       sellerProfile?.avatar_url || listing.seller?.avatar_url
                     }
                     username={listing.seller?.username}
-                    size="sm"
+                    size="xs"
                     shape="square"
-                    className="w-7 h-7 rounded-none border border-zinc-300 dark:border-zinc-700 shrink-0"
+                    className="w-6 h-6 rounded-none border border-zinc-300 dark:border-zinc-700 shrink-0"
                   />
                   <div className="min-w-0">
-                    <span className="font-mono font-semibold text-xs text-zinc-900 dark:text-zinc-100 group-hover:underline block truncate">
+                    <span className="font-mono font-medium text-xs text-zinc-900 dark:text-zinc-100 group-hover:underline block truncate">
                       {formatName(listing.seller?.username || 'Seller')}
                     </span>
                     <RatingStars
                       rating={sellerProfile?.rating || 0}
                       totalCount={sellerProfile?.review_count || 0}
-                      size="sm"
+                      size="xs"
                     />
                   </div>
                 </Link>
@@ -560,31 +569,26 @@ function ProductDetailPage() {
                 <Link
                   to="/users/$userId"
                   params={{ userId: listing.seller_id }}
-                  className="text-[11px] font-mono text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:underline shrink-0 flex items-center gap-0.5"
+                  className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:underline shrink-0 flex items-center gap-0.5"
                 >
                   <span>Seller items</span>
-                  <ChevronRight className="w-3 h-3" />
+                  <ChevronRight className="w-3 h-3 text-zinc-400" />
                 </Link>
               </div>
-
-              {(sellerProfile?.bio || listing.seller?.bio) && (
-                <p className="text-[11px] text-zinc-600 dark:text-zinc-400 italic line-clamp-1 border-t border-zinc-200/70 dark:border-zinc-800/70 pt-1.5">
-                  &quot;{sellerProfile?.bio || listing.seller?.bio}&quot;
-                </p>
-              )}
             </div>
           </div>
         </div>
 
         {/* Similar / Recommended Products (eBay pattern) */}
-        {similarListings && similarListings.length > 0 && (
+        {similarListings.length > 0 && (
           <section className="pt-6 border-t border-zinc-200 dark:border-zinc-800">
             <div className="flex items-center justify-between pb-2 mb-3 border-b border-zinc-100 dark:border-zinc-800/80">
               <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
                 Similar Products
               </h2>
               <span className="text-[10px] font-mono text-zinc-500">
-                {similarListings.length} {similarListings.length === 1 ? 'item' : 'items'}
+                {similarListings.length}{' '}
+                {similarListings.length === 1 ? 'item' : 'items'}
               </span>
             </div>
 
@@ -611,7 +615,9 @@ function ProductDetailPage() {
                 <h3 className="text-[10px] font-mono font-semibold uppercase text-zinc-600 dark:text-zinc-400 tracking-wider">
                   Item Specifics
                 </h3>
-                <span className="text-[10px] font-mono text-zinc-400">Specifications</span>
+                <span className="text-[10px] font-mono text-zinc-400">
+                  Specifications
+                </span>
               </div>
               <div className="text-xs font-mono divide-y divide-zinc-100 dark:divide-zinc-800/80 bg-white dark:bg-zinc-900">
                 <div className="flex px-3 py-1.5 justify-between">
@@ -633,7 +639,8 @@ function ProductDetailPage() {
                       {listing.condition.replace('_', ' ')}
                     </span>
                     <span className="text-[10px] text-zinc-500 block">
-                      {conditionNotes[listing.condition] || 'Standard pre-owned condition.'}
+                      {conditionNotes[listing.condition] ||
+                        'Standard pre-owned condition.'}
                     </span>
                   </div>
                 </div>
@@ -677,19 +684,22 @@ function ProductDetailPage() {
               <div className="flex items-start gap-1.5">
                 <span className="text-emerald-600 font-bold shrink-0">✓</span>
                 <span>
-                  <strong>Inspect first:</strong> Always examine and test items before paying.
+                  <strong>Inspect first:</strong> Always examine and test items
+                  before paying.
                 </span>
               </div>
               <div className="flex items-start gap-1.5">
                 <span className="text-emerald-600 font-bold shrink-0">✓</span>
                 <span>
-                  <strong>Safe meetup:</strong> Prefer well-lit public spots like malls or chowks.
+                  <strong>Safe meetup:</strong> Prefer well-lit public spots
+                  like malls or chowks.
                 </span>
               </div>
               <div className="flex items-start gap-1.5">
                 <span className="text-emerald-600 font-bold shrink-0">✓</span>
                 <span>
-                  <strong>Direct chat:</strong> Finalize meetup details only inside Melo messages.
+                  <strong>Direct chat:</strong> Finalize meetup details only
+                  inside Melo messages.
                 </span>
               </div>
             </div>
@@ -700,7 +710,11 @@ function ProductDetailPage() {
         <MeetupModal
           isOpen={showMeetupModal}
           onClose={() => setShowMeetupModal(false)}
-          sellerLocation={listing.location || listing.seller?.location || 'Traffic Chowk, Butwal'}
+          sellerLocation={
+            listing.location ||
+            listing.seller?.location ||
+            'Traffic Chowk, Butwal'
+          }
           initialBuyerLocation={currentUser?.location || 'Devinagar, Butwal'}
           sellerName={listing.seller?.username || 'Seller'}
         />
