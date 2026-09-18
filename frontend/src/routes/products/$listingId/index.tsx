@@ -177,12 +177,12 @@ function ProductDetailPage() {
 
       {/* Top Context & Action Bar */}
       <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 py-2 text-xs font-mono">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-1.5 text-zinc-500 overflow-hidden truncate">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-1.5 text-zinc-500 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5">
             <Link to="/" className="hover:underline shrink-0">
               marketplace
             </Link>
-            <span>/</span>
+            <span className="shrink-0">/</span>
             {listing.category && (
               <>
                 <Link
@@ -192,16 +192,16 @@ function ProductDetailPage() {
                 >
                   {listing.category.name.toLowerCase()}
                 </Link>
-                <span>/</span>
+                <span className="shrink-0">/</span>
               </>
             )}
-            <span className="text-zinc-900 dark:text-zinc-100 truncate">
+            <span className="text-zinc-900 dark:text-zinc-100 truncate max-w-[200px] sm:max-w-none">
               {formatTitleCase(listing.title)}
             </span>
           </div>
 
           {/* Action Cluster (Requirement 8) */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 self-stretch sm:self-auto justify-end">
             <Link
               to="/"
               className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:underline shrink-0 text-[11px] mr-1 hidden sm:inline"
@@ -212,13 +212,15 @@ function ProductDetailPage() {
             <button
               type="button"
               onClick={handleShare}
-              className="h-6 px-2 rounded-xs border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 flex items-center gap-1 text-[10px] font-mono shadow-xs cursor-pointer transition-colors"
+              className="h-7 px-2.5 rounded-none border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-1 text-[11px] font-mono cursor-pointer transition-colors"
               title="Copy listing link"
             >
               {copiedShare ? (
                 <>
-                  <Check className="w-3 h-3 text-emerald-600" />
-                  <span className="text-emerald-600 font-semibold">Copied</span>
+                  <Check className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
+                  <span className="text-zinc-900 dark:text-zinc-100 font-semibold">
+                    Copied
+                  </span>
                 </>
               ) : (
                 <>
@@ -236,10 +238,10 @@ function ProductDetailPage() {
       </div>
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full flex-1 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 pb-24 md:pb-8 w-full flex-1 space-y-8">
         {/* Sold Notice */}
         {isSold && (
-          <div className="border border-red-300 dark:border-red-900 bg-red-50/50 dark:bg-red-950/30 p-2 rounded-xs text-xs font-mono text-red-800 dark:text-red-300 flex items-center justify-between">
+          <div className="border border-red-300 dark:border-red-900 bg-red-50/50 dark:bg-red-950/30 p-2 rounded-none text-xs font-mono text-red-800 dark:text-red-300 flex items-center justify-between">
             <span>[SOLD] This item has been marked as sold.</span>
             <StatusBadge status="sold" size="sm" />
           </div>
@@ -251,7 +253,7 @@ function ProductDetailPage() {
           <div className="md:col-span-7 space-y-5">
             {/* Gallery Container (Requirement 1) */}
             <div className="space-y-2">
-              <div className="h-64 sm:h-72 md:h-80 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs flex items-center justify-center relative overflow-hidden">
+              <div className="h-64 sm:h-72 md:h-80 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-none flex items-center justify-center relative overflow-hidden">
                 {activeImage ? (
                   <img
                     src={activeImage.url}
@@ -279,7 +281,7 @@ function ProductDetailPage() {
                     <StatusBadge status={listing.status} size="sm" />
                   ) : (
                     (listing.quantity ?? 1) > 1 && (
-                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-xs text-[10px] font-mono font-medium bg-zinc-900/80 text-white dark:bg-zinc-100/90 dark:text-zinc-900 backdrop-blur-xs">
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-none text-[10px] font-mono font-medium border border-zinc-400 dark:border-zinc-600 bg-white/90 dark:bg-zinc-900/90 text-zinc-900 dark:text-zinc-100 backdrop-blur-xs">
                         {listing.quantity} available
                       </span>
                     )
@@ -301,7 +303,7 @@ function ProductDetailPage() {
                       key={img.id || img.url || idx}
                       type="button"
                       onClick={() => setSelectedImageIndex(idx)}
-                      className={`h-11 w-11 rounded-xs border overflow-hidden shrink-0 cursor-pointer transition-colors ${
+                      className={`h-11 w-11 rounded-none border overflow-hidden shrink-0 cursor-pointer transition-colors ${
                         safeImageIndex === idx
                           ? 'border-zinc-900 dark:border-zinc-100 ring-1 ring-zinc-900 dark:ring-zinc-100'
                           : 'border-zinc-200 dark:border-zinc-800 opacity-60 hover:opacity-100'
@@ -427,33 +429,33 @@ function ProductDetailPage() {
                   className="p-3.5 pt-2.5 space-y-3 text-xs font-mono"
                 >
                   <div className="flex items-center gap-1.5 text-zinc-800 dark:text-zinc-200 font-semibold text-[10px] uppercase tracking-wider">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-zinc-700 dark:text-zinc-300 shrink-0" />
                     <span>Buyer Safety & Handover Guide</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] text-zinc-600 dark:text-zinc-400">
                     <div className="p-2 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                      <span className="text-emerald-600 font-bold block">
+                      <span className="text-zinc-900 dark:text-zinc-100 font-bold block">
                         ✓ Inspect First
                       </span>
-                      <span>
+                      <span className="font-sans">
                         Always examine and test items thoroughly in person prior
                         to transferring funds.
                       </span>
                     </div>
                     <div className="p-2 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                      <span className="text-emerald-600 font-bold block">
+                      <span className="text-zinc-900 dark:text-zinc-100 font-bold block">
                         ✓ Safe Meetup
                       </span>
-                      <span>
+                      <span className="font-sans">
                         Select public, high-visibility locations like shopping
                         malls or chowks.
                       </span>
                     </div>
                     <div className="p-2 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
-                      <span className="text-emerald-600 font-bold block">
+                      <span className="text-zinc-900 dark:text-zinc-100 font-bold block">
                         ✓ Direct Chat
                       </span>
-                      <span>
+                      <span className="font-sans">
                         Finalize meetup details and questions only inside Melo
                         messages.
                       </span>
@@ -491,7 +493,7 @@ function ProductDetailPage() {
                     className={`font-mono font-bold text-sm sm:text-base block ${
                       isSold
                         ? 'text-zinc-400 line-through'
-                        : 'text-zinc-900 dark:text-zinc-100'
+                        : 'text-[#A8843D] dark:text-[#C4A053]'
                     }`}
                   >
                     {formattedPrice}
@@ -538,7 +540,7 @@ function ProductDetailPage() {
                     {!isSold ? (
                       <Button
                         size="sm"
-                        className="w-full gap-1.5 text-xs font-medium h-7 rounded-none"
+                        className="w-full gap-1.5 text-xs font-medium h-9 sm:h-7 rounded-none"
                         isLoading={startConvMutation.isPending}
                         onClick={handleMessageSeller}
                       >
@@ -546,17 +548,17 @@ function ProductDetailPage() {
                         <span>Contact Seller</span>
                       </Button>
                     ) : (
-                      <div className="py-1 px-2 text-center bg-zinc-100 dark:bg-zinc-800/60 text-xs font-mono text-zinc-500">
+                      <div className="py-2 px-2 text-center bg-zinc-100 dark:bg-zinc-800/60 text-xs font-mono text-zinc-500">
                         This item is marked as sold
                       </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-1.5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
-                        className="w-full gap-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 h-7 rounded-none"
+                        className="w-full gap-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 h-9 sm:h-7 rounded-none"
                         onClick={() => setShowMeetupModal(true)}
                       >
                         <Navigation className="w-3.5 h-3.5 text-zinc-500" />
@@ -567,7 +569,7 @@ function ProductDetailPage() {
                         listingId={listing.id}
                         variant="button"
                         size="sm"
-                        className="w-full h-7 rounded-none"
+                        className="w-full h-9 sm:h-7 rounded-none"
                       />
                     </div>
                   </>
@@ -609,7 +611,7 @@ function ProductDetailPage() {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="h-7 text-[10px] font-mono px-2 rounded-none"
+                            className="h-8 sm:h-7 text-[10px] font-mono px-2 rounded-none"
                             onClick={() => setShowSoldConfirm(false)}
                           >
                             Cancel
@@ -618,7 +620,7 @@ function ProductDetailPage() {
                             type="button"
                             variant="primary"
                             size="sm"
-                            className="h-7 text-[10px] font-mono px-2 rounded-none"
+                            className="h-8 sm:h-7 text-[10px] font-mono px-2 rounded-none"
                             isLoading={markSoldMutation.isPending}
                             onClick={handleConfirmSold}
                           >
@@ -647,7 +649,7 @@ function ProductDetailPage() {
                             type="button"
                             variant="outline"
                             size="sm"
-                            className="h-7 text-[10px] font-mono px-2 rounded-none"
+                            className="h-8 sm:h-7 text-[10px] font-mono px-2 rounded-none"
                             onClick={() => setShowDeleteConfirm(false)}
                           >
                             Cancel
@@ -656,7 +658,7 @@ function ProductDetailPage() {
                             type="button"
                             variant="danger"
                             size="sm"
-                            className="h-7 text-[10px] font-mono px-2 rounded-none"
+                            className="h-8 sm:h-7 text-[10px] font-mono px-2 rounded-none"
                             isLoading={deleteMutation.isPending}
                             onClick={handleConfirmDelete}
                           >
@@ -667,7 +669,7 @@ function ProductDetailPage() {
                     )}
 
                     {!showSoldConfirm && !showDeleteConfirm && (
-                      <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 pt-0.5">
                         {!isSold && (
                           <Link
                             to="/products/$listingId/edit"
@@ -677,7 +679,7 @@ function ProductDetailPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="w-full gap-1 text-[11px] font-mono h-7 px-1.5 rounded-none"
+                              className="w-full gap-1 text-[11px] font-mono h-9 sm:h-7 px-1.5 rounded-none"
                             >
                               <Pencil className="w-3 h-3" />
                               <span>Edit</span>
@@ -689,7 +691,7 @@ function ProductDetailPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="w-full gap-1 text-[11px] font-mono h-7 px-1.5 rounded-none"
+                            className="w-full gap-1 text-[11px] font-mono h-9 sm:h-7 px-1.5 rounded-none"
                             onClick={() => setShowSoldConfirm(true)}
                           >
                             <CheckCircle2 className="w-3 h-3" />
@@ -700,7 +702,7 @@ function ProductDetailPage() {
                         <Button
                           variant="danger"
                           size="sm"
-                          className="w-full gap-1 text-[11px] font-mono h-7 px-1.5 rounded-none"
+                          className="w-full gap-1 text-[11px] font-mono h-9 sm:h-7 px-1.5 rounded-none"
                           onClick={() => setShowDeleteConfirm(true)}
                         >
                           <Trash2 className="w-3 h-3" />
@@ -837,6 +839,68 @@ function ProductDetailPage() {
           sellerName={listing.seller?.username || 'Seller'}
         />
       </main>
+
+      {/* Mobile Sticky Buy Box Bar (Requirement 4) */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAF8F3]/95 dark:bg-[#141312]/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 p-2.5 px-4 flex items-center justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <span className="text-[10px] font-mono text-zinc-500 uppercase block tracking-wider">
+            {isSold ? 'Status' : 'Price'}
+          </span>
+          <span
+            className={`font-mono font-bold text-sm sm:text-base block truncate ${
+              isSold
+                ? 'text-zinc-400 line-through'
+                : 'text-[#A8843D] dark:text-[#C4A053]'
+            }`}
+          >
+            {formattedPrice}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          {!isOwner ? (
+            <>
+              {!isSold ? (
+                <Button
+                  size="sm"
+                  className="gap-1.5 text-xs font-medium h-9 px-4 rounded-none min-w-[130px]"
+                  isLoading={startConvMutation.isPending}
+                  onClick={handleMessageSeller}
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Contact Seller</span>
+                </Button>
+              ) : (
+                <span className="px-3 py-1.5 text-xs font-mono text-zinc-500 border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800">
+                  Sold Out
+                </span>
+              )}
+            </>
+          ) : (
+            <>
+              {!isSold ? (
+                <Link
+                  to="/products/$listingId/edit"
+                  params={{ listingId: listing.id }}
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 text-xs font-mono h-9 px-3 rounded-none"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    <span>Edit Listing</span>
+                  </Button>
+                </Link>
+              ) : (
+                <span className="px-3 py-1.5 text-xs font-mono text-zinc-500 border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800">
+                  Sold
+                </span>
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,14 @@
 import * as React from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { Plus, Filter, X, LayoutGrid, List, RotateCcw, MapPin } from 'lucide-react'
+import {
+  Plus,
+  Filter,
+  X,
+  LayoutGrid,
+  List,
+  RotateCcw,
+  MapPin,
+} from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { ProductGrid } from '#/components/listings/ProductGrid'
 import { FilterSidebar } from '#/components/listings/FilterSidebar'
@@ -139,7 +147,9 @@ function Home() {
               <MapPin className="w-3 h-3 text-zinc-400 shrink-0" />
               <span>Butwal, Nepal</span>
             </span>
-            <span className="text-zinc-300 dark:text-zinc-700 hidden sm:inline">·</span>
+            <span className="text-zinc-300 dark:text-zinc-700 hidden sm:inline">
+              ·
+            </span>
             <span className="text-[11px] text-zinc-500 hidden sm:inline">
               {total} {total === 1 ? 'item' : 'items'}
             </span>
@@ -148,32 +158,36 @@ function Home() {
           <div className="flex items-center gap-2 shrink-0">
             {/* Trending quick tags */}
             <div className="hidden sm:flex items-center gap-1 text-[11px]">
-              <span className="text-zinc-400 text-[10px] uppercase">Trending:</span>
-              {['ThinkPad', 'Bicycle', 'Desk', 'Guitar', 'Monitor'].map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() =>
-                    navigate({
-                      search: (prev) => ({
-                        ...prev,
-                        q: tag,
-                        page: undefined,
-                      }),
-                    })
-                  }
-                  className="px-1.5 py-0.5 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-[10px] font-mono transition-colors cursor-pointer"
-                >
-                  {tag}
-                </button>
-              ))}
+              <span className="text-zinc-400 text-[10px] uppercase">
+                Trending:
+              </span>
+              {['ThinkPad', 'Bicycle', 'Desk', 'Guitar', 'Monitor'].map(
+                (tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() =>
+                      navigate({
+                        search: (prev) => ({
+                          ...prev,
+                          q: tag,
+                          page: undefined,
+                        }),
+                      })
+                    }
+                    className="px-1.5 py-0.5 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-[10px] font-mono transition-colors cursor-pointer"
+                  >
+                    {tag}
+                  </button>
+                ),
+              )}
             </div>
 
             {/* Mobile filter toggle button */}
             <button
               type="button"
               onClick={() => setMobileFiltersOpen((prev) => !prev)}
-              className="md:hidden flex items-center gap-1.5 px-2 py-0.5 text-xs font-mono border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 cursor-pointer"
+              className="md:hidden flex items-center gap-1.5 h-7 px-2.5 text-xs font-mono border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 cursor-pointer"
             >
               <Filter className="w-3 h-3" />
               <span>Filters</span>
@@ -181,8 +195,6 @@ function Home() {
           </div>
         </div>
       </div>
-
-
 
       {/* Main Two-Column Layout */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1">
@@ -242,12 +254,17 @@ function Home() {
             <div className="flex items-center justify-between pb-2.5 border-b border-zinc-200 dark:border-zinc-800">
               <div className="flex items-center gap-2 text-xs font-mono">
                 <span className="font-semibold text-zinc-900 dark:text-zinc-100">
-                  {categories.find((c) => c.id === selectedCategory)?.name || 'All Listings'}
+                  {categories.find((c) => c.id === selectedCategory)?.name ||
+                    'All Listings'}
                 </span>
                 <span className="text-zinc-400">({total})</span>
                 {searchQuery && (
                   <span className="text-zinc-500">
-                    · matching &quot;<span className="text-zinc-900 dark:text-zinc-100 font-semibold">{searchQuery}</span>&quot;
+                    · matching &quot;
+                    <span className="text-zinc-900 dark:text-zinc-100 font-semibold">
+                      {searchQuery}
+                    </span>
+                    &quot;
                   </span>
                 )}
                 {hasActiveFilters && (
@@ -264,34 +281,34 @@ function Home() {
 
               {/* Grid / List View Toggle */}
               <div className="flex items-center border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-900">
-                  <button
-                    type="button"
-                    onClick={() => handleSetViewMode('grid')}
-                    className={`p-1.5 transition-colors cursor-pointer ${
-                      viewMode === 'grid'
-                        ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold'
-                        : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
-                    }`}
-                    title="Grid view"
-                    aria-label="Grid view"
-                  >
-                    <LayoutGrid className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSetViewMode('list')}
-                    className={`p-1.5 transition-colors cursor-pointer border-l border-zinc-200 dark:border-zinc-800 ${
-                      viewMode === 'list'
-                        ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold'
-                        : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
-                    }`}
-                    title="List view"
-                    aria-label="List view"
-                  >
-                    <List className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => handleSetViewMode('grid')}
+                  className={`min-w-[30px] min-h-[30px] flex items-center justify-center transition-colors cursor-pointer ${
+                    viewMode === 'grid'
+                      ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold'
+                      : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                  }`}
+                  title="Grid view"
+                  aria-label="Grid view"
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSetViewMode('list')}
+                  className={`min-w-[30px] min-h-[30px] flex items-center justify-center transition-colors cursor-pointer border-l border-zinc-200 dark:border-zinc-800 ${
+                    viewMode === 'list'
+                      ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold'
+                      : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                  }`}
+                  title="List view"
+                  aria-label="List view"
+                >
+                  <List className="w-3.5 h-3.5" />
+                </button>
               </div>
+            </div>
 
             {/* Active Filters Bar */}
             {hasActiveFilters && (
@@ -300,7 +317,7 @@ function Home() {
                   active:
                 </span>
                 {selectedCategory && (
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-xs border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-[11px] font-mono">
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none border border-zinc-300 dark:border-zinc-700 bg-transparent text-zinc-700 dark:text-zinc-300 text-[11px] font-mono">
                     cat:{' '}
                     {categories.find((c) => c.id === selectedCategory)?.name}
                     <button
@@ -320,7 +337,7 @@ function Home() {
                   </span>
                 )}
                 {selectedCondition !== 'all' && (
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-xs border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-[11px] font-mono">
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none border border-zinc-300 dark:border-zinc-700 bg-transparent text-zinc-700 dark:text-zinc-300 text-[11px] font-mono">
                     cond: {selectedCondition}
                     <button
                       onClick={() => {
@@ -339,7 +356,7 @@ function Home() {
                   </span>
                 )}
                 {selectedLocation && (
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-xs border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-[11px] font-mono">
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none border border-zinc-300 dark:border-zinc-700 bg-transparent text-zinc-700 dark:text-zinc-300 text-[11px] font-mono">
                     loc: {selectedLocation}
                     <button
                       onClick={() => {
@@ -358,7 +375,7 @@ function Home() {
                   </span>
                 )}
                 {searchQuery && (
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-xs border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-[11px] font-mono">
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none border border-zinc-300 dark:border-zinc-700 bg-transparent text-zinc-700 dark:text-zinc-300 text-[11px] font-mono">
                     query: &quot;{searchQuery}&quot;
                     <button
                       onClick={() => {

@@ -85,7 +85,7 @@ function FavoritesPage() {
             </span>
 
             {listings.length > 0 && (
-              <div className="flex items-center border border-zinc-300 dark:border-zinc-700 rounded-xs overflow-hidden">
+              <div className="flex items-center border border-zinc-300 dark:border-zinc-700 rounded-none overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setAndSaveViewMode('grid')}
@@ -121,8 +121,8 @@ function FavoritesPage() {
         {isFavoritesLoading ? (
           <ProductGrid listings={[]} isLoading={true} viewMode={viewMode} />
         ) : listings.length === 0 ? (
-          <div className="py-16 text-center border border-zinc-200 dark:border-zinc-800 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/30 p-8 space-y-4 max-w-md mx-auto my-8">
-            <div className="w-10 h-10 mx-auto rounded-xs border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-zinc-400">
+          <div className="py-16 text-center border border-zinc-200 dark:border-zinc-800 rounded-none bg-zinc-50/50 dark:bg-zinc-900/30 p-8 space-y-4 max-w-md mx-auto my-8">
+            <div className="w-10 h-10 mx-auto rounded-none border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-zinc-400">
               <Bookmark className="w-5 h-5 stroke-[1.5]" />
             </div>
             <div className="space-y-1">
@@ -130,7 +130,8 @@ function FavoritesPage() {
                 Your Saved List is Empty
               </h3>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Bookmark items you're interested in while browsing to monitor availability and pricing.
+                Bookmark items you're interested in while browsing to monitor
+                availability and pricing.
               </p>
             </div>
             <div className="pt-2">

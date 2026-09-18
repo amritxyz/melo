@@ -70,7 +70,7 @@ export const LocationSelect: React.FC<LocationSelectProps> = ({
       {label && (
         <label
           htmlFor={selectId}
-          className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          className="text-xs font-mono font-medium text-zinc-700 dark:text-zinc-300"
         >
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
@@ -82,7 +82,7 @@ export const LocationSelect: React.FC<LocationSelectProps> = ({
         value={isCustom ? '__custom__' : value}
         onChange={handleSelectChange}
         className={cn(
-          'flex h-8 w-full rounded-sm border bg-white dark:bg-zinc-900 px-2.5 py-1 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
+          'flex h-8 w-full rounded-none border bg-white dark:bg-zinc-900 px-2.5 py-1 text-xs font-mono text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 disabled:cursor-not-allowed disabled:opacity-50 transition-colors cursor-pointer',
           error
             ? 'border-red-600 focus:border-red-600'
             : 'border-zinc-300 dark:border-zinc-700',

@@ -112,7 +112,7 @@ function ProfilePage() {
   if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col justify-center py-12 px-4">
-        <div className="max-w-md mx-auto text-center bg-white dark:bg-zinc-900 p-6 rounded-xs border border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-md mx-auto text-center bg-white dark:bg-zinc-900 p-6 rounded-none border border-zinc-200 dark:border-zinc-800">
           <UserIcon className="w-8 h-8 text-zinc-400 mx-auto mb-3 stroke-[1.5]" />
           <h2 className="text-lg font-bold font-mono text-zinc-900 dark:text-zinc-100 mb-1">
             Sign In Required
@@ -151,26 +151,34 @@ function ProfilePage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
         {/* Breadcrumb / Top Bar */}
-        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+          <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5">
             <Link
               to="/"
-              className="hover:text-zinc-900 dark:hover:text-zinc-100"
+              className="hover:text-zinc-900 dark:hover:text-zinc-100 shrink-0"
             >
               marketplace
             </Link>
-            <span>/</span>
-            <span className="text-zinc-900 dark:text-zinc-100">profile</span>
-            <span>/</span>
-            <span className="text-zinc-500">@{profile?.username}</span>
+            <span className="shrink-0">/</span>
+            <span className="text-zinc-900 dark:text-zinc-100 shrink-0">
+              profile
+            </span>
+            <span className="shrink-0">/</span>
+            <span className="text-zinc-500 truncate max-w-[200px] sm:max-w-none">
+              @{profile?.username}
+            </span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link to="/users/$userId" params={{ userId: user.id }}>
+          <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
+            <Link
+              to="/users/$userId"
+              params={{ userId: user.id }}
+              className="flex-1 sm:flex-initial"
+            >
               <Button
                 variant="ghost"
                 size="sm"
-                className="gap-1 font-mono text-xs"
+                className="w-full sm:w-auto gap-1 font-mono text-xs"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 <span>Public View</span>
@@ -180,7 +188,7 @@ function ProfilePage() {
               onClick={handleOpenEdit}
               variant="outline"
               size="sm"
-              className="gap-1.5 font-mono text-xs"
+              className="flex-1 sm:flex-initial gap-1.5 font-mono text-xs"
             >
               <Pencil className="w-3.5 h-3.5" />
               <span>Edit Profile</span>
@@ -189,7 +197,7 @@ function ProfilePage() {
         </div>
 
         {/* Profile Details Box */}
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs p-5 space-y-5">
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-none p-5 space-y-5">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div
               className="cursor-pointer group relative shrink-0"
@@ -203,7 +211,7 @@ function ProfilePage() {
                 shape="square"
                 className="border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800"
               />
-              <div className="absolute inset-0 bg-zinc-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-mono rounded-xs">
+              <div className="absolute inset-0 bg-zinc-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-mono rounded-none">
                 edit
               </div>
             </div>
@@ -213,8 +221,8 @@ function ProfilePage() {
                 <h1 className="text-lg font-bold font-mono text-zinc-900 dark:text-zinc-50">
                   {formatName(profile?.username)}
                 </h1>
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-xs text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none text-[10px] font-mono bg-transparent text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">
+                  <CheckCircle2 className="w-3 h-3 text-zinc-500" />
                   active member
                 </span>
               </div>
@@ -230,9 +238,9 @@ function ProfilePage() {
               {/* Bio */}
               <div className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed pt-1">
                 {profile?.bio ? (
-                  <p className="whitespace-pre-line">{profile.bio}</p>
+                  <p className="whitespace-pre-line font-sans">{profile.bio}</p>
                 ) : (
-                  <p className="text-zinc-400 dark:text-zinc-500 italic">
+                  <p className="text-zinc-400 dark:text-zinc-500 italic font-sans">
                     No bio provided. Click "Edit Profile" to add information
                     about yourself and your trades.
                   </p>
@@ -268,7 +276,7 @@ function ProfilePage() {
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs p-3.5 flex items-center justify-between">
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-none p-3.5 flex items-center justify-between">
             <div>
               <p className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
                 Rating
@@ -286,7 +294,7 @@ function ProfilePage() {
           </div>
 
           <Link to="/profile/listings">
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs p-3.5 flex items-center justify-between hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors cursor-pointer group">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-none p-3.5 flex items-center justify-between hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors cursor-pointer group">
               <div>
                 <p className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
                   Active Listings
@@ -304,7 +312,7 @@ function ProfilePage() {
             </div>
           </Link>
 
-          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs p-3.5 flex items-center justify-between">
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-none p-3.5 flex items-center justify-between">
             <div>
               <p className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
                 Completed Sales
@@ -323,7 +331,7 @@ function ProfilePage() {
         </div>
 
         {/* Reviews Section */}
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs p-5 space-y-4">
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-none p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
             <div>
               <h2 className="text-sm font-bold font-mono text-zinc-900 dark:text-zinc-100">
@@ -333,7 +341,7 @@ function ProfilePage() {
                 Feedback submitted by buyers from completed transactions.
               </p>
             </div>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+            <span className="text-xs font-mono px-2 py-0.5 rounded-none bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
               {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
             </span>
           </div>
@@ -343,7 +351,7 @@ function ProfilePage() {
               Loading reviews...
             </div>
           ) : reviews.length === 0 ? (
-            <div className="py-8 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xs">
+            <div className="py-8 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-none">
               <Star className="w-6 h-6 text-zinc-300 dark:text-zinc-700 mx-auto mb-2" />
               <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
                 No reviews recorded yet
@@ -385,7 +393,7 @@ function ProfilePage() {
                     showScore={false}
                     size="sm"
                   />
-                  <p className="text-xs text-zinc-700 dark:text-zinc-300">
+                  <p className="text-xs text-zinc-700 dark:text-zinc-300 font-sans">
                     {rev.comment}
                   </p>
                 </div>
@@ -398,7 +406,7 @@ function ProfilePage() {
       {/* Edit Profile Modal */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/50">
-          <div className="bg-white dark:bg-zinc-900 rounded-xs border border-zinc-300 dark:border-zinc-700 max-w-lg w-full p-5 space-y-5">
+          <div className="bg-white dark:bg-zinc-900 rounded-none border border-zinc-300 dark:border-zinc-700 max-w-lg w-full p-5 space-y-5">
             <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
               <div>
                 <h3 className="text-sm font-bold font-mono text-zinc-900 dark:text-zinc-100">
@@ -417,7 +425,7 @@ function ProfilePage() {
             </div>
 
             {formError && (
-              <div className="p-2.5 rounded-xs bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-700 dark:text-red-300 font-mono">
+              <div className="p-2.5 rounded-none bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-700 dark:text-red-300 font-mono">
                 {formError}
               </div>
             )}
@@ -432,7 +440,7 @@ function ProfilePage() {
                   value={bioInput}
                   onChange={(e) => setBioInput(e.target.value)}
                   placeholder="Short description of what you buy and sell..."
-                  className="w-full px-2.5 py-1.5 text-xs rounded-xs border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:border-zinc-500 font-mono"
+                  className="w-full px-2.5 py-1.5 text-xs rounded-none border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:outline-hidden focus:border-zinc-500 font-mono"
                 />
               </div>
 

@@ -199,4 +199,3 @@ export interface MeetupSuggestion {
   is_designated_safe_hub: boolean
   explanation: string
 }
-

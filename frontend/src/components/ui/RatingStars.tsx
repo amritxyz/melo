@@ -58,7 +58,7 @@ export function RatingStars({
                   starSizes[size],
                   'transition-colors',
                   isFilled
-                    ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400'
+                    ? 'fill-[#A8843D] text-[#A8843D] dark:fill-[#C4A053] dark:text-[#C4A053]'
                     : 'fill-transparent text-zinc-300 dark:text-zinc-700',
                 )}
               />

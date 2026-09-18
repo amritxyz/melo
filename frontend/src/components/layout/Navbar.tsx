@@ -107,7 +107,7 @@ export function Navbar() {
         <div className="flex items-center gap-5 shrink-0">
           <Link
             to="/"
-            className="flex items-center gap-1.5 text-zinc-900 dark:text-zinc-100 hover:text-emerald-700 dark:hover:text-emerald-400"
+            className="flex items-center gap-1.5 text-zinc-900 dark:text-zinc-100 hover:text-zinc-600 dark:hover:text-zinc-300"
           >
             <span className="font-bold tracking-tight text-base font-mono">
               melo
@@ -117,12 +117,12 @@ export function Navbar() {
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-4 text-xs">
+          <nav className="hidden md:flex items-center gap-4 text-xs font-mono">
             <Link
               to="/"
               className={`py-1 transition-colors ${
                 isActive('/')
-                  ? 'text-emerald-700 dark:text-emerald-400 font-semibold underline underline-offset-4'
+                  ? 'text-zinc-900 dark:text-zinc-100 font-semibold underline underline-offset-4'
                   : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
               }`}
             >
@@ -132,7 +132,7 @@ export function Navbar() {
               to="/sell"
               className={`py-1 transition-colors ${
                 isActive('/sell')
-                  ? 'text-emerald-700 dark:text-emerald-400 font-semibold underline underline-offset-4'
+                  ? 'text-zinc-900 dark:text-zinc-100 font-semibold underline underline-offset-4'
                   : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
               }`}
             >
@@ -214,7 +214,7 @@ export function Navbar() {
                 <MessageSquare className="w-3.5 h-3.5" />
                 <span>Messages</span>
                 {unreadMessagesCount > 0 && (
-                  <span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                  <span className="font-mono text-[11px] text-zinc-900 dark:text-zinc-100 font-semibold">
                     [{unreadMessagesCount}]
                   </span>
                 )}
@@ -222,7 +222,11 @@ export function Navbar() {
 
               {/* Sell CTA */}
               <Link to="/sell">
-                <Button size="sm" variant="secondary" className="gap-1 rounded-none">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="gap-1 rounded-none"
+                >
                   <Plus className="w-3.5 h-3.5" />
                   <span>New Listing</span>
                 </Button>
@@ -324,28 +328,28 @@ export function Navbar() {
         </div>
 
         {/* Mobile Buttons */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex md:hidden items-center gap-1.5">
           <button
             type="button"
             onClick={() => {
               setIsMobileSearchOpen((prev) => !prev)
               setIsMobileMenuOpen(false)
             }}
-            className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 focus:outline-none cursor-pointer"
+            className="min-w-[38px] min-h-[38px] flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 focus:outline-none cursor-pointer"
             aria-label="Search"
           >
-            <Search className="w-3.5 h-3.5" />
+            <Search className="w-4 h-4" />
           </button>
 
           {isAuthenticated && (
             <Link
               to="/messages"
-              className="relative p-1 text-zinc-600 dark:text-zinc-400"
+              className="relative min-w-[38px] min-h-[38px] flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800"
               aria-label="Messages"
             >
               <MessageSquare className="w-4 h-4" />
               {unreadMessagesCount > 0 && (
-                <span className="absolute top-0 right-0 w-2 h-2 bg-emerald-600 rounded-full" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#A8843D] dark:bg-[#C4A053] rounded-none" />
               )}
             </Link>
           )}
@@ -356,7 +360,7 @@ export function Navbar() {
               setIsMobileMenuOpen((prev) => !prev)
               setIsMobileSearchOpen(false)
             }}
-            className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 focus:outline-none cursor-pointer"
+            className="min-w-[38px] min-h-[38px] flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 border border-zinc-200 dark:border-zinc-800 focus:outline-none cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {isMobileMenuOpen ? (
@@ -370,34 +374,35 @@ export function Navbar() {
 
       {/* Mobile Expandable Search Bar */}
       {isMobileSearchOpen && (
-        <div className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/90 p-2">
+        <div className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/90 p-2.5">
           <form
             onSubmit={handleGlobalSearch}
             className="flex items-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden"
           >
             <div className="relative flex-1 flex items-center">
-              <Search className="w-3.5 h-3.5 absolute left-2 text-zinc-400 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 absolute left-2.5 text-zinc-400 pointer-events-none" />
               <input
                 type="text"
                 autoFocus
                 placeholder="Search products..."
                 value={globalQuery}
                 onChange={(e) => setGlobalQuery(e.target.value)}
-                className="w-full h-7 pl-7 pr-6 text-xs bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
+                className="w-full h-8 pl-8 pr-7 text-xs bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none font-sans"
               />
               {globalQuery && (
                 <button
                   type="button"
                   onClick={() => setGlobalQuery('')}
-                  className="absolute right-1.5 text-zinc-400 cursor-pointer p-0.5"
+                  className="absolute right-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer p-1"
+                  aria-label="Clear search"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
             <button
               type="submit"
-              className="h-7 px-2.5 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-[11px] font-mono font-medium shrink-0 cursor-pointer"
+              className="h-8 px-3 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-[11px] font-mono font-medium shrink-0 cursor-pointer"
             >
               Search
             </button>
@@ -408,10 +413,10 @@ export function Navbar() {
       {/* Mobile Dropdown Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 py-3 space-y-2 text-xs">
-          <nav className="flex flex-col space-y-1">
+          <nav className="flex flex-col space-y-1 font-mono">
             <Link
               to="/"
-              className={`px-2 py-1.5 ${
+              className={`px-2 py-1.5 rounded-none ${
                 isActive('/')
                   ? 'bg-zinc-100 dark:bg-zinc-800 font-semibold'
                   : 'text-zinc-700 dark:text-zinc-300'
@@ -422,7 +427,7 @@ export function Navbar() {
 
             <Link
               to="/sell"
-              className={`px-2 py-1.5 rounded-xs ${
+              className={`px-2 py-1.5 rounded-none ${
                 isActive('/sell')
                   ? 'bg-zinc-100 dark:bg-zinc-800 font-semibold'
                   : 'text-zinc-700 dark:text-zinc-300'
@@ -435,7 +440,7 @@ export function Navbar() {
               <>
                 <Link
                   to="/favorites"
-                  className="flex items-center justify-between px-2 py-1.5 rounded-xs text-zinc-700 dark:text-zinc-300"
+                  className="flex items-center justify-between px-2 py-1.5 rounded-none text-zinc-700 dark:text-zinc-300"
                 >
                   <span>Wishlist</span>
                   <span className="font-mono text-zinc-500">
@@ -445,11 +450,11 @@ export function Navbar() {
 
                 <Link
                   to="/messages"
-                  className="flex items-center justify-between px-2 py-1.5 rounded-xs text-zinc-700 dark:text-zinc-300"
+                  className="flex items-center justify-between px-2 py-1.5 rounded-none text-zinc-700 dark:text-zinc-300"
                 >
                   <span>Messages</span>
                   {unreadMessagesCount > 0 && (
-                    <span className="font-mono text-emerald-600">
+                    <span className="font-mono text-zinc-900 dark:text-zinc-100 font-bold">
                       [{unreadMessagesCount}]
                     </span>
                   )}
@@ -457,14 +462,14 @@ export function Navbar() {
 
                 <Link
                   to="/profile"
-                  className="px-2 py-1.5 rounded-xs text-zinc-700 dark:text-zinc-300"
+                  className="px-2 py-1.5 rounded-none text-zinc-700 dark:text-zinc-300"
                 >
                   Profile
                 </Link>
 
                 <Link
                   to="/profile/listings"
-                  className="px-2 py-1.5 rounded-xs text-zinc-700 dark:text-zinc-300"
+                  className="px-2 py-1.5 rounded-none text-zinc-700 dark:text-zinc-300"
                 >
                   My Listings
                 </Link>

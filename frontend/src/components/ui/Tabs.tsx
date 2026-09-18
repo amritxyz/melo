@@ -47,7 +47,7 @@ export function TabsList({
     <div
       role="tablist"
       className={cn(
-        'inline-flex items-center gap-1 border-b border-zinc-200 dark:border-zinc-800 w-full bg-zinc-50/50 dark:bg-zinc-900/40 px-1',
+        'inline-flex items-center gap-1 border-b border-zinc-200 dark:border-zinc-800 w-full bg-zinc-50/50 dark:bg-zinc-900/40 px-1 overflow-x-auto whitespace-nowrap scrollbar-none',
         className,
       )}
       {...props}
@@ -73,7 +73,7 @@ export function TabsTrigger({
       aria-selected={isSelected}
       onClick={() => ctx?.onValueChange(value)}
       className={cn(
-        'px-2.5 py-1.5 text-xs font-mono transition-colors border-b-2 -mb-px cursor-pointer',
+        'px-2.5 py-1.5 text-xs font-mono transition-colors border-b-2 -mb-px cursor-pointer shrink-0 min-h-[36px] sm:min-h-0 flex items-center justify-center',
         isSelected
           ? 'border-zinc-900 dark:border-zinc-100 text-zinc-900 dark:text-zinc-100 font-semibold'
           : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300',

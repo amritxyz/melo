@@ -28,16 +28,16 @@ export function ProductGrid({
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="flex flex-col sm:flex-row bg-white dark:bg-zinc-900 rounded-xs border border-zinc-200 dark:border-zinc-800 overflow-hidden animate-pulse"
+              className="flex flex-col sm:flex-row bg-white dark:bg-zinc-900 rounded-none border border-zinc-200 dark:border-zinc-800 overflow-hidden animate-pulse"
             >
               <div className="w-full sm:w-44 h-32 bg-zinc-100 dark:bg-zinc-800 shrink-0" />
               <div className="p-3.5 flex-1 space-y-2.5">
-                <div className="h-4 bg-zinc-100 dark:bg-zinc-800 rounded-xs w-1/3" />
-                <div className="h-3 bg-zinc-100 dark:bg-zinc-800 rounded-xs w-3/4" />
-                <div className="h-3 bg-zinc-100 dark:bg-zinc-800 rounded-xs w-1/2" />
+                <div className="h-4 bg-zinc-100 dark:bg-zinc-800 rounded-none w-1/3" />
+                <div className="h-3 bg-zinc-100 dark:bg-zinc-800 rounded-none w-3/4" />
+                <div className="h-3 bg-zinc-100 dark:bg-zinc-800 rounded-none w-1/2" />
                 <div className="pt-2 flex justify-between">
-                  <div className="h-4 bg-zinc-100 dark:bg-zinc-800 rounded-xs w-1/5" />
-                  <div className="h-3 bg-zinc-100 dark:bg-zinc-800 rounded-xs w-1/6" />
+                  <div className="h-4 bg-zinc-100 dark:bg-zinc-800 rounded-none w-1/5" />
+                  <div className="h-3 bg-zinc-100 dark:bg-zinc-800 rounded-none w-1/6" />
                 </div>
               </div>
             </div>
@@ -51,15 +51,15 @@ export function ProductGrid({
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="flex flex-col bg-white dark:bg-zinc-900 rounded-xs border border-zinc-200 dark:border-zinc-800 overflow-hidden animate-pulse"
+            className="flex flex-col bg-white dark:bg-zinc-900 rounded-none border border-zinc-200 dark:border-zinc-800 overflow-hidden animate-pulse"
           >
             <div className="h-28 bg-zinc-100 dark:bg-zinc-800" />
             <div className="p-3 space-y-2">
-              <div className="h-3.5 bg-zinc-100 dark:bg-zinc-800 rounded-xs w-1/3" />
-              <div className="h-3 bg-zinc-100 dark:bg-zinc-800 rounded-xs w-3/4" />
+              <div className="h-3.5 bg-zinc-100 dark:bg-zinc-800 rounded-none w-1/3" />
+              <div className="h-3 bg-zinc-100 dark:bg-zinc-800 rounded-none w-3/4" />
               <div className="pt-1 flex justify-between">
-                <div className="h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-xs w-1/4" />
-                <div className="h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-xs w-1/4" />
+                <div className="h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-none w-1/4" />
+                <div className="h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-none w-1/4" />
               </div>
             </div>
           </div>
@@ -70,8 +70,8 @@ export function ProductGrid({
 
   if (listings.length === 0) {
     return (
-      <div className="py-12 px-6 text-center rounded-xs border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-4">
-        <div className="w-10 h-10 mx-auto rounded-xs border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-zinc-400">
+      <div className="py-12 px-6 text-center rounded-none border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-4">
+        <div className="w-10 h-10 mx-auto rounded-none border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-center text-zinc-400">
           <Search className="w-5 h-5 stroke-[1.5]" />
         </div>
 
@@ -90,7 +90,7 @@ export function ProductGrid({
             <button
               type="button"
               onClick={onResetFilters}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono border border-zinc-300 dark:border-zinc-700 rounded-xs bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-zinc-800 dark:text-zinc-200"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono border border-zinc-300 dark:border-zinc-700 rounded-none bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-zinc-800 dark:text-zinc-200"
             >
               <RotateCcw className="w-3 h-3 text-zinc-500" />
               <span>Reset All Filters</span>
@@ -109,7 +109,7 @@ export function ProductGrid({
                   key={cat.id}
                   type="button"
                   onClick={() => onSelectCategory(cat.id)}
-                  className="px-2 py-1 text-xs font-mono border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-xs hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors cursor-pointer text-zinc-700 dark:text-zinc-300"
+                  className="px-2 py-1 text-xs font-mono border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-none hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors cursor-pointer text-zinc-700 dark:text-zinc-300"
                 >
                   {cat.name}
                 </button>

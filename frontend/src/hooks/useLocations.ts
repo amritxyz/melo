@@ -22,4 +22,3 @@ export function useMeetupSuggestion(buyerLoc?: string, sellerLoc?: string) {
     staleTime: 1000 * 60 * 10,
   })
 }
-

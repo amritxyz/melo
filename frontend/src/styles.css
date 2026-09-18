@@ -1,2 +1,149 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+
+:root {
+  --background: #faf8f3;
+  --foreground: #1a1817;
+
+  --card: #faf8f3;
+  --card-foreground: #1a1817;
+
+  --popover: #faf8f3;
+  --popover-foreground: #1a1817;
+
+  --primary: #a8843d;
+  --primary-foreground: #faf8f3;
+
+  --secondary: #f4efe6;
+  --secondary-foreground: #1a1817;
+
+  --muted: #f4efe6;
+  --muted-foreground: #6b665f;
+
+  --accent: #a8843d;
+  --accent-foreground: #faf8f3;
+
+  --destructive: #8e2822;
+  --destructive-foreground: #faf8f3;
+
+  --border: #e3ded4;
+  --input: #e3ded4;
+  --ring: #a8843d;
+
+  --radius: 0px;
+}
+
+.dark {
+  --background: #141312;
+  --foreground: #faf8f3;
+
+  --card: #1c1a18;
+  --card-foreground: #faf8f3;
+
+  --popover: #1c1a18;
+  --popover-foreground: #faf8f3;
+
+  --primary: #c4a053;
+  --primary-foreground: #141312;
+
+  --secondary: #242220;
+  --secondary-foreground: #faf8f3;
+
+  --muted: #242220;
+  --muted-foreground: #a6a095;
+
+  --accent: #c4a053;
+  --accent-foreground: #141312;
+
+  --destructive: #a33a34;
+  --destructive-foreground: #faf8f3;
+
+  --border: #2d2a27;
+  --input: #2d2a27;
+  --ring: #c4a053;
+
+  --radius: 0px;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Ledger Warm Palette Overrides */
+  --color-white: #faf8f3;
+  --color-zinc-50: #f7f5ee;
+  --color-zinc-100: #f0ede4;
+  --color-zinc-200: #e3ded4;
+  --color-zinc-300: #d2ccc0;
+  --color-zinc-400: #a6a095;
+  --color-zinc-500: #787268;
+  --color-zinc-600: #5a554d;
+  --color-zinc-700: #403c36;
+  --color-zinc-800: #2a2724;
+  --color-zinc-900: #1c1a18;
+  --color-zinc-950: #141312;
+
+  /* Zero Radius across all sizes */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-full: 0px;
+  --radius: 0px;
+
+  /* Zero Drop Shadows */
+  --shadow-2xs: none;
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-2xl: none;
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-radius: 0 !important;
+  }
+
+  html {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  hr {
+    border-color: var(--border);
+    border-top-width: 1px;
+  }
+}

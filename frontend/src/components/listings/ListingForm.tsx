@@ -204,7 +204,7 @@ export function ListingForm({
       {activeError && (
         <div
           role="alert"
-          className="p-2.5 rounded-xs bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-900 text-red-700 dark:text-red-300"
+          className="p-2.5 rounded-none bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-900 text-red-700 dark:text-red-300"
         >
           {activeError}
         </div>
@@ -297,7 +297,7 @@ export function ListingForm({
               type="button"
               disabled={isUploading}
               onClick={() => fileInputRef.current?.click()}
-              className="h-20 w-20 flex flex-col items-center justify-center border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xs bg-zinc-50 dark:bg-zinc-900/50 hover:border-zinc-500 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors cursor-pointer text-center p-2"
+              className="h-20 w-20 flex flex-col items-center justify-center border border-dashed border-zinc-300 dark:border-zinc-700 rounded-none bg-zinc-50 dark:bg-zinc-900/50 hover:border-zinc-500 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors cursor-pointer text-center p-2"
             >
               {isUploading ? (
                 <span className="text-[10px] font-mono animate-pulse">
@@ -318,7 +318,7 @@ export function ListingForm({
           {images.map((url, idx) => (
             <div
               key={url + idx}
-              className="relative h-20 w-20 border border-zinc-200 dark:border-zinc-800 rounded-xs overflow-hidden bg-zinc-100 dark:bg-zinc-800 group"
+              className="relative h-20 w-20 border border-zinc-200 dark:border-zinc-800 rounded-none overflow-hidden bg-zinc-100 dark:bg-zinc-800 group"
             >
               <img
                 src={url}
@@ -333,7 +333,7 @@ export function ListingForm({
               <button
                 type="button"
                 onClick={() => handleRemoveImage(idx)}
-                className="absolute top-1 right-1 p-0.5 bg-black/70 text-white rounded-xs opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-red-600"
+                className="absolute top-1 right-1 p-0.5 bg-black/70 text-white rounded-none opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-red-600"
                 title="Remove image"
               >
                 <X className="w-3 h-3" />
@@ -359,7 +359,7 @@ export function ListingForm({
           id="listing-description"
           required
           rows={5}
-          className="flex w-full rounded-xs border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-2.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 font-sans"
+          className="flex w-full rounded-none border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-2.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 font-sans"
           placeholder="Provide accurate details regarding wear, battery health, included accessories..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}

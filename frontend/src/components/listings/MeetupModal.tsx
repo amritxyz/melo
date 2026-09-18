@@ -55,7 +55,7 @@ export function MeetupModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/50">
-      <div className="bg-white dark:bg-zinc-900 rounded-xs border border-zinc-300 dark:border-zinc-700 max-w-md w-full p-5 space-y-4 shadow-sm">
+      <div className="bg-white dark:bg-zinc-900 rounded-none border border-zinc-300 dark:border-zinc-700 max-w-md w-full p-5 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
           <div>
@@ -63,13 +63,13 @@ export function MeetupModal({
               Safe Meetup Point Calculator
             </h3>
             <p className="text-xs text-zinc-500 font-mono mt-0.5">
-              Calculates the most equitable and secure transit hub between parties.
+              Calculates the most equitable and secure transit hub between
+              parties.
             </p>
-
           </div>
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors p-1"
+            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors p-1 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -78,7 +78,7 @@ export function MeetupModal({
         {/* Content */}
         <div className="space-y-3.5">
           {/* Location Selectors */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/30 rounded-xs border border-zinc-200 dark:border-zinc-800 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/30 rounded-none border border-zinc-200 dark:border-zinc-800 text-xs font-mono">
             <div>
               <span className="block text-[11px] font-mono text-zinc-600 dark:text-zinc-400 mb-1">
                 Your Location:
@@ -94,9 +94,11 @@ export function MeetupModal({
               <span className="block text-[11px] font-mono text-zinc-600 dark:text-zinc-400 mb-1">
                 {sellerName}'s Area:
               </span>
-              <div className="h-9 px-2.5 flex items-center bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xs text-zinc-800 dark:text-zinc-200 font-mono text-xs">
+              <div className="h-9 px-2.5 flex items-center bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-none text-zinc-800 dark:text-zinc-200 font-mono text-xs">
                 <MapPin className="w-3.5 h-3.5 text-zinc-400 mr-1.5 shrink-0" />
-                <span className="truncate">{formatLocation(sellerLocation) || 'Butwal'}</span>
+                <span className="truncate">
+                  {formatLocation(sellerLocation) || 'Butwal'}
+                </span>
               </div>
             </div>
           </div>
@@ -107,21 +109,20 @@ export function MeetupModal({
               Finding optimal meetup location...
             </div>
           ) : isError || !suggestion ? (
-
-            <div className="p-3 text-xs font-mono text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 rounded-xs border border-red-200 dark:border-red-900">
+            <div className="p-3 text-xs font-mono text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30 rounded-none border border-red-200 dark:border-red-900">
               Could not determine route between the selected locations.
             </div>
           ) : (
             <div className="space-y-3">
               {/* Highlight Result Box */}
-              <div className="p-3.5 bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 rounded-xs space-y-2">
+              <div className="p-3.5 bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 rounded-none space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                     Recommended Exchange Hub
                   </span>
                   {suggestion.is_designated_safe_hub && (
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-xs text-[10px] font-mono bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                      <ShieldCheck className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-none text-[10px] font-mono border border-zinc-400 dark:border-zinc-600 text-zinc-900 dark:text-zinc-100 bg-transparent">
+                      <ShieldCheck className="w-3 h-3 text-zinc-700 dark:text-zinc-300" />
                       Safe Hub
                     </span>
                   )}
@@ -139,7 +140,7 @@ export function MeetupModal({
                     onClick={handleCopy}
                   >
                     {copied ? (
-                      <Check className="w-3 h-3 text-emerald-600" />
+                      <Check className="w-3 h-3 text-zinc-900 dark:text-zinc-100" />
                     ) : (
                       <Copy className="w-3 h-3 text-zinc-400" />
                     )}
@@ -154,7 +155,7 @@ export function MeetupModal({
 
               {/* Distance Matrix */}
               <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="p-2 rounded-xs bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-200 dark:border-zinc-800">
+                <div className="p-2 rounded-none bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-200 dark:border-zinc-800">
                   <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider block">
                     Your Travel
                   </span>
@@ -162,7 +163,7 @@ export function MeetupModal({
                     {suggestion.buyer_distance_km} km
                   </span>
                 </div>
-                <div className="p-2 rounded-xs bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-200 dark:border-zinc-800">
+                <div className="p-2 rounded-none bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-200 dark:border-zinc-800">
                   <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider block">
                     Seller Travel
                   </span>
@@ -170,7 +171,7 @@ export function MeetupModal({
                     {suggestion.seller_distance_km} km
                   </span>
                 </div>
-                <div className="p-2 rounded-xs bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-200 dark:border-zinc-800">
+                <div className="p-2 rounded-none bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-200 dark:border-zinc-800">
                   <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider block">
                     Disparity
                   </span>
@@ -182,14 +183,14 @@ export function MeetupModal({
 
               {/* Path Details */}
               {suggestion.buyer_path.length > 1 && (
-                <div className="p-2.5 bg-zinc-50 dark:bg-zinc-800/30 rounded-xs border border-zinc-200 dark:border-zinc-800 text-xs space-y-1">
+                <div className="p-2.5 bg-zinc-50 dark:bg-zinc-800/30 rounded-none border border-zinc-200 dark:border-zinc-800 text-xs space-y-1">
                   <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block">
                     Your Shortest Transit Path:
                   </span>
                   <div className="flex flex-wrap items-center gap-1 font-mono text-[10px] text-zinc-700 dark:text-zinc-300">
                     {suggestion.buyer_path.map((step, idx) => (
                       <React.Fragment key={step}>
-                        <span className="px-1.5 py-0.5 rounded-xs bg-zinc-200/60 dark:bg-zinc-700/60">
+                        <span className="px-1.5 py-0.5 rounded-none border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800">
                           {step}
                         </span>
                         {idx < suggestion.buyer_path.length - 1 && (

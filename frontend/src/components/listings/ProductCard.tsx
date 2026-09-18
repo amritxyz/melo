@@ -77,7 +77,7 @@ export function ProductCard({ listing, viewMode = 'grid' }: ProductCardProps) {
               <Link
                 to="/products/$listingId"
                 params={{ listingId: listing.id }}
-                className="block group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors"
+                className="block group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors"
               >
                 <h3 className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 hover:underline line-clamp-1">
                   {formatTitleCase(listing.title)}
@@ -121,7 +121,7 @@ export function ProductCard({ listing, viewMode = 'grid' }: ProductCardProps) {
                 className={`font-mono font-bold text-base sm:text-lg ${
                   isSold
                     ? 'text-zinc-400 line-through'
-                    : 'text-zinc-900 dark:text-zinc-100'
+                    : 'text-[#A8843D] dark:text-[#C4A053]'
                 }`}
               >
                 {formattedPrice}
@@ -138,7 +138,7 @@ export function ProductCard({ listing, viewMode = 'grid' }: ProductCardProps) {
             <Link
               to="/products/$listingId"
               params={{ listingId: listing.id }}
-              className="text-xs font-mono text-zinc-700 dark:text-zinc-300 hover:text-emerald-700 dark:hover:text-emerald-400 hover:underline"
+              className="text-xs font-mono text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 hover:underline"
             >
               View details →
             </Link>
@@ -207,7 +207,7 @@ export function ProductCard({ listing, viewMode = 'grid' }: ProductCardProps) {
               className={`font-mono font-bold text-xs sm:text-sm ${
                 isSold
                   ? 'text-zinc-400 line-through'
-                  : 'text-zinc-900 dark:text-zinc-100'
+                  : 'text-[#A8843D] dark:text-[#C4A053]'
               }`}
             >
               {formattedPrice}
@@ -219,11 +219,11 @@ export function ProductCard({ listing, viewMode = 'grid' }: ProductCardProps) {
             )}
           </div>
 
-          <h3 className="font-medium text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors line-clamp-1 group-hover:underline">
+          <h3 className="font-medium text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors line-clamp-1 group-hover:underline">
             {formatTitleCase(listing.title)}
           </h3>
 
-          <p className="mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-1">
+          <p className="mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-1 font-sans">
             {listing.description}
           </p>
         </div>

@@ -16,21 +16,21 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const baseStyles =
-    'inline-flex items-center font-mono rounded-xs border transition-colors leading-none'
+    'inline-flex items-center font-mono rounded-none border transition-colors leading-none bg-transparent dark:bg-transparent'
 
   const variants = {
     default:
-      'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200 border-zinc-300 dark:border-zinc-700',
+      'border-zinc-400 dark:border-zinc-600 text-zinc-900 dark:text-zinc-100',
     success:
-      'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800',
+      'border-zinc-400 dark:border-zinc-600 text-zinc-900 dark:text-zinc-100',
     warning:
-      'bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border-amber-300 dark:border-amber-800',
+      'border-zinc-400 dark:border-zinc-600 text-zinc-900 dark:text-zinc-100',
     danger:
-      'bg-red-50 text-red-800 dark:bg-red-950/50 dark:text-red-300 border-red-300 dark:border-red-800',
+      'border-red-700/80 dark:border-red-600/80 text-red-700 dark:text-red-400',
     secondary:
-      'bg-zinc-50 text-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 border-zinc-200 dark:border-zinc-800',
+      'border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300',
     outline:
-      'border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 bg-transparent',
+      'border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300',
   }
 
   const sizes = {
@@ -57,21 +57,24 @@ export function ConditionBadge({
   size?: BadgeProps['size']
   className?: string
 }) {
-  const labels: Record<
-    ListingCondition,
-    { text: string; variant: BadgeProps['variant'] }
-  > = {
-    new: { text: 'New', variant: 'success' },
-    like_new: { text: 'Like New', variant: 'default' },
-    good: { text: 'Good', variant: 'secondary' },
-    fair: { text: 'Fair', variant: 'warning' },
-    poor: { text: 'Poor', variant: 'danger' },
+  const labels: Record<ListingCondition, string> = {
+    new: 'New',
+    like_new: 'Like New',
+    good: 'Good',
+    fair: 'Fair',
+    poor: 'Poor',
   }
 
-  const { text, variant } = labels[condition]
   return (
-    <Badge variant={variant} size={size} className={className}>
-      {text}
+    <Badge
+      variant="default"
+      size={size}
+      className={cn(
+        'bg-white/90 dark:bg-zinc-900/90 text-zinc-900 dark:text-zinc-100 border-zinc-400 dark:border-zinc-600',
+        className,
+      )}
+    >
+      {labels[condition]}
     </Badge>
   )
 }
@@ -89,14 +92,18 @@ export function StatusBadge({
     ListingStatus,
     { text: string; variant: BadgeProps['variant'] }
   > = {
-    active: { text: 'Active', variant: 'success' },
+    active: { text: 'Active', variant: 'default' },
     sold: { text: 'Sold', variant: 'danger' },
     hidden: { text: 'Hidden', variant: 'secondary' },
   }
 
   const { text, variant } = labels[status]
   return (
-    <Badge variant={variant} size={size} className={className}>
+    <Badge
+      variant={variant}
+      size={size}
+      className={cn('bg-white/90 dark:bg-zinc-900/90', className)}
+    >
       {text}
     </Badge>
   )

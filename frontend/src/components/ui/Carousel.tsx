@@ -126,7 +126,7 @@ export function CarouselPrevious({
       size={size}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
-      className={cn('h-6 w-6 p-0 rounded-xs disabled:opacity-30', className)}
+      className={cn('h-6 w-6 p-0 rounded-none disabled:opacity-30', className)}
       aria-label="Previous slide"
       {...props}
     >
@@ -150,7 +150,7 @@ export function CarouselNext({
       size={size}
       disabled={!canScrollNext}
       onClick={scrollNext}
-      className={cn('h-6 w-6 p-0 rounded-xs disabled:opacity-30', className)}
+      className={cn('h-6 w-6 p-0 rounded-none disabled:opacity-30', className)}
       aria-label="Next slide"
       {...props}
     >

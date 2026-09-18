@@ -53,7 +53,6 @@ export function useSimilarListings(id: string, limit = 4) {
   })
 }
 
-
 export function useCreateListing() {
   const queryClient = useQueryClient()
 

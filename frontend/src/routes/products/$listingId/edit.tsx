@@ -68,7 +68,7 @@ function EditListingPage() {
       <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
         <Navbar />
         <div className="max-w-md mx-auto py-16 px-4 text-center">
-          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-none bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
             <h2 className="text-sm font-bold uppercase">
               Authentication Required
             </h2>
@@ -89,7 +89,7 @@ function EditListingPage() {
       <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
         <Navbar />
         <div className="max-w-md mx-auto py-16 px-4 text-center">
-          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-none bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
             <h2 className="text-sm font-bold uppercase">Listing Not Found</h2>
             <p className="text-zinc-500">
               The requested listing does not exist.
@@ -110,7 +110,7 @@ function EditListingPage() {
       <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
         <Navbar />
         <div className="max-w-md mx-auto py-16 px-4 text-center">
-          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-none bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
             <h2 className="text-sm font-bold uppercase text-red-600">
               Access Denied
             </h2>
@@ -133,7 +133,7 @@ function EditListingPage() {
       <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
         <Navbar />
         <div className="max-w-md mx-auto py-16 px-4 text-center">
-          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-none bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
             <h2 className="text-sm font-bold uppercase">Listing is Sold</h2>
             <p className="text-zinc-500">Sold items cannot be edited.</p>
             <Link to="/profile/listings">
@@ -168,7 +168,7 @@ function EditListingPage() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 w-full flex-1 space-y-4">
-        <div className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 rounded-xs space-y-4">
+        <div className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 rounded-none space-y-4">
           <div>
             <h1 className="text-sm font-bold font-mono uppercase text-zinc-900 dark:text-zinc-100">
               Edit Listing Details

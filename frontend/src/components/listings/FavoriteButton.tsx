@@ -49,11 +49,11 @@ export function FavoriteButton({
         onClick={handleClick}
         disabled={toggleMutation.isPending}
         className={cn(
-          'flex items-center justify-center gap-1.5 rounded-sm border font-medium transition-colors cursor-pointer',
+          'flex items-center justify-center gap-1.5 rounded-none border font-mono font-medium transition-colors cursor-pointer',
           sizeClasses[size],
           favorited
-            ? 'border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 hover:bg-red-100'
-            : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100',
+            ? 'border-red-400 dark:border-red-700 bg-transparent text-red-700 dark:text-red-400'
+            : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100',
           className,
         )}
         aria-label={favorited ? 'Remove from wishlist' : 'Save to wishlist'}
@@ -73,10 +73,10 @@ export function FavoriteButton({
       type="button"
       onClick={handleClick}
       disabled={toggleMutation.isPending}
-      className={`p-1 rounded-xs border transition-colors z-10 cursor-pointer ${
+      className={`min-w-[28px] min-h-[28px] flex items-center justify-center p-1 rounded-none border transition-colors z-10 cursor-pointer ${
         favorited
-          ? 'bg-red-50 dark:bg-red-950/50 border-red-300 dark:border-red-800 text-red-600'
-          : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:border-zinc-400'
+          ? 'bg-white/90 dark:bg-zinc-900/90 border-red-400 dark:border-red-700 text-red-600'
+          : 'bg-white/90 dark:bg-zinc-900/90 border-zinc-300 dark:border-zinc-700 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:border-zinc-500'
       } ${className}`}
       aria-label={favorited ? 'Remove from wishlist' : 'Save to wishlist'}
       title={favorited ? 'Remove from wishlist' : 'Save to wishlist'}

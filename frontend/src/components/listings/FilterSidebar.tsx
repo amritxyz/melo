@@ -71,13 +71,13 @@ export function FilterSidebar({
         <span className="font-mono text-[11px] font-semibold text-zinc-500 uppercase block mb-1.5">
           Category
         </span>
-        <div className="space-y-0.5">
+        <div className="space-y-0.5 font-mono">
           <button
             onClick={() => onSelectCategory('')}
-            className={`w-full text-left px-2 py-1 transition-colors cursor-pointer flex items-center justify-between ${
+            className={`w-full text-left px-2 py-1 transition-colors cursor-pointer flex items-center justify-between rounded-none border ${
               selectedCategory === ''
-                ? 'bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 font-semibold'
-                : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
+                ? 'border-zinc-900 dark:border-zinc-100 text-zinc-900 dark:text-zinc-100 font-semibold bg-zinc-100/60 dark:bg-zinc-800/60'
+                : 'border-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
             }`}
           >
             <span>All Categories</span>
@@ -87,10 +87,10 @@ export function FilterSidebar({
               <button
                 key={cat.id}
                 onClick={() => onSelectCategory(cat.id)}
-                className={`w-full text-left px-2 py-1 transition-colors cursor-pointer flex items-center justify-between ${
+                className={`w-full text-left px-2 py-1 transition-colors cursor-pointer flex items-center justify-between rounded-none border ${
                   selectedCategory === cat.id
-                    ? 'bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 font-semibold'
-                    : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
+                    ? 'border-zinc-900 dark:border-zinc-100 text-zinc-900 dark:text-zinc-100 font-semibold bg-zinc-100/60 dark:bg-zinc-800/60'
+                    : 'border-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
                 }`}
               >
                 <span className="truncate">{cat.name}</span>
@@ -104,15 +104,15 @@ export function FilterSidebar({
         <span className="font-mono text-[11px] font-semibold text-zinc-500 uppercase block mb-1.5">
           Condition
         </span>
-        <div className="space-y-0.5">
+        <div className="space-y-0.5 font-mono">
           {CONDITIONS.map((cond) => (
             <button
               key={cond.id}
               onClick={() => onSelectCondition(cond.id)}
-              className={`w-full text-left px-2 py-1 transition-colors cursor-pointer flex items-center justify-between ${
+              className={`w-full text-left px-2 py-1 transition-colors cursor-pointer flex items-center justify-between rounded-none border ${
                 selectedCondition === cond.id
-                  ? 'bg-zinc-800 text-white dark:bg-zinc-200 dark:text-zinc-900 font-semibold'
-                  : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
+                  ? 'border-zinc-900 dark:border-zinc-100 text-zinc-900 dark:text-zinc-100 font-semibold bg-zinc-100/60 dark:bg-zinc-800/60'
+                  : 'border-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300'
               }`}
             >
               <span>{cond.label}</span>
@@ -129,7 +129,7 @@ export function FilterSidebar({
         <select
           value={selectedLocation}
           onChange={(e) => onSelectLocation(e.target.value)}
-          className="w-full h-8 px-2 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 cursor-pointer"
+          className="w-full h-8 px-2 text-xs font-mono bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 rounded-none cursor-pointer"
         >
           <option value="">All Locations</option>
           {BUTWAL_LOCATIONS.map((loc) => (
@@ -148,7 +148,7 @@ export function FilterSidebar({
         <select
           value={sortBy}
           onChange={(e) => onSelectSortBy(e.target.value as SortOption)}
-          className="w-full h-8 px-2 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 cursor-pointer"
+          className="w-full h-8 px-2 text-xs font-mono bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-900 dark:focus:border-zinc-100 rounded-none cursor-pointer"
         >
           <option value="newest">Newest first</option>
           <option value="price_asc">Price: Low to High</option>

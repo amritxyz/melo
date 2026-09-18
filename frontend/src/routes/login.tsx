@@ -49,7 +49,7 @@ function LoginPage() {
         <div className="text-center mb-6">
           <Link to="/" className="inline-flex items-center gap-1.5">
             <span className="font-mono font-bold text-lg">melo</span>
-            <span className="text-[10px] font-mono text-zinc-500 uppercase px-1 border border-zinc-300 dark:border-zinc-700 rounded-xs">
+            <span className="text-[10px] font-mono text-zinc-500 uppercase px-1 border border-zinc-300 dark:border-zinc-700 rounded-none">
               login
             </span>
           </Link>
@@ -58,11 +58,11 @@ function LoginPage() {
           </h2>
         </div>
 
-        <div className="bg-zinc-50/50 dark:bg-zinc-900/30 py-6 px-5 border border-zinc-300 dark:border-zinc-700 rounded-xs">
+        <div className="bg-zinc-50/50 dark:bg-zinc-900/30 py-6 px-5 border border-zinc-300 dark:border-zinc-700 rounded-none">
           {errorMessage && (
             <div
               role="alert"
-              className="mb-4 p-2.5 rounded-xs bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-900 text-xs font-mono text-red-700 dark:text-red-300"
+              className="mb-4 p-2.5 rounded-none bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-900 text-xs font-mono text-red-700 dark:text-red-300"
             >
               {errorMessage}
             </div>
@@ -106,7 +106,7 @@ function LoginPage() {
           No account yet?{' '}
           <Link
             to="/signup"
-            className="text-zinc-900 dark:text-zinc-100 underline hover:text-emerald-600"
+            className="text-zinc-900 dark:text-zinc-100 underline hover:text-zinc-600 dark:hover:text-zinc-300"
           >
             Register here
           </Link>

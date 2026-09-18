@@ -1,6 +1,13 @@
 import * as React from 'react'
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft, Check, CheckCheck, Send, Navigation } from 'lucide-react'
+import {
+  ArrowLeft,
+  Check,
+  CheckCheck,
+  Send,
+  Navigation,
+  ExternalLink,
+} from 'lucide-react'
 import { Button } from '#/components/ui/Button'
 import { MeetupModal } from '#/components/listings/MeetupModal'
 import { Navbar } from '#/components/layout/Navbar'
@@ -48,7 +55,6 @@ function MessagesPage() {
   const [inputContent, setInputContent] = React.useState('')
   const [showMeetupModal, setShowMeetupModal] = React.useState(false)
   const messagesEndRef = React.useRef<HTMLDivElement | null>(null)
-
 
   const { isConnected, sendWebSocketMessage, sendReadReceipt } =
     useChatWebSocket(selectedConvId)
@@ -104,7 +110,7 @@ function MessagesPage() {
       <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
         <Navbar />
         <div className="max-w-md mx-auto py-16 px-4 text-center">
-          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-none bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3 text-xs font-mono">
             <h2 className="text-sm font-bold uppercase">
               Authentication Required
             </h2>
@@ -150,8 +156,8 @@ function MessagesPage() {
       </div>
 
       {/* Main Container: Split View */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col min-h-0">
-        <div className="flex-1 flex border border-zinc-200 dark:border-zinc-800 rounded-xs bg-white dark:bg-zinc-950 overflow-hidden">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2 sm:py-4 flex flex-col min-h-0">
+        <div className="flex-1 flex border border-zinc-200 dark:border-zinc-800 rounded-none bg-white dark:bg-zinc-950 overflow-hidden">
           {/* Left Pane: Conversations List */}
           <div
             className={`w-full md:w-80 lg:w-88 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 flex flex-col shrink-0 ${
@@ -204,7 +210,7 @@ function MessagesPage() {
                         username={partner?.username}
                         size="sm"
                         shape="square"
-                        className="w-6 h-6 rounded-xs border border-zinc-300 dark:border-zinc-700 shrink-0"
+                        className="w-6 h-6 rounded-none border border-zinc-300 dark:border-zinc-700 shrink-0"
                       />
 
                       <div className="flex-1 min-w-0">
@@ -233,7 +239,7 @@ function MessagesPage() {
                       </div>
 
                       {hasUnread && (
-                        <span className="font-mono text-[10px] font-bold text-emerald-600 shrink-0">
+                        <span className="font-mono text-[10px] font-bold text-[#A8843D] dark:text-[#C4A053] shrink-0">
                           *
                         </span>
                       )}
@@ -253,64 +259,101 @@ function MessagesPage() {
             {selectedConvId && currentConv ? (
               <>
                 {/* Chat Header */}
-                <div className="p-2.5 px-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 flex items-center justify-between gap-4 text-xs font-mono">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <button
-                      onClick={() => handleSelectConversation('')}
-                      className="md:hidden text-zinc-500 hover:text-zinc-800 cursor-pointer"
-                    >
-                      <ArrowLeft className="w-4 h-4" />
-                    </button>
+                <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 text-xs font-mono">
+                  {/* Row 1: Participant info & quick actions */}
+                  <div className="p-2.5 px-3 sm:px-4 flex items-center justify-between gap-2.5">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <button
+                        onClick={() => handleSelectConversation('')}
+                        className="md:hidden text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 cursor-pointer min-w-[36px] min-h-[36px] -ml-1 flex items-center justify-center"
+                        aria-label="Back to conversations"
+                      >
+                        <ArrowLeft className="w-4 h-4" />
+                      </button>
 
-                    <UserAvatar
-                      avatarUrl={otherParticipant?.avatar_url}
-                      username={otherParticipant?.username}
-                      size="sm"
-                      shape="square"
-                      className="w-5 h-5 rounded-xs border border-zinc-300 dark:border-zinc-700 shrink-0"
-                    />
+                      <UserAvatar
+                        avatarUrl={otherParticipant?.avatar_url}
+                        username={otherParticipant?.username}
+                        size="sm"
+                        shape="square"
+                        className="w-5 h-5 rounded-none border border-zinc-300 dark:border-zinc-700 shrink-0"
+                      />
 
-                    <div className="min-w-0 flex items-center gap-2">
-                      <span className="font-semibold text-zinc-900 dark:text-zinc-100 truncate">
-                        {formatName(otherParticipant?.username || 'User')}
-                      </span>
-                      <span className="text-[10px] text-zinc-400">
-                        {isConnected ? '[online]' : '[sync]'}
-                      </span>
+                      <div className="min-w-0 flex items-center gap-1.5 truncate">
+                        <span className="font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                          {formatName(otherParticipant?.username || 'User')}
+                        </span>
+                        <span className="text-[10px] text-zinc-400 shrink-0">
+                          {isConnected ? '[online]' : '[sync]'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-7 text-[11px] font-mono gap-1 px-2 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+                        onClick={() => setShowMeetupModal(true)}
+                        title="Propose Meetup Point"
+                      >
+                        <Navigation className="w-3 h-3 text-zinc-500" />
+                        <span className="hidden sm:inline">Meetup Point</span>
+                        <span className="sm:hidden">Meetup</span>
+                      </Button>
+
+                      {/* Item Reference (Desktop) */}
+                      {currentConv.listing && (
+                        <Link
+                          to="/products/$listingId"
+                          params={{ listingId: currentConv.listing.id }}
+                          className="hidden sm:block text-right hover:underline max-w-[160px]"
+                        >
+                          <span className="block text-[11px] truncate text-zinc-700 dark:text-zinc-300">
+                            {formatTitleCase(currentConv.listing.title)}
+                          </span>
+                          <span className="block text-[10px] font-bold text-[#A8843D] dark:text-[#C4A053]">
+                            NPR {currentConv.listing.price.toLocaleString()}
+                          </span>
+                        </Link>
+                      )}
+
+                      {/* Mobile-only listing link icon */}
+                      {currentConv.listing && (
+                        <Link
+                          to="/products/$listingId"
+                          params={{ listingId: currentConv.listing.id }}
+                          className="sm:hidden h-7 w-7 flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                          title="View Listing"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </Link>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2.5 shrink-0">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-7 text-[11px] font-mono gap-1 px-2 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
-                      onClick={() => setShowMeetupModal(true)}
+                  {/* Row 2 (Mobile only): Item reference strip with full title & price */}
+                  {currentConv.listing && (
+                    <Link
+                      to="/products/$listingId"
+                      params={{ listingId: currentConv.listing.id }}
+                      className="sm:hidden px-3 py-1.5 bg-zinc-100/70 dark:bg-zinc-850 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between gap-2 text-[11px] hover:bg-zinc-200/50 dark:hover:bg-zinc-800 transition-colors"
                     >
-                      <Navigation className="w-3 h-3 text-zinc-500" />
-                      <span className="hidden sm:inline">Meetup Point</span>
-                    </Button>
-
-
-                    {/* Item Reference */}
-                    {currentConv.listing && (
-                      <Link
-                        to="/products/$listingId"
-                        params={{ listingId: currentConv.listing.id }}
-                        className="text-right hover:underline max-w-[160px]"
-                      >
-                        <span className="block text-[11px] truncate text-zinc-700 dark:text-zinc-300">
+                      <div className="flex items-center gap-1.5 min-w-0 truncate">
+                        <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-mono shrink-0">
+                          Item:
+                        </span>
+                        <span className="truncate text-zinc-800 dark:text-zinc-200 font-medium">
                           {formatTitleCase(currentConv.listing.title)}
                         </span>
-                        <span className="block text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
-                          NPR {currentConv.listing.price.toLocaleString()}
-                        </span>
-                      </Link>
-                    )}
-                  </div>
+                      </div>
+                      <span className="font-bold font-mono text-[#A8843D] dark:text-[#C4A053] shrink-0">
+                        NPR {currentConv.listing.price.toLocaleString()}
+                      </span>
+                    </Link>
+                  )}
                 </div>
-
 
                 {/* Messages Stream */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-2 text-xs font-mono">
@@ -336,7 +379,7 @@ function MessagesPage() {
                       return (
                         <div
                           key={msg.id}
-                          className={`p-2 rounded-xs border flex flex-col gap-0.5 max-w-[85%] sm:max-w-[75%] ${
+                          className={`p-2 rounded-none border flex flex-col gap-0.5 max-w-[85%] sm:max-w-[75%] ${
                             isMine
                               ? 'ml-auto bg-zinc-100 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700'
                               : 'mr-auto bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800'
@@ -354,7 +397,7 @@ function MessagesPage() {
                               {formattedTime}
                               {isMine &&
                                 (msg.is_read ? (
-                                  <CheckCheck className="w-3 h-3 text-emerald-600" />
+                                  <CheckCheck className="w-3 h-3 text-zinc-600 dark:text-zinc-400" />
                                 ) : (
                                   <Check className="w-3 h-3 text-zinc-400" />
                                 ))}
@@ -371,7 +414,7 @@ function MessagesPage() {
                 </div>
 
                 {/* Message Composer */}
-                <div className="p-2.5 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30">
+                <div className="p-2.5 sm:p-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30">
                   <form
                     onSubmit={handleSend}
                     className="flex items-center gap-2 max-w-4xl mx-auto"
@@ -381,7 +424,7 @@ function MessagesPage() {
                       placeholder="Write a message..."
                       value={inputContent}
                       onChange={(e) => setInputContent(e.target.value)}
-                      className="flex-1 h-8 px-2.5 rounded-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-500"
+                      className="min-w-0 flex-1 h-9 sm:h-8 px-3 rounded-none bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-500"
                     />
                     <Button
                       type="submit"
@@ -389,10 +432,10 @@ function MessagesPage() {
                       disabled={
                         !inputContent.trim() || sendMessageMutation.isPending
                       }
-                      className="gap-1"
+                      className="shrink-0 h-9 sm:h-8 px-3 sm:px-3.5 min-w-[44px] gap-1 font-mono text-xs"
                     >
-                      <Send className="w-3 h-3" />
-                      <span>Send</span>
+                      <Send className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
+                      <span className="hidden sm:inline">Send</span>
                     </Button>
                   </form>
                 </div>
@@ -410,7 +453,6 @@ function MessagesPage() {
                 />
               </>
             ) : (
-
               <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-xs font-mono text-zinc-500">
                 <p>Select a thread from the left pane to view messages.</p>
               </div>

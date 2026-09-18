@@ -257,7 +257,6 @@ export async function getSimilarListingsApi(
   )
 }
 
-
 export async function createListingApi(
   payload: CreateListingPayload,
 ): Promise<Listing> {

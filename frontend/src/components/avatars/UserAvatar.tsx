@@ -29,8 +29,8 @@ const sizeClasses: Record<AvatarSize, string> = {
 }
 
 const shapeClasses: Record<AvatarShape, string> = {
-  circle: 'rounded-full',
-  rounded: 'rounded-xs',
+  circle: 'rounded-none',
+  rounded: 'rounded-none',
   square: 'rounded-none',
 }
 

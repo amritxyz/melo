@@ -50,7 +50,7 @@ function SellPage() {
       <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
         <Navbar />
         <div className="max-w-md mx-auto py-16 px-4 text-center space-y-3">
-          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-xs bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3">
+          <div className="border border-zinc-300 dark:border-zinc-700 p-6 rounded-none bg-zinc-50/50 dark:bg-zinc-900/40 space-y-3">
             <h2 className="text-sm font-bold font-mono uppercase tracking-wider">
               Authentication Required
             </h2>
@@ -92,7 +92,7 @@ function SellPage() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 w-full flex-1 space-y-4">
-        <div className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 rounded-xs space-y-4">
+        <div className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 rounded-none space-y-4">
           <div>
             <h1 className="text-sm font-bold font-mono uppercase text-zinc-900 dark:text-zinc-100">
               Create Listing

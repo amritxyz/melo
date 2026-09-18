@@ -39,7 +39,9 @@ function MyListingsPage() {
     'all',
   )
   const [inventorySearch, setInventorySearch] = React.useState('')
-  const [sortBy, setSortBy] = React.useState<'newest' | 'price-asc' | 'price-desc' | 'title'>('newest')
+  const [sortBy, setSortBy] = React.useState<
+    'newest' | 'price-asc' | 'price-desc' | 'title'
+  >('newest')
 
   const [confirmSoldId, setConfirmSoldId] = React.useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = React.useState<string | null>(
@@ -86,9 +88,7 @@ function MyListingsPage() {
       if (sortBy === 'price-asc') return a.price - b.price
       if (sortBy === 'price-desc') return b.price - a.price
       if (sortBy === 'title') return a.title.localeCompare(b.title)
-      return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      )
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
 
     return result
@@ -115,7 +115,7 @@ function MyListingsPage() {
   if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col justify-center py-12 px-4">
-        <div className="max-w-md mx-auto text-center bg-white dark:bg-zinc-900 p-6 rounded-xs border border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-md mx-auto text-center bg-white dark:bg-zinc-900 p-6 rounded-none border border-zinc-200 dark:border-zinc-800">
           <Package className="w-8 h-8 text-zinc-400 mx-auto mb-3 stroke-[1.5]" />
           <h2 className="text-lg font-bold font-mono text-zinc-900 dark:text-zinc-100 mb-1">
             Sign In Required
@@ -147,22 +147,24 @@ function MyListingsPage() {
         {/* Page Title & User Greeting */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 mb-1">
+            <div className="flex items-center gap-2 text-xs font-mono text-zinc-500 mb-1 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5">
               <Link
                 to="/"
-                className="hover:text-zinc-900 dark:hover:text-zinc-100"
+                className="hover:text-zinc-900 dark:hover:text-zinc-100 shrink-0"
               >
                 marketplace
               </Link>
-              <span>/</span>
+              <span className="shrink-0">/</span>
               <Link
                 to="/profile"
-                className="hover:text-zinc-900 dark:hover:text-zinc-100"
+                className="hover:text-zinc-900 dark:hover:text-zinc-100 shrink-0"
               >
                 profile
               </Link>
-              <span>/</span>
-              <span className="text-zinc-900 dark:text-zinc-100">listings</span>
+              <span className="shrink-0">/</span>
+              <span className="text-zinc-900 dark:text-zinc-100 shrink-0">
+                listings
+              </span>
             </div>
             <h1 className="text-lg font-bold font-mono tracking-tight">
               Seller Dashboard
@@ -172,19 +174,27 @@ function MyListingsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto">
-            <Link to="/users/$userId" params={{ userId: user.id }}>
+          <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
+            <Link
+              to="/users/$userId"
+              params={{ userId: user.id }}
+              className="flex-1 sm:flex-initial"
+            >
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-1.5 font-mono text-xs"
+                className="w-full sm:w-auto gap-1.5 font-mono text-xs"
               >
                 <UserIcon className="w-3.5 h-3.5 text-zinc-400" />
                 <span className="hidden sm:inline">Storefront</span>
+                <span className="sm:hidden">Store</span>
               </Button>
             </Link>
-            <Link to="/sell">
-              <Button size="sm" className="gap-1.5 font-mono text-xs">
+            <Link to="/sell" className="flex-1 sm:flex-initial">
+              <Button
+                size="sm"
+                className="w-full sm:w-auto gap-1.5 font-mono text-xs"
+              >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Create Listing</span>
               </Button>
@@ -194,7 +204,7 @@ function MyListingsPage() {
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="p-3.5 rounded-xs bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <div className="p-3.5 rounded-none bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
                 Total Listings
@@ -206,7 +216,7 @@ function MyListingsPage() {
             <Package className="w-4 h-4 text-zinc-400" />
           </div>
 
-          <div className="p-3.5 rounded-xs bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <div className="p-3.5 rounded-none bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
                 Active Listings
@@ -218,7 +228,7 @@ function MyListingsPage() {
             <ShoppingBag className="w-4 h-4 text-zinc-400" />
           </div>
 
-          <div className="p-3.5 rounded-xs bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <div className="p-3.5 rounded-none bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-500">
                 Sold Items
@@ -249,7 +259,7 @@ function MyListingsPage() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-2.5 py-1 rounded-xs text-xs font-mono transition-colors cursor-pointer border whitespace-nowrap ${
+                  className={`px-2.5 py-1 rounded-none text-xs font-mono transition-colors cursor-pointer border whitespace-nowrap ${
                     isSelected
                       ? 'bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100'
                       : 'text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800'
@@ -270,7 +280,7 @@ function MyListingsPage() {
                 value={inventorySearch}
                 onChange={(e) => setInventorySearch(e.target.value)}
                 placeholder="Filter inventory..."
-                className="w-full pl-8 pr-7 py-1 text-xs font-mono bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-600 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400"
+                className="w-full pl-8 pr-7 py-1 text-xs font-mono bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-none focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-600 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400"
               />
               {inventorySearch && (
                 <button
@@ -289,7 +299,7 @@ function MyListingsPage() {
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 aria-label="Sort inventory listings"
-                className="h-7 px-2 pr-6 text-xs font-mono bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs text-zinc-700 dark:text-zinc-300 focus:outline-none cursor-pointer appearance-none"
+                className="h-7 px-2 pr-6 text-xs font-mono bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-none text-zinc-700 dark:text-zinc-300 focus:outline-none cursor-pointer appearance-none"
               >
                 <option value="newest">Sort: Newest</option>
                 <option value="price-asc">Price: Low to High</option>
@@ -307,7 +317,7 @@ function MyListingsPage() {
             Loading your inventory...
           </div>
         ) : listings.length === 0 ? (
-          <div className="py-12 text-center rounded-xs border border-dashed border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 space-y-2">
+          <div className="py-12 text-center rounded-none border border-dashed border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 space-y-2">
             <Package className="w-8 h-8 text-zinc-400 mx-auto stroke-[1.5]" />
             <h3 className="text-xs font-bold font-mono">
               {inventorySearch.trim()
@@ -364,7 +374,7 @@ function MyListingsPage() {
               return (
                 <div
                   key={item.id}
-                  className={`p-3.5 rounded-xs bg-white dark:bg-zinc-900 border transition-colors ${
+                  className={`p-3.5 rounded-none bg-white dark:bg-zinc-900 border transition-colors ${
                     isItemSold
                       ? 'border-zinc-200 dark:border-zinc-800 opacity-75'
                       : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
@@ -373,7 +383,7 @@ function MyListingsPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     {/* Item Info */}
                     <div className="flex items-start gap-3">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xs bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shrink-0 overflow-hidden flex items-center justify-center relative">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-none bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shrink-0 overflow-hidden flex items-center justify-center relative">
                         {primaryImg ? (
                           <img
                             src={primaryImg}
@@ -406,16 +416,16 @@ function MyListingsPage() {
                         </Link>
 
                         <div className="flex flex-wrap items-center gap-2.5 text-[11px] font-mono text-zinc-500 mt-1">
-                          <span className="font-bold text-zinc-900 dark:text-zinc-100">
+                          <span className="font-bold text-[#A8843D] dark:text-[#C4A053]">
                             {formattedPrice}
                           </span>
                           <span
-                            className={`inline-flex items-center px-1.5 py-0.5 rounded-xs text-[10px] font-mono border ${
+                            className={`inline-flex items-center px-1.5 py-0.5 rounded-none text-[10px] font-mono border ${
                               isItemSold || (item.quantity ?? 1) <= 0
-                                ? 'bg-zinc-100 text-zinc-500 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
+                                ? 'bg-transparent text-zinc-400 border-zinc-300 dark:border-zinc-700'
                                 : (item.quantity ?? 1) > 1
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800'
-                                  : 'bg-zinc-50 text-zinc-600 border-zinc-200 dark:bg-zinc-900 dark:text-zinc-400 dark:border-zinc-800'
+                                  ? 'bg-transparent text-zinc-800 dark:text-zinc-200 border-zinc-400 dark:border-zinc-600'
+                                  : 'bg-transparent text-zinc-600 dark:text-zinc-400 border-zinc-300 dark:border-zinc-700'
                             }`}
                           >
                             Qty: {item.quantity ?? 1}
@@ -476,7 +486,7 @@ function MyListingsPage() {
                             setConfirmDeleteId(null)
                           }}
                         >
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                          <CheckCircle2 className="w-3 h-3 text-zinc-500" />
                           <span>Mark Sold</span>
                         </Button>
                       )}
@@ -499,7 +509,7 @@ function MyListingsPage() {
 
                   {/* Inline Warning for Mark as Sold */}
                   {isConfirmingSold && (
-                    <div className="mt-3 p-2.5 rounded-xs bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono">
+                    <div className="mt-3 p-2.5 rounded-none bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono">
                       <div className="flex items-center gap-1.5">
                         <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                         <span>Mark as sold? This cannot be undone.</span>
@@ -530,7 +540,7 @@ function MyListingsPage() {
 
                   {/* Inline Warning for Delete */}
                   {isConfirmingDelete && (
-                    <div className="mt-3 p-2.5 rounded-xs bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 text-xs text-red-900 dark:text-red-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono">
+                    <div className="mt-3 p-2.5 rounded-none bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 text-xs text-red-900 dark:text-red-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono">
                       <div className="flex items-center gap-1.5">
                         <AlertTriangle className="w-3.5 h-3.5 text-red-600 shrink-0" />
                         <span>Permanently delete this listing?</span>
