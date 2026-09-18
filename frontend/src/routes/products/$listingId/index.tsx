@@ -12,12 +12,29 @@ import {
   Share2,
   Check,
   ShieldCheck,
-  ChevronRight,
+  Store,
 } from 'lucide-react'
 
 import { Button } from '#/components/ui/Button'
-import { ConditionBadge, StatusBadge } from '#/components/ui/Badge'
+import { Badge, ConditionBadge, StatusBadge } from '#/components/ui/Badge'
 import { RatingStars } from '#/components/ui/RatingStars'
+import { Card } from '#/components/ui/Card'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '#/components/ui/Tabs'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/Table'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '#/components/ui/Carousel'
 import { FavoriteButton } from '#/components/listings/FavoriteButton'
 import { ProductCard } from '#/components/listings/ProductCard'
 import { MeetupModal } from '#/components/listings/MeetupModal'
@@ -61,7 +78,7 @@ function ProductDetailPage() {
   >({})
 
   const { data: listing, isLoading, error } = useListing(listingId)
-  const { data: similarListings = [] } = useSimilarListings(listingId, 4)
+  const { data: similarListings = [] } = useSimilarListings(listingId, 8)
   const { data: sellerProfile } = useUserProfile(listing?.seller_id)
 
   const markSoldMutation = useMarkListingSold()
@@ -158,9 +175,9 @@ function ProductDetailPage() {
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col">
       <Navbar />
 
-      {/* Breadcrumbs */}
+      {/* Top Context & Action Bar */}
       <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 py-2 text-xs font-mono">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
           <div className="flex items-center gap-1.5 text-zinc-500 overflow-hidden truncate">
             <Link to="/" className="hover:underline shrink-0">
               marketplace
@@ -183,17 +200,43 @@ function ProductDetailPage() {
             </span>
           </div>
 
-          <Link
-            to="/"
-            className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:underline shrink-0 text-[11px]"
-          >
-            ← Back to results
-          </Link>
+          {/* Action Cluster (Requirement 8) */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Link
+              to="/"
+              className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:underline shrink-0 text-[11px] mr-1 hidden sm:inline"
+            >
+              ← Results
+            </Link>
+
+            <button
+              type="button"
+              onClick={handleShare}
+              className="h-6 px-2 rounded-xs border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 flex items-center gap-1 text-[10px] font-mono shadow-xs cursor-pointer transition-colors"
+              title="Copy listing link"
+            >
+              {copiedShare ? (
+                <>
+                  <Check className="w-3 h-3 text-emerald-600" />
+                  <span className="text-emerald-600 font-semibold">Copied</span>
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-3 h-3" />
+                  <span>Share</span>
+                </>
+              )}
+            </button>
+
+            {!isOwner && (
+              <FavoriteButton listingId={listing.id} variant="badge" />
+            )}
+          </div>
         </div>
       </div>
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full flex-1 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full flex-1 space-y-8">
         {/* Sold Notice */}
         {isSold && (
           <div className="border border-red-300 dark:border-red-900 bg-red-50/50 dark:bg-red-950/30 p-2 rounded-xs text-xs font-mono text-red-800 dark:text-red-300 flex items-center justify-between">
@@ -202,343 +245,476 @@ function ProductDetailPage() {
           </div>
         )}
 
-        {/* Top Hero Section: Gallery (Left) + Buy Box & Seller (Right) */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
-          {/* Gallery Column (7 cols) */}
-          <div className="md:col-span-7 space-y-2">
-            <div className="h-64 sm:h-72 md:h-80 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs flex items-center justify-center relative overflow-hidden">
-              {activeImage ? (
-                <img
-                  src={activeImage.url}
-                  alt={listing.title}
-                  onError={() => {
-                    setFailedImages((prev) => ({
-                      ...prev,
-                      [activeImage.url]: true,
-                    }))
-                  }}
-                  className="w-full h-full object-contain p-2"
-                />
-              ) : (
-                <div className="flex flex-col items-center text-zinc-400">
-                  <Tag className="w-8 h-8 stroke-[1.5] mb-1 text-zinc-300 dark:text-zinc-700" />
-                  <span className="text-[10px] font-mono uppercase text-zinc-400">
-                    {listing.category?.name || 'Item'}
-                  </span>
-                </div>
-              )}
-
-              <div className="absolute top-1.5 left-1.5 flex items-center gap-1 z-10 pointer-events-none">
-                <ConditionBadge condition={listing.condition} size="sm" />
-                {isSold ? (
-                  <StatusBadge status={listing.status} size="sm" />
+        {/* Two-Column Section: Gallery & Details (Left) + Sticky Buy Box & Seller (Right) */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Image Gallery & Detail Tabs (7 cols) */}
+          <div className="md:col-span-7 space-y-5">
+            {/* Gallery Container (Requirement 1) */}
+            <div className="space-y-2">
+              <div className="h-64 sm:h-72 md:h-80 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xs flex items-center justify-center relative overflow-hidden">
+                {activeImage ? (
+                  <img
+                    src={activeImage.url}
+                    alt={listing.title}
+                    onError={() => {
+                      setFailedImages((prev) => ({
+                        ...prev,
+                        [activeImage.url]: true,
+                      }))
+                    }}
+                    className="w-full h-full object-contain p-2"
+                  />
                 ) : (
-                  (listing.quantity ?? 1) > 1 && (
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-xs text-[10px] font-mono font-medium bg-zinc-900/80 text-white dark:bg-zinc-100/90 dark:text-zinc-900 backdrop-blur-xs">
-                      {listing.quantity} available
+                  <div className="flex flex-col items-center text-zinc-400">
+                    <Tag className="w-8 h-8 stroke-[1.5] mb-1 text-zinc-300 dark:text-zinc-700" />
+                    <span className="text-[10px] font-mono uppercase text-zinc-400">
+                      {listing.category?.name || 'Item'}
                     </span>
-                  )
+                  </div>
                 )}
-              </div>
 
-              <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={handleShare}
-                  className="h-6 px-1.5 rounded-xs border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 text-zinc-700 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-900 flex items-center gap-1 text-[10px] font-mono shadow-xs backdrop-blur-xs cursor-pointer transition-colors"
-                  title="Copy listing link"
-                >
-                  {copiedShare ? (
-                    <>
-                      <Check className="w-3 h-3 text-emerald-600" />
-                      <span className="text-emerald-600 font-semibold">
-                        Copied
-                      </span>
-                    </>
+                <div className="absolute top-1.5 left-1.5 flex items-center gap-1 z-10 pointer-events-none">
+                  <ConditionBadge condition={listing.condition} size="sm" />
+                  {isSold ? (
+                    <StatusBadge status={listing.status} size="sm" />
                   ) : (
-                    <>
-                      <Share2 className="w-3 h-3" />
-                      <span>Share</span>
-                    </>
+                    (listing.quantity ?? 1) > 1 && (
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-xs text-[10px] font-mono font-medium bg-zinc-900/80 text-white dark:bg-zinc-100/90 dark:text-zinc-900 backdrop-blur-xs">
+                        {listing.quantity} available
+                      </span>
+                    )
                   )}
-                </button>
+                </div>
 
                 {!isOwner && (
-                  <FavoriteButton listingId={listing.id} variant="badge" />
+                  <div className="absolute top-1.5 right-1.5 z-10">
+                    <FavoriteButton listingId={listing.id} variant="badge" />
+                  </div>
                 )}
               </div>
+
+              {/* Thumbnails strip (only if multiple photos, Requirement 1) */}
+              {validImages.length > 1 && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+                  {validImages.map((img, idx) => (
+                    <button
+                      key={img.id || img.url || idx}
+                      type="button"
+                      onClick={() => setSelectedImageIndex(idx)}
+                      className={`h-11 w-11 rounded-xs border overflow-hidden shrink-0 cursor-pointer transition-colors ${
+                        safeImageIndex === idx
+                          ? 'border-zinc-900 dark:border-zinc-100 ring-1 ring-zinc-900 dark:ring-zinc-100'
+                          : 'border-zinc-200 dark:border-zinc-800 opacity-60 hover:opacity-100'
+                      }`}
+                      title={`View image ${idx + 1}`}
+                    >
+                      <img
+                        src={img.url}
+                        alt={`Thumbnail ${idx + 1}`}
+                        onError={() => {
+                          setFailedImages((prev) => ({
+                            ...prev,
+                            [img.url]: true,
+                          }))
+                        }}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Thumbnails if multiple images */}
-            {validImages.length > 1 && (
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
-                {validImages.map((img, idx) => (
-                  <button
-                    key={img.id || img.url || idx}
-                    type="button"
-                    onClick={() => setSelectedImageIndex(idx)}
-                    className={`h-11 w-11 rounded-xs border overflow-hidden shrink-0 cursor-pointer transition-colors ${
-                      safeImageIndex === idx
-                        ? 'border-zinc-900 dark:border-zinc-100 ring-1 ring-zinc-900 dark:ring-zinc-100'
-                        : 'border-zinc-200 dark:border-zinc-800 opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    <img
-                      src={img.url}
-                      alt={`Thumbnail ${idx + 1}`}
-                      onError={() => {
-                        setFailedImages((prev) => ({
-                          ...prev,
-                          [img.url]: true,
-                        }))
-                      }}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Detail Sections as Tabs (Requirements 4 & 5) */}
+            <div className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-none overflow-hidden">
+              <Tabs defaultValue="description" className="w-full">
+                <TabsList>
+                  <TabsTrigger value="description">
+                    Seller Description
+                  </TabsTrigger>
+                  <TabsTrigger value="specifics">Item Specifics</TabsTrigger>
+                  <TabsTrigger value="safety">
+                    Safety & Handover Guide
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Seller Description Tab */}
+                <TabsContent value="description" className="p-3.5 pt-2.5">
+                  <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line font-sans">
+                    {listing.description}
+                  </p>
+                </TabsContent>
+
+                {/* Item Specifics Table Tab (Requirement 5) */}
+                <TabsContent value="specifics" className="p-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-1/3">Specification</TableHead>
+                        <TableHead>Details</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-semibold text-zinc-500">
+                          Condition
+                        </TableCell>
+                        <TableCell className="space-y-1">
+                          <div className="flex items-center gap-1.5">
+                            <ConditionBadge
+                              condition={listing.condition}
+                              size="sm"
+                            />
+                            <span className="capitalize font-semibold text-zinc-900 dark:text-zinc-100">
+                              {listing.condition.replace('_', ' ')}
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-zinc-500 block">
+                            {conditionNotes[listing.condition] ||
+                              'Standard pre-owned condition.'}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-semibold text-zinc-500">
+                          Category
+                        </TableCell>
+                        <TableCell className="text-zinc-900 dark:text-zinc-100">
+                          {listing.category?.name || 'General'}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-semibold text-zinc-500">
+                          Availability
+                        </TableCell>
+                        <TableCell className="text-zinc-900 dark:text-zinc-100 font-semibold">
+                          {isSold
+                            ? '0 (Sold)'
+                            : `${listing.quantity ?? 1} in stock`}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-semibold text-zinc-500">
+                          Location
+                        </TableCell>
+                        <TableCell className="text-zinc-900 dark:text-zinc-100">
+                          {formatLocation(listing.location)}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-semibold text-zinc-500">
+                          Listed On
+                        </TableCell>
+                        <TableCell className="text-zinc-900 dark:text-zinc-100">
+                          {formattedDate}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-semibold text-zinc-500">
+                          Listing ID
+                        </TableCell>
+                        <TableCell className="font-mono text-[11px] text-zinc-500">
+                          #{listing.id.slice(0, 8)}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TabsContent>
+
+                {/* Buyer Safety Guide Tab */}
+                <TabsContent
+                  value="safety"
+                  className="p-3.5 pt-2.5 space-y-3 text-xs font-mono"
+                >
+                  <div className="flex items-center gap-1.5 text-zinc-800 dark:text-zinc-200 font-semibold text-[10px] uppercase tracking-wider">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Buyer Safety & Handover Guide</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] text-zinc-600 dark:text-zinc-400">
+                    <div className="p-2 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
+                      <span className="text-emerald-600 font-bold block">
+                        ✓ Inspect First
+                      </span>
+                      <span>
+                        Always examine and test items thoroughly in person prior
+                        to transferring funds.
+                      </span>
+                    </div>
+                    <div className="p-2 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
+                      <span className="text-emerald-600 font-bold block">
+                        ✓ Safe Meetup
+                      </span>
+                      <span>
+                        Select public, high-visibility locations like shopping
+                        malls or chowks.
+                      </span>
+                    </div>
+                    <div className="p-2 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-1">
+                      <span className="text-emerald-600 font-bold block">
+                        ✓ Direct Chat
+                      </span>
+                      <span>
+                        Finalize meetup details and questions only inside Melo
+                        messages.
+                      </span>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
           </div>
 
-          {/* Right: Buy Box / Action Column (5 cols) */}
-          <div className="md:col-span-5 space-y-2.5">
-            {/* Title & Category Tag */}
-            <div>
-              {listing.category && (
-                <Link
-                  to="/"
-                  search={{ category: listing.category_id }}
-                  className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 hover:underline inline-block mb-1"
-                >
-                  {listing.category.name}
-                </Link>
-              )}
-              <h1 className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-50 leading-snug">
-                {formatTitleCase(listing.title)}
-              </h1>
-            </div>
-
-            {/* Price Box */}
-            <div className="border-y border-zinc-200 dark:border-zinc-800 py-2 flex items-baseline justify-between gap-2">
+          {/* Right Column: Sticky Buy Box & Seller Info Mini-Card (5 cols, Requirements 2 & 3) */}
+          <div className="md:col-span-5 md:sticky md:top-4 self-start space-y-3">
+            {/* Buy Box Panel */}
+            <Card className="p-3 space-y-2.5 rounded-none">
+              {/* Category Eyebrow & Title */}
               <div>
-                <span
-                  className={`font-mono font-bold text-sm sm:text-base block ${
-                    isSold
-                      ? 'text-zinc-400 line-through'
-                      : 'text-zinc-900 dark:text-zinc-100'
-                  }`}
-                >
-                  {formattedPrice}
-                </span>
+                {listing.category && (
+                  <Link
+                    to="/"
+                    search={{ category: listing.category_id }}
+                    className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 hover:underline inline-block mb-1"
+                  >
+                    {listing.category.name}
+                  </Link>
+                )}
+                <h1 className="text-sm sm:text-base font-semibold text-zinc-900 dark:text-zinc-50 leading-snug">
+                  {formatTitleCase(listing.title)}
+                </h1>
               </div>
-              <div className="text-right">
-                <span className="text-[10px] font-mono text-zinc-500 block">
-                  {isSold
-                    ? '0 available (Sold)'
-                    : (listing.quantity ?? 1) > 1
-                      ? `${listing.quantity} available`
-                      : '1 available'}
-                </span>
+
+              {/* Price & Quantity Box */}
+              <div className="border-y border-zinc-200 dark:border-zinc-800 py-2 flex items-baseline justify-between gap-2">
+                <div>
+                  <span
+                    className={`font-mono font-bold text-sm sm:text-base block ${
+                      isSold
+                        ? 'text-zinc-400 line-through'
+                        : 'text-zinc-900 dark:text-zinc-100'
+                    }`}
+                  >
+                    {formattedPrice}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] font-mono text-zinc-500 block">
+                    {isSold
+                      ? '0 available (Sold)'
+                      : (listing.quantity ?? 1) > 1
+                        ? `${listing.quantity} available`
+                        : '1 available'}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Quick Specs (Condition & Location) */}
-            <div className="flex items-center justify-between text-[10px] font-mono py-1.5 px-2.5 border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/40">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <span className="uppercase tracking-wider text-zinc-400 dark:text-zinc-500 shrink-0">
-                  Condition
-                </span>
-                <ConditionBadge condition={listing.condition} size="sm" />
-              </div>
-              <div className="flex items-center gap-1 text-zinc-500 dark:text-zinc-400 shrink-0 truncate max-w-[160px]">
-                <MapPin className="w-3 h-3 text-zinc-400 shrink-0" />
-                <span className="truncate">
-                  {formatLocation(listing.location)}
-                </span>
-              </div>
-            </div>
-
-            {/* Buy / Message / Action Buttons */}
-            <div className="space-y-1.5 pt-0.5">
-              {!isOwner ? (
-                <>
-                  {!isSold ? (
-                    <Button
-                      size="sm"
-                      className="w-full gap-1.5 text-xs font-medium h-7 rounded-none"
-                      isLoading={startConvMutation.isPending}
-                      onClick={handleMessageSeller}
-                    >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      <span>Contact Seller</span>
-                    </Button>
-                  ) : (
-                    <div className="py-1 px-2 text-center bg-zinc-100 dark:bg-zinc-800/60 text-xs font-mono text-zinc-500">
-                      This item is marked as sold
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-2 gap-1.5">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="w-full gap-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 h-7 rounded-none"
-                      onClick={() => setShowMeetupModal(true)}
-                    >
-                      <Navigation className="w-3.5 h-3.5 text-zinc-500" />
-                      <span>Meetup Spot</span>
-                    </Button>
-
-                    <FavoriteButton
-                      listingId={listing.id}
-                      variant="button"
-                      size="sm"
-                      className="w-full h-7 rounded-none"
-                    />
-                  </div>
-                </>
-              ) : (
-                /* Owner Action Box */
-                <div className="border border-zinc-300 dark:border-zinc-700 bg-zinc-50/40 dark:bg-zinc-900/50 p-2.5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
-                      Your Listing
+              {/* Condition with inline explanatory subtext (Requirement 7) */}
+              <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/40 p-2 text-[10px] font-mono space-y-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="uppercase tracking-wider text-zinc-400 dark:text-zinc-500 shrink-0">
+                      Condition
                     </span>
-                    <span className="text-[10px] font-mono text-zinc-500">
-                      Owner Controls
+                    <ConditionBadge condition={listing.condition} size="sm" />
+                  </div>
+                  <div className="flex items-center gap-1 text-zinc-500 dark:text-zinc-400 shrink-0 truncate max-w-[160px]">
+                    <MapPin className="w-3 h-3 text-zinc-400 shrink-0" />
+                    <span className="truncate">
+                      {formatLocation(listing.location)}
                     </span>
                   </div>
+                </div>
+                {conditionNotes[listing.condition] && (
+                  <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-tight pt-1 border-t border-zinc-100 dark:border-zinc-800/80">
+                    {conditionNotes[listing.condition]}
+                  </p>
+                )}
+              </div>
 
-                  {isSold && (
-                    <div className="p-1.5 border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 text-[11px] font-mono text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-zinc-500 shrink-0" />
-                      <span>Item marked as sold.</span>
+              {/* Buy / Message / Action Buttons */}
+              <div className="space-y-1.5 pt-0.5">
+                {!isOwner ? (
+                  <>
+                    {!isSold ? (
+                      <Button
+                        size="sm"
+                        className="w-full gap-1.5 text-xs font-medium h-7 rounded-none"
+                        isLoading={startConvMutation.isPending}
+                        onClick={handleMessageSeller}
+                      >
+                        <MessageSquare className="w-3.5 h-3.5" />
+                        <span>Contact Seller</span>
+                      </Button>
+                    ) : (
+                      <div className="py-1 px-2 text-center bg-zinc-100 dark:bg-zinc-800/60 text-xs font-mono text-zinc-500">
+                        This item is marked as sold
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-1.5">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 h-7 rounded-none"
+                        onClick={() => setShowMeetupModal(true)}
+                      >
+                        <Navigation className="w-3.5 h-3.5 text-zinc-500" />
+                        <span>Meetup Spot</span>
+                      </Button>
+
+                      <FavoriteButton
+                        listingId={listing.id}
+                        variant="button"
+                        size="sm"
+                        className="w-full h-7 rounded-none"
+                      />
                     </div>
-                  )}
+                  </>
+                ) : (
+                  /* Owner Action Box */
+                  <div className="border border-zinc-300 dark:border-zinc-700 bg-zinc-50/40 dark:bg-zinc-900/50 p-2.5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300">
+                        Your Listing
+                      </span>
+                      <span className="text-[10px] font-mono text-zinc-500">
+                        Owner Controls
+                      </span>
+                    </div>
 
-                  {/* Mark as Sold Confirmation */}
-                  {!isSold && showSoldConfirm && (
-                    <div className="p-2 border border-amber-300 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30 text-xs font-mono space-y-1.5">
-                      <div className="flex items-start gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-bold text-[11px]">Mark as sold?</p>
-                          <p className="text-zinc-600 dark:text-zinc-400 text-[10px]">
-                            Cannot be undone.
-                          </p>
+                    {isSold && (
+                      <div className="p-1.5 border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800 text-[11px] font-mono text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3 h-3 text-zinc-500 shrink-0" />
+                        <span>Item marked as sold.</span>
+                      </div>
+                    )}
+
+                    {/* Mark as Sold Confirmation */}
+                    {!isSold && showSoldConfirm && (
+                      <div className="p-2 border border-amber-300 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30 text-xs font-mono space-y-1.5">
+                        <div className="flex items-start gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
+                          <div>
+                            <p className="font-bold text-[11px]">
+                              Mark as sold?
+                            </p>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-[10px]">
+                              Cannot be undone.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex justify-end gap-1.5 pt-0.5">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-[10px] font-mono px-2 rounded-none"
+                            onClick={() => setShowSoldConfirm(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="primary"
+                            size="sm"
+                            className="h-7 text-[10px] font-mono px-2 rounded-none"
+                            isLoading={markSoldMutation.isPending}
+                            onClick={handleConfirmSold}
+                          >
+                            Confirm
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex justify-end gap-1.5 pt-0.5">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-7 text-[10px] font-mono px-2 rounded-none"
-                          onClick={() => setShowSoldConfirm(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="primary"
-                          size="sm"
-                          className="h-7 text-[10px] font-mono px-2 rounded-none"
-                          isLoading={markSoldMutation.isPending}
-                          onClick={handleConfirmSold}
-                        >
-                          Confirm
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* Delete Confirmation */}
-                  {showDeleteConfirm && (
-                    <div className="p-2 border border-red-300 dark:border-red-800 bg-red-50/50 dark:bg-red-950/30 text-xs font-mono space-y-1.5">
-                      <div className="flex items-start gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-bold text-[11px]">
-                            Permanently delete?
-                          </p>
-                          <p className="text-zinc-600 dark:text-zinc-400 text-[10px]">
-                            Removes listing completely.
-                          </p>
+                    {/* Delete Confirmation */}
+                    {showDeleteConfirm && (
+                      <div className="p-2 border border-red-300 dark:border-red-800 bg-red-50/50 dark:bg-red-950/30 text-xs font-mono space-y-1.5">
+                        <div className="flex items-start gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
+                          <div>
+                            <p className="font-bold text-[11px]">
+                              Permanently delete?
+                            </p>
+                            <p className="text-zinc-600 dark:text-zinc-400 text-[10px]">
+                              Removes listing completely.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex justify-end gap-1.5 pt-0.5">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-[10px] font-mono px-2 rounded-none"
+                            onClick={() => setShowDeleteConfirm(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="danger"
+                            size="sm"
+                            className="h-7 text-[10px] font-mono px-2 rounded-none"
+                            isLoading={deleteMutation.isPending}
+                            onClick={handleConfirmDelete}
+                          >
+                            Delete
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex justify-end gap-1.5 pt-0.5">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-7 text-[10px] font-mono px-2 rounded-none"
-                          onClick={() => setShowDeleteConfirm(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="danger"
-                          size="sm"
-                          className="h-7 text-[10px] font-mono px-2 rounded-none"
-                          isLoading={deleteMutation.isPending}
-                          onClick={handleConfirmDelete}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  {!showSoldConfirm && !showDeleteConfirm && (
-                    <div className="grid grid-cols-3 gap-1.5 pt-0.5">
-                      {!isSold && (
-                        <Link
-                          to="/products/$listingId/edit"
-                          params={{ listingId: listing.id }}
-                          className="block"
-                        >
+                    {!showSoldConfirm && !showDeleteConfirm && (
+                      <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+                        {!isSold && (
+                          <Link
+                            to="/products/$listingId/edit"
+                            params={{ listingId: listing.id }}
+                            className="block"
+                          >
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full gap-1 text-[11px] font-mono h-7 px-1.5 rounded-none"
+                            >
+                              <Pencil className="w-3 h-3" />
+                              <span>Edit</span>
+                            </Button>
+                          </Link>
+                        )}
+
+                        {!isSold && (
                           <Button
                             variant="outline"
                             size="sm"
                             className="w-full gap-1 text-[11px] font-mono h-7 px-1.5 rounded-none"
+                            onClick={() => setShowSoldConfirm(true)}
                           >
-                            <Pencil className="w-3 h-3" />
-                            <span>Edit</span>
+                            <CheckCircle2 className="w-3 h-3" />
+                            <span>Sold</span>
                           </Button>
-                        </Link>
-                      )}
+                        )}
 
-                      {!isSold && (
                         <Button
-                          variant="outline"
+                          variant="danger"
                           size="sm"
                           className="w-full gap-1 text-[11px] font-mono h-7 px-1.5 rounded-none"
-                          onClick={() => setShowSoldConfirm(true)}
+                          onClick={() => setShowDeleteConfirm(true)}
                         >
-                          <CheckCircle2 className="w-3 h-3" />
-                          <span>Sold</span>
+                          <Trash2 className="w-3 h-3" />
+                          <span>Delete</span>
                         </Button>
-                      )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </Card>
 
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        className="w-full gap-1 text-[11px] font-mono h-7 px-1.5 rounded-none"
-                        onClick={() => setShowDeleteConfirm(true)}
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        <span>Delete</span>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Compact Seller Information */}
-            <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 p-2">
+            {/* Seller Info as distinct mini-card (Requirement 3) */}
+            <Card className="p-2.5 space-y-2 bg-zinc-50/50 dark:bg-zinc-900/40 rounded-none">
               <div className="flex items-center justify-between gap-2">
                 <Link
                   to="/users/$userId"
@@ -558,153 +734,95 @@ function ProductDetailPage() {
                     <span className="font-mono font-medium text-xs text-zinc-900 dark:text-zinc-100 group-hover:underline block truncate">
                       {formatName(listing.seller?.username || 'Seller')}
                     </span>
-                    <RatingStars
-                      rating={sellerProfile?.rating || 0}
-                      totalCount={sellerProfile?.review_count || 0}
-                      size="xs"
-                    />
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <RatingStars
+                        rating={sellerProfile?.rating || 0}
+                        totalCount={sellerProfile?.review_count || 0}
+                        size="xs"
+                      />
+                    </div>
                   </div>
                 </Link>
+
+                <Badge
+                  variant="secondary"
+                  size="sm"
+                  className="shrink-0 text-[10px]"
+                >
+                  {sellerProfile?.rating && sellerProfile.rating > 0
+                    ? `${sellerProfile.rating.toFixed(1)} ★`
+                    : 'New (0)'}
+                </Badge>
+              </div>
+
+              {/* Two-Button Row (Requirement 3) */}
+              <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-zinc-200/70 dark:border-zinc-800/70">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-full gap-1 font-mono text-[11px] h-7 rounded-none"
+                  isLoading={startConvMutation.isPending}
+                  onClick={handleMessageSeller}
+                  disabled={isOwner}
+                >
+                  <MessageSquare className="w-3 h-3 text-zinc-500" />
+                  <span>Message Seller</span>
+                </Button>
 
                 <Link
                   to="/users/$userId"
                   params={{ userId: listing.seller_id }}
-                  className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:underline shrink-0 flex items-center gap-0.5"
+                  className="w-full block"
                 >
-                  <span>Seller items</span>
-                  <ChevronRight className="w-3 h-3 text-zinc-400" />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-1 font-mono text-[11px] h-7 rounded-none text-zinc-700 dark:text-zinc-300"
+                  >
+                    <Store className="w-3 h-3 text-zinc-400" />
+                    <span>View Storefront</span>
+                  </Button>
                 </Link>
               </div>
-            </div>
+            </Card>
           </div>
         </div>
 
-        {/* Similar / Recommended Products (eBay pattern) */}
+        {/* Similar Products Horizontal Scroll Carousel (Requirement 6) */}
         {similarListings.length > 0 && (
           <section className="pt-6 border-t border-zinc-200 dark:border-zinc-800">
-            <div className="flex items-center justify-between pb-2 mb-3 border-b border-zinc-100 dark:border-zinc-800/80">
-              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-                Similar Products
-              </h2>
-              <span className="text-[10px] font-mono text-zinc-500">
-                {similarListings.length}{' '}
-                {similarListings.length === 1 ? 'item' : 'items'}
-              </span>
-            </div>
+            <Carousel className="w-full">
+              <div className="flex items-center justify-between pb-2 mb-3 border-b border-zinc-100 dark:border-zinc-800/80">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
+                    Similar Products
+                  </h2>
+                  <span className="text-[10px] font-mono text-zinc-500">
+                    ({similarListings.length}{' '}
+                    {similarListings.length === 1 ? 'item' : 'items'})
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </div>
+              </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {similarListings.map((simItem) => (
-                <ProductCard key={simItem.id} listing={simItem} />
-              ))}
-            </div>
+              <CarouselContent>
+                {similarListings.map((simItem) => (
+                  <CarouselItem
+                    key={simItem.id}
+                    className="basis-44 sm:basis-52 md:basis-60"
+                  >
+                    <ProductCard listing={simItem} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
           </section>
         )}
-
-        {/* Product Details & Full Description Section (After recommendations, like on eBay) */}
-        <section className="pt-6 border-t border-zinc-200 dark:border-zinc-800 space-y-4">
-          <div className="border-b border-zinc-200 dark:border-zinc-800 pb-2">
-            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">
-              Item Details & Specifications
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
-            {/* Item Specifics Table (5 cols) */}
-            <div className="md:col-span-5 border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <div className="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-900/60 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-                <h3 className="text-[10px] font-mono font-semibold uppercase text-zinc-600 dark:text-zinc-400 tracking-wider">
-                  Item Specifics
-                </h3>
-                <span className="text-[10px] font-mono text-zinc-400">
-                  Specifications
-                </span>
-              </div>
-              <div className="text-xs font-mono divide-y divide-zinc-100 dark:divide-zinc-800/80 bg-white dark:bg-zinc-900">
-                <div className="flex px-3 py-1.5 justify-between">
-                  <span className="text-zinc-500">Available:</span>
-                  <span className="text-zinc-900 dark:text-zinc-100 font-semibold">
-                    {isSold ? '0 (Sold)' : `${listing.quantity ?? 1} in stock`}
-                  </span>
-                </div>
-                <div className="flex px-3 py-1.5 justify-between">
-                  <span className="text-zinc-500">Category:</span>
-                  <span className="text-zinc-900 dark:text-zinc-100">
-                    {listing.category?.name || 'General'}
-                  </span>
-                </div>
-                <div className="flex px-3 py-1.5 justify-between items-start gap-4">
-                  <span className="text-zinc-500 shrink-0">Condition:</span>
-                  <div className="text-right">
-                    <span className="capitalize text-zinc-900 dark:text-zinc-100 font-semibold block">
-                      {listing.condition.replace('_', ' ')}
-                    </span>
-                    <span className="text-[10px] text-zinc-500 block">
-                      {conditionNotes[listing.condition] ||
-                        'Standard pre-owned condition.'}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex px-3 py-1.5 justify-between">
-                  <span className="text-zinc-500">Location:</span>
-                  <span className="text-zinc-900 dark:text-zinc-100">
-                    {formatLocation(listing.location)}
-                  </span>
-                </div>
-                <div className="flex px-3 py-1.5 justify-between">
-                  <span className="text-zinc-500">Listed:</span>
-                  <span className="text-zinc-900 dark:text-zinc-100">
-                    {formattedDate}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Seller Description (7 cols) */}
-            <div className="md:col-span-7 border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <div className="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-900/60 border-b border-zinc-200 dark:border-zinc-800">
-                <h3 className="text-[10px] font-mono font-semibold uppercase text-zinc-600 dark:text-zinc-400 tracking-wider">
-                  Seller Description
-                </h3>
-              </div>
-              <div className="p-3 bg-white dark:bg-zinc-900">
-                <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line font-sans">
-                  {listing.description}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Buyer Safety & Meetup Guide */}
-          <div className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20 p-2.5 space-y-1.5 text-xs font-mono">
-            <div className="flex items-center gap-1.5 text-zinc-800 dark:text-zinc-200 font-semibold text-[10px] uppercase tracking-wider">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Buyer Safety & Handover Guide</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] text-zinc-600 dark:text-zinc-400 pt-0.5">
-              <div className="flex items-start gap-1.5">
-                <span className="text-emerald-600 font-bold shrink-0">✓</span>
-                <span>
-                  <strong>Inspect first:</strong> Always examine and test items
-                  before paying.
-                </span>
-              </div>
-              <div className="flex items-start gap-1.5">
-                <span className="text-emerald-600 font-bold shrink-0">✓</span>
-                <span>
-                  <strong>Safe meetup:</strong> Prefer well-lit public spots
-                  like malls or chowks.
-                </span>
-              </div>
-              <div className="flex items-start gap-1.5">
-                <span className="text-emerald-600 font-bold shrink-0">✓</span>
-                <span>
-                  <strong>Direct chat:</strong> Finalize meetup details only
-                  inside Melo messages.
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Meetup Modal */}
         <MeetupModal
